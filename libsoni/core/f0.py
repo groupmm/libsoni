@@ -1,5 +1,7 @@
 import numpy as np
+from typing import Dict
 
+from libsoni.util.utils import get_preset
 
 def sonify_f0(time_f0: np.ndarray,
               partials: np.ndarray = np.array([1]),
@@ -34,10 +36,12 @@ def sonify_f0(time_f0: np.ndarray,
     y: np.ndarray
         Sonified f0-trajectory.
     """
+    # TODO: check for case, that times are not monotonous (Sorting?)
     times = time_f0[:, 0]
     f0s = time_f0[:, 1]
     num_samples = int(np.ceil(times[-1] * fs))
 
+    shorter_duration = False
     if duration is not None:
         duration_in_sec = duration / fs
 
@@ -48,12 +52,13 @@ def sonify_f0(time_f0: np.ndarray,
         # if duration is less than num_samples, crop the arrays
         elif duration < num_samples:
             times = times[times < duration_in_sec]
-            f0s = f0s[times < duration_in_sec]
-
+            times = np.append(times, duration_in_sec)
+            f0s = f0s[:times.shape[0]]
+            shorter_duration = True
         # if duration is greater than num_samples, append
         else:
             times = np.append(times, duration_in_sec)
-            f0s = f0s.append(f0s, 0.0)
+            f0s = np.append(f0s, 0.0)
 
         num_samples = int(np.ceil(times[-1] * fs))
 
@@ -62,10 +67,12 @@ def sonify_f0(time_f0: np.ndarray,
 
     # Strach f0s_strached to match the given time positions.
     for i, (time, f0) in enumerate(zip(times, f0s)):
-        if i == time_f0.shape[0] - 1:
-            break
-        next_time = times[i+1]
-        f0s_strached[int(time*fs):int(next_time*fs)] = f0
+        if i == times.shape[0] - 1:
+            if not shorter_duration:
+                f0s_strached[int(times[i-1] * fs):] = 0.0
+        else:
+            next_time = times[i+1]
+            f0s_strached[int(time*fs):int(next_time*fs)] = f0
 
     #
     for partial, partial_amplitude in zip(partials, partials_amplitudes):
@@ -79,3 +86,45 @@ def sonify_f0(time_f0: np.ndarray,
         f0_sonification += np.sin(phase_result) * partial_amplitude
 
     return f0_sonification
+
+def sonify_f0_presets(preset_dict: Dict = None,
+                      duration: int = None,
+                      fs: int = 22050) -> np.ndarray:
+    """This function sonifies multiple f0 annotations with a certain preset.
+    Parameters
+    ----------
+    preset_dict
+    duration
+    fs
+
+    Returns
+    -------
+
+    """
+    # TODO: docstring
+    # TODO: Think about better function name
+    # TODO: Check Normalization
+    if duration is None:
+        max_duration = 0
+        for preset in preset_dict:
+            duration = preset_dict[preset][0, -1]
+            max_duration = duration if duration > max_duration else max_duration
+        duration = int(fs * max_duration)
+
+    f0_sonification = np.zeros(duration)
+
+    for preset in preset_dict:
+        preset_features_dict = get_preset(preset)
+
+        f0_sonification += sonify_f0(time_f0=preset_dict[preset],
+                                     partials=preset_features_dict['partials'],
+                                     partials_amplitudes=preset_features_dict['amplitudes'],
+                                     duration=duration,
+                                     fs=fs)
+
+    return f0_sonification
+
+
+#def sonify_f0_SATB()
+
+#def sonify_f0_piano()
