@@ -107,9 +107,9 @@ def sonify_f0_presets(preset_dict: Dict = None,
     if duration is None:
         max_duration = 0
         for preset in preset_dict:
-            duration = preset_dict[preset][0, -1]
+            duration = preset_dict[preset][-1, 0]
             max_duration = duration if duration > max_duration else max_duration
-        duration = int(fs * max_duration)
+        duration = int(np.ceil(fs * max_duration))
 
     f0_sonification = np.zeros(duration)
 
