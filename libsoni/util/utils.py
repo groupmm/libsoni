@@ -11,7 +11,7 @@ from typing import Dict
 
 SAMPLES = ['bass-drum', 'click', 'hi-hat']
 
-PRESETS = json.load(open('./presets.json'))
+PRESETS = json.load(open(os.path.join('libsoni', 'util', 'presets.json')))
 
 
 def get_preset(preset_name: str = None) -> Dict:
