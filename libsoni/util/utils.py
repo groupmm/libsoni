@@ -6,10 +6,31 @@ import os
 from functools import cmp_to_key
 import music21 as m21
 import warnings
+import json
+from typing import Dict
 
 SAMPLES = ['bass-drum', 'click', 'hi-hat']
 
+PRESETS = json.load(open('./presets.json'))
 
+
+def get_preset(preset_name: str = None) -> Dict:
+    """Get preset parameters from presets.json
+
+    Parameters
+    ----------
+    preset_name: str, default: None
+        Name of preset, e.g., violin
+    Returns
+    -------
+    dictionary of partials, envelope, etc.
+    """
+    if preset_name not in PRESETS:
+        raise ValueError(f'Preset {preset_name} not valid! Choose among {PRESETS.keys()}')
+    return PRESETS[preset_name]
+
+
+########################
 def mix_sonification_and_original(sonification: np.ndarray,
                                   original_audio: np.ndarray,
                                   gain_lin_sonification: float = 1.0,
