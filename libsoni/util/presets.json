@@ -4,6 +4,24 @@
     "amplitudes": [1.0, 0.6, 0.3, 0.2, 0.15, 0.1, 0.08, 0.05, 0.03, 0.02],
     "envelope": null
   },
+  "bassoon" :
+  {
+    "partials": [1],
+    "amplitudes": [1.0],
+    "envelope": null
+  },
+  "clarinet" :
+  {
+    "partials": [1],
+    "amplitudes": [1.0],
+    "envelope": null
+  },
+  "saxophone" :
+  {
+    "partials": [1],
+    "amplitudes": [1.0],
+    "envelope": null
+  },
   "soprano" :
   {
     "partials": [1],
