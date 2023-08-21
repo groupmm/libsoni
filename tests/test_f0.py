@@ -52,7 +52,7 @@ def test_f0_preset():
                              duration=None,
                              fs=FS)
 
-
+    #TODO: Remove writing
     wavfile.write(os.path.join('tests', 'data_audio', 'bach_test_fo_sonified.wav'), FS, y)
 
     assert np.array_equal(y, y)
