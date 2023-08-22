@@ -30,7 +30,47 @@ def get_preset(preset_name: str = None) -> Dict:
     return PRESETS[preset_name]
 
 
+def generate_click(pitch: int = 69, amplitude: float = 1.0, duration: float = 0.2, fs: int = 22050,
+                   tuning_frequency: int = 440) -> np.ndarray:
+    """Returns a click signal
+    Parameters
+    ----------
+    pitch : int, default = 69
+        pitch for colored click
+    amplitude : float, default = 1.0
+        amplitude of click signal
+    duration : float, default = 0.3
+        duration of click signal
+    fs : int, default = 22050
+        sampling rate
+    tuning_frequency : int, default = 440
+        tuning frequency
+    Returns
+    -------
+    click : np.ndarray
+        click signal
+    """
+    click_freq = tuning_frequency * 2 ** ((pitch - 69) / 12)
+
+    angular_freq = 2 * np.pi * click_freq / float(fs)
+
+    click = np.logspace(0, -10, num=int(fs * duration), base=2.0)
+
+    click *= np.sin(angular_freq * np.arange(len(click)))
+
+    click *= amplitude
+
+    return click
+
 ########################
+
+
+
+
+
+
+
+
 def mix_sonification_and_original(sonification: np.ndarray,
                                   original_audio: np.ndarray,
                                   gain_lin_sonification: float = 1.0,
@@ -85,39 +125,7 @@ def load_sample(name: str = 'click', target_sampling_rate: int = 44100) -> np.nd
     return resampled_data, target_sampling_rate
 
 
-def click(pitch: int = 69, amplitude: float = 1.0, duration: float = 0.2, fs: int = 44100,
-          tuning_frequency: int = 440) -> np.ndarray:
-    """
-    Returns a click signal
-    Parameters
-    ----------
-    pitch : int
-        pitch for colored click
-    amplitude : float
-        amplitude of click signal
-    duration : float
-        duration of click signal
-    fs : int
-        sampling rate
-    tuning_frequency : int
-        tuning frequency
-    Returns
-    -------
-    click : array-like
-        click signal
 
-    """
-    click_freq = tuning_frequency * 2 ** ((pitch - 69) / 12)
-
-    angular_freq = 2 * np.pi * click_freq / float(fs)
-
-    click = np.logspace(0, -10, num=int(fs * duration), base=2.0)
-
-    click *= np.sin(angular_freq * np.arange(len(click)))
-
-    click *= amplitude
-
-    return click
 
 
 def generate_shepard_tone(pitch_class: int = 0,  # TODO: check sigma parameter
