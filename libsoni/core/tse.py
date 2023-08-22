@@ -1,7 +1,7 @@
-import pandas as pd
 import numpy as np
+from typing import List, Tuple
 
-from libsoni.util.utils import generate_click, load_sample, add_to_sonification
+from libsoni.util.utils import generate_click
 
 
 def sonify_tse_click(time_positions: np.ndarray = None,
@@ -10,8 +10,9 @@ def sonify_tse_click(time_positions: np.ndarray = None,
                      click_amplitude: float = 1.0,
                      offset_relative: float = 0.0,
                      duration: int = None,
-                     fs: int = 22050):
+                     fs: int = 22050) -> np.ndarray:
     """This function sonifies an array containing time positions with clicks.
+
     Parameters
     ----------
     time_positions: np.ndarray
@@ -21,14 +22,20 @@ def sonify_tse_click(time_positions: np.ndarray = None,
     click_duration: float, default = 0.25
         Duration for click signal.
     click_amplitude: float, default = 1.0
-        amplitude for click signal.
+        Amplitude for click signal.
     offset_relative: float, default = 0.0
-
-    duration
-    fs
+        Relative offset coefficient for the beginning of a click. 
+        0 indicates that the beginning of the click event is at the time position. 1 indicates the ending of the click
+        event corresponds to the time position. 
+    duration: float, default = None
+        Duration of the output waveform, given in samples.
+    fs: int, default = 22050
+        Sampling rate
 
     Returns
     -------
+    tse_sonification: np.ndarray
+        Sonified waveform in form of a 1D Numpy array.
 
     """
     num_samples = int((time_positions[-1] + click_duration) * fs)
@@ -66,21 +73,28 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
                       sample: np.ndarray = None,
                       offset_relative: float = 0.0,
                       duration: int = None,
-                      fs: int = 22050):
+                      fs: int = 22050) -> np.ndarray:
     """This function sonifies an array containing time positions with clicks.
+
     Parameters
     ----------
     sample: np.ndarray
-        Sample
+        Sample (e.g., recording of a kick drum)
     time_positions: np.ndarray
         Array with time positions for clicks.
     offset_relative: float, default = 0.0
-
-    duration
-    fs
+        Relative offset coefficient for the beginning of the given audio sample.
+        0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
+        corresponding to the time position.
+    duration: float, default = None
+        Duration of the output waveform, given in samples.
+    fs: int, default = 22050
+        Sampling rate
 
     Returns
     -------
+    tse_sonification: np.ndarray
+        Sonified waveform in form of a 1D Numpy array.
 
     """
     sample_len = len(sample)
@@ -115,12 +129,35 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
     return tse_sonification[:duration]
 
 
-def sonify_tse_multiple_clicks(times_pitches: list = None,
+def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, float]] = None,
                                duration: int = None,
                                click_duration: float = 0.25,
                                click_amplitude: float = 1.0,
                                offset_relative: float = 0.0,
                                fs: int = 22050) -> np.ndarray:
+    """Given multiple arrays in form of a list, this function creates the sonification of different sources.
+
+    Parameters
+    ----------
+    times_pitches: List[Tuple[np.ndarray, float]]
+        List of tuples comprising the time positions and pitches of the clicks
+    duration: int
+        Duration of the output waveform, given in samples.
+    click_duration: float, default = 0.25
+        Duration for click signal.
+    click_amplitude: float, default = 1.0
+        Amplitude for click signal.
+    offset_relative: float, default = 0.0
+        Relative offset coefficient for the beginning of the given audio sample.
+        0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
+        corresponding to the time position.
+    fs: int, default = 22050
+        Sampling rate
+    Returns
+    -------
+    tse_sonification: np.ndarray
+        Sonified waveform in form of a 1D Numpy array.
+    """
     if duration is None:
         max_duration = 0
         for times_pitch in times_pitches:
@@ -147,10 +184,30 @@ def sonify_tse_multiple_clicks(times_pitches: list = None,
     return tse_sonification
 
 
-def sonify_tse_multiple_samples(times_samples: list = None,
+def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray]] = None,
                                 offset_relative: float = 0.0,
                                 duration: int = None,
-                                fs: int = 22050):
+                                fs: int = 22050) -> np.ndarray:
+    """Given multiple arrays in form of a list, this function creates the sonification of different sources.
+
+    Parameters
+    ----------
+    times_samples: List[Tuple[np.ndarray, np.ndarray]]
+        List of tuples comprising the time positions and samples
+    offset_relative: float, default = 0.0
+        Relative offset coefficient for the beginning of the given audio sample.
+        0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
+        corresponding to the time position.
+    duration: int
+        Duration of the output waveform, given in samples.
+    fs: int, default = 22050
+        Sampling rate
+    Returns
+    -------
+    tse_sonification: np.ndarray
+        Sonified waveform in form of a 1D Numpy array.
+    """
+
     if duration is None:
         max_duration = 0
         max_sample_duration_samples = 0
@@ -158,7 +215,8 @@ def sonify_tse_multiple_samples(times_samples: list = None,
             duration = time_sample[0][-1]
             duration_sample_samples = len(time_sample[1])
             max_duration = duration if duration > max_duration else max_duration
-            max_sample_duration_samples = duration_sample_samples if duration_sample_samples > max_sample_duration_samples else max_sample_duration_samples
+            max_sample_duration_samples = duration_sample_samples \
+                if duration_sample_samples > max_sample_duration_samples else max_sample_duration_samples
 
         duration = int(np.ceil(fs * max_duration)) + max_sample_duration_samples
 
@@ -167,7 +225,6 @@ def sonify_tse_multiple_samples(times_samples: list = None,
     for times_sample in times_samples:
         time_positions = times_sample[0]
         sample = times_sample[1]
-
         tse_sonification += sonify_tse_sample(time_positions=time_positions,
                                               sample=sample,
                                               offset_relative=offset_relative,
