@@ -32,22 +32,34 @@ def sonify_tse_click(time_positions: np.ndarray = None,
     -------
 
     """
-    tse_sonification = np.zeros(int((time_positions[-1] + click_duration) * fs))
+    num_samples = int((time_positions[-1] + click_duration) * fs)
+    if duration is None:
+        duration = num_samples
+    else:
+        duration_in_sec = duration / fs
+
+        if duration < num_samples:
+            time_positions = time_positions[time_positions < duration_in_sec]
+            num_samples = int((time_positions[-1] + click_duration) * fs)
+
+    tse_sonification = np.zeros(num_samples)
 
     click = generate_click(pitch=click_pitch, duration=click_duration, amplitude=click_amplitude)
-    offset = 0
     for idx, time_position in enumerate(time_positions):
         start_sec = time_position - offset_relative * click_duration
-        if idx == 0:
-            offset = -start_sec if start_sec < 0 else 0
 
-        start_sec += offset
-        end_sec = start_sec + click_duration
+        if start_sec < 0:
+            end_sec = start_sec + click_duration
+            end_samples = int(fs * end_sec)
+            if end_sec <= 0:
+                continue
+            tse_sonification[:end_samples] += click[-end_samples:]
+        else:
+            start_samples = int(start_sec * fs)
+            end_samples = start_samples + len(click)
+            tse_sonification[start_samples:end_samples] += click
 
-        tse_sonification[int(start_sec * fs):
-                         int(end_sec * fs)] += click
-
-    return tse_sonification
+    return tse_sonification[:duration]
 
 
 ###########################
