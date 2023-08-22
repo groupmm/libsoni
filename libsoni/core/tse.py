@@ -45,19 +45,72 @@ def sonify_tse_click(time_positions: np.ndarray = None,
     tse_sonification = np.zeros(num_samples)
 
     click = generate_click(pitch=click_pitch, duration=click_duration, amplitude=click_amplitude)
-    for idx, time_position in enumerate(time_positions):
-        start_sec = time_position - offset_relative * click_duration
 
-        if start_sec < 0:
-            end_sec = start_sec + click_duration
-            end_samples = int(fs * end_sec)
-            if end_sec <= 0:
+    num_click_samples = len(click)
+    offset_samples = int(offset_relative * num_click_samples)
+    for idx, time_position in enumerate(time_positions):
+
+        start_samples = int(time_position * fs) - offset_samples
+        end_samples = start_samples + num_click_samples
+        if start_samples < 0:
+            if end_samples <= 0:
                 continue
             tse_sonification[:end_samples] += click[-end_samples:]
         else:
-            start_samples = int(start_sec * fs)
-            end_samples = start_samples + len(click)
             tse_sonification[start_samples:end_samples] += click
+
+    return tse_sonification[:duration]
+
+
+def sonify_tse_sample(time_positions: np.ndarray = None,
+                      sample: np.ndarray = None,
+                      offset_relative: float = 0.0,
+                      duration: int = None,
+                      fs: int = 22050):
+    """This function sonifies an array containing time positions with clicks.
+    Parameters
+    ----------
+    sample: np.ndarray
+        Sample
+    time_positions: np.ndarray
+        Array with time positions for clicks.
+    offset_relative: float, default = 0.0
+
+    duration
+    fs
+
+    Returns
+    -------
+
+    """
+    sample_len = len(sample)
+    num_samples = int((time_positions[-1]) * fs) + sample_len
+
+    assert sample_len > time_positions[-1] * fs, 'The custom sample cannot be longer than the annotations.'
+    if duration is not None:
+        assert sample_len > duration, 'The custom sample cannot be longer than the duration.'
+
+    if duration is None:
+        duration = num_samples
+    else:
+        duration_in_sec = duration / fs
+
+        if duration < num_samples:
+            time_positions = time_positions[time_positions < duration_in_sec]
+            num_samples = int((time_positions[-1]) * fs + sample_len)
+
+    tse_sonification = np.zeros(num_samples)
+    offset_samples = int(offset_relative * sample_len)
+    for idx, time_position in enumerate(time_positions):
+        start_samples = int(time_position * fs) - offset_samples
+        end_samples = start_samples + sample_len
+
+        if start_samples < 0:
+            if end_samples <= 0:
+                continue
+            tse_sonification[:end_samples] += sample[-end_samples:]
+        else:
+            tse_sonification[start_samples:end_samples] += sample
 
     return tse_sonification[:duration]
 
@@ -136,3 +189,8 @@ def sonify_beat_annotation(path_to_csv: str,
             y = add_to_sonification(sonification=y, sonification_for_event=upbeat_signal, start=start, fs=fs)
 
     return y
+
+
+def sonify_tse_text():
+    # TODO: @yiitozer
+    raise NotImplementedError
