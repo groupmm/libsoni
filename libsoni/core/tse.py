@@ -35,13 +35,12 @@ def sonify_tse_click(time_positions: np.ndarray = None,
     if duration is None:
         duration = num_samples
     else:
-        duration_in_sec = duration / fs
 
         if duration < num_samples:
+            duration_in_sec = duration / fs
             time_positions = time_positions[time_positions < duration_in_sec]
-            num_samples = int((time_positions[-1] + click_duration) * fs)
-        else:
-            num_samples = int(duration * fs)
+
+        num_samples = int(duration * fs)
 
     tse_sonification = np.zeros(num_samples)
 
@@ -87,18 +86,18 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
     sample_len = len(sample)
     num_samples = int((time_positions[-1]) * fs) + sample_len
 
-    assert sample_len > time_positions[-1] * fs, 'The custom sample cannot be longer than the annotations.'
+    assert sample_len < time_positions[-1] * fs, f'The custom sample cannot be longer than the annotations.'
     if duration is not None:
-        assert sample_len > duration, 'The custom sample cannot be longer than the duration.'
+        assert sample_len < duration, 'The custom sample cannot be longer than the duration.'
 
     if duration is None:
         duration = num_samples
     else:
-        duration_in_sec = duration / fs
-
         if duration < num_samples:
+            duration_in_sec = duration / fs
             time_positions = time_positions[time_positions < duration_in_sec]
-            num_samples = int((time_positions[-1]) * fs + sample_len)
+
+        num_samples = int(duration * fs)
 
     tse_sonification = np.zeros(num_samples)
     offset_samples = int(offset_relative * sample_len)
@@ -116,12 +115,12 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
     return tse_sonification[:duration]
 
 
-def sonify_tse_multiple_click(times_pitches: list = None,
-                              duration: int = None,
-                              click_duration: float = 0.25,
-                              click_amplitude: float = 1.0,
-                              offset_relative: float = 0.0,
-                              fs: int = 22050) -> np.ndarray:
+def sonify_tse_multiple_clicks(times_pitches: list = None,
+                               duration: int = None,
+                               click_duration: float = 0.25,
+                               click_amplitude: float = 1.0,
+                               offset_relative: float = 0.0,
+                               fs: int = 22050) -> np.ndarray:
     if duration is None:
         max_duration = 0
         for times_pitch in times_pitches:
@@ -175,7 +174,7 @@ def sonify_tse_multiple_samples(times_samples: list = None,
                                               duration=duration,
                                               fs=fs)
 
-    return
+    return tse_sonification
 
 
 def sonify_tse_text():

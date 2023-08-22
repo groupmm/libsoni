@@ -63,7 +63,7 @@ def test_tse_sample():
 # test_tse_sample()
 
 
-def test_tse_multiple_click():
+def test_tse_multiple_clicks():
     time_positions_eigths = np.arange(0, 6, 0.25)
     time_positions_two_four = np.arange(0.5, 6, 1)
     time_positions_one_three = np.arange(0, 6, 1)
@@ -74,7 +74,7 @@ def test_tse_multiple_click():
                      [time_positions_two_four, pitch_two_four],
                      [time_positions_one_three, pitch_one_three]]
 
-    y = tse.sonify_tse_multiple_click(times_pitches=times_pitches,
+    y = tse.sonify_tse_multiple_clicks(times_pitches=times_pitches,
                                       duration=None,
                                       click_duration=0.25,
                                       click_amplitude=1.0,
@@ -84,29 +84,27 @@ def test_tse_multiple_click():
     if EXPORT_AUDIO:
         wavfile.write(os.path.join('tests', 'data_audio', 'time_positions_tse_multiple_clicks_sonified.wav'), FS, y)
 
-test_tse_multiple_click()
+#test_tse_multiple_clicks()
 
 
 def test_tse_multiple_samples():
     time_positions_eigths = np.arange(0, 6, 0.25)
-    time_positions_two_four = np.arange(0.5, 6, 1)
+    time_positions_two_four = np.arange(0.75, 6, 1)
     time_positions_one_three = np.arange(0, 6, 1)
     sample_eights, _ = librosa.load('data_audio/samples/hi-hat.wav', sr=FS)
     sample_two_four, _ = librosa.load('data_audio/samples/snare.wav', sr=FS)
-    sample_one_three, _ = librosa.load('data_audio/samples/snare.wav', sr=FS)
+    sample_one_three, _ = librosa.load('data_audio/samples/bass-drum.wav', sr=FS)
 
-    times_pitches = [[time_positions_eigths, pitch_eigths],
-                     [time_positions_two_four, pitch_two_four],
-                     [time_positions_one_three, pitch_one_three]]
+    times_samples = [[time_positions_eigths, sample_eights],
+                     [time_positions_two_four, sample_two_four],
+                     [time_positions_one_three, sample_one_three]]
 
-    y = tse.sonify_tse_multiple_click(times_pitches=times_pitches,
-                                      duration=None,
-                                      click_duration=0.25,
-                                      click_amplitude=1.0,
-                                      offset_relative=0.0,
-                                      fs=FS)
+    y = tse.sonify_tse_multiple_samples(times_samples=times_samples,
+                                        offset_relative=0,
+                                        duration=int(2*FS),
+                                        fs=FS)
 
     if EXPORT_AUDIO:
-        wavfile.write(os.path.join('tests', 'data_audio', 'time_positions_tse_multiple_clicks_sonified.wav'), FS, y)
+        wavfile.write(os.path.join('tests', 'data_audio', 'time_positions_tse_multiple_samples_sonified.wav'), FS, y)
 
-test_tse_multiple_click()
+test_tse_multiple_samples()
