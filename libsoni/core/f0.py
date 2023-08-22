@@ -37,10 +37,10 @@ def sonify_f0(time_f0: np.ndarray,
     y: np.ndarray
         Sonified f0-trajectory.
     """
-    # TODO: check for case, that times are not monotonous (Sorting?)
-    times = time_f0[:, 0]
+    # TODO: check for case, that time_positions are not monotonous (Sorting?)
+    time_positions = time_f0[:, 0]
     f0s = time_f0[:, 1]
-    num_samples = int(np.ceil(times[-1] * fs))
+    num_samples = int(time_positions[-1] * fs)
 
     shorter_duration = False
     if duration is not None:
@@ -52,27 +52,27 @@ def sonify_f0(time_f0: np.ndarray,
 
         # if duration is less than num_samples, crop the arrays
         elif duration < num_samples:
-            times = times[times < duration_in_sec]
-            times = np.append(times, duration_in_sec)
-            f0s = f0s[:times.shape[0]]
+            time_positions = time_positions[time_positions < duration_in_sec]
+            time_positions = np.append(time_positions, duration_in_sec)
+            f0s = f0s[:time_positions.shape[0]]
             shorter_duration = True
         # if duration is greater than num_samples, append
         else:
-            times = np.append(times, duration_in_sec)
+            time_positions = np.append(time_positions, duration_in_sec)
             f0s = np.append(f0s, 0.0)
 
-        num_samples = int(np.ceil(times[-1] * fs))
+        num_samples = int(time_positions[-1] * fs)
 
     f0s_streched = np.zeros(num_samples)
     f0_sonification = np.zeros(num_samples)
 
     # Strech f0s_streched to match the given time positions.
-    for i, (time, f0) in enumerate(zip(times, f0s)):
-        if i == times.shape[0] - 1:
+    for i, (time, f0) in enumerate(zip(time_positions, f0s)):
+        if i == time_positions.shape[0] - 1:
             if not shorter_duration:
-                f0s_streched[int(times[i-1] * fs):] = 0.0
+                f0s_streched[int(time_positions[i-1] * fs):] = 0.0
         else:
-            next_time = times[i+1]
+            next_time = time_positions[i+1]
             f0s_streched[int(time*fs):int(next_time*fs)] = f0
 
     #
