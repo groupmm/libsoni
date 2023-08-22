@@ -88,23 +88,28 @@ def sonify_f0(time_f0: np.ndarray,
 
     return f0_sonification
 
-def sonify_f0_presets(preset_dict: Dict = None,
-                      duration: int = None,
-                      fs: int = 22050) -> np.ndarray:
+
+def sonify_f0_with_presets(preset_dict: Dict = None,
+                           duration: int = None,
+                           fs: int = 22050) -> np.ndarray:
     """This function sonifies multiple f0 annotations with a certain preset.
+
     Parameters
     ----------
-    preset_dict
-    duration
-    fs
+    preset_dict: dict
+        Dictionary of presets in the following key-value pair format:
+            {str: np.ndarray}
+            preset: time_f0s
+    duration: int
+        Duration of the output waveform, given in samples
+    fs: int
+        Sampling rate
 
     Returns
     -------
-
+    f0_sonification: np.ndarray
+        Sonified waveform
     """
-    # TODO: docstring
-    # TODO: Think about better function name
-    # TODO: Check Normalization
     if duration is None:
         max_duration = 0
         for preset in preset_dict:
@@ -123,9 +128,5 @@ def sonify_f0_presets(preset_dict: Dict = None,
                                      duration=duration,
                                      fs=fs)
 
+    # TODO: Check Normalization
     return f0_sonification
-
-
-#def sonify_f0_SATB()
-
-#def sonify_f0_piano()
