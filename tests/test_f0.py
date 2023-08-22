@@ -7,12 +7,11 @@ FS = 22050
 C_MAJOR_SCALE = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25, 0.0]
 EXPORT_AUDIO = False
 MAKE_GROUND_TRUTH_EXAMPLES = False
-
+DURATIONS = [None, 4.2, 3.0, 5.0]
 
 def test_f0():
     time_positions = np.arange(0.2, len(C_MAJOR_SCALE) * 0.5, 0.5)
     time_f0 = np.column_stack((time_positions, C_MAJOR_SCALE))
-    DURATIONS = [None, 4.2, 3.0, 5.0]
 
     for duration in DURATIONS:
         if duration is None:
