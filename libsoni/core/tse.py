@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from decimal import Decimal, ROUND_DOWN
 
 from libsoni.util.utils import generate_click, load_sample, add_to_sonification
 
@@ -41,6 +40,8 @@ def sonify_tse_click(time_positions: np.ndarray = None,
         if duration < num_samples:
             time_positions = time_positions[time_positions < duration_in_sec]
             num_samples = int((time_positions[-1] + click_duration) * fs)
+        else:
+            num_samples = int(duration * fs)
 
     tse_sonification = np.zeros(num_samples)
 
@@ -115,80 +116,66 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
     return tse_sonification[:duration]
 
 
-###########################
-def sonify_beat_annotation(path_to_csv: str,
-                           sonification_method: str = 'click',
-                           pitch_downbeat: int = 81,
-                           pitch_upbeat: int = 69,
-                           downbeat_sample: str = '',
-                           upbeat_sample: str = '',
-                           amplitude_downbeat: float = 1.0,
-                           amplitude_upbeat: float = 1.0,
-                           duration: float = 0.2,
-                           fs: int = 44100) -> np.ndarray:
-    """
-    This function sonifies the entries of a beat annotation in .csv format. (see /docs/annotation_conventions.txt for more information)
+def sonify_tse_multiple_click(times_pitches: list = None,
+                              duration: int = None,
+                              click_duration: float = 0.25,
+                              click_amplitude: float = 1.0,
+                              offset_relative: float = 0.0,
+                              fs: int = 22050) -> np.ndarray:
+    if duration is None:
+        max_duration = 0
+        for times_pitch in times_pitches:
+            duration = times_pitch[0][-1]
+            max_duration = duration if duration > max_duration else max_duration
 
-    Parameters
-    ----------
-    path_to_csv : str
-        path of the annotation file
-    sonification_method : str, default: 'click'
-        sonification method, either 'click' or 'sample'
-    pitch_downbeat : int, default: 81
-        pitch for the downbeat click signal
-    pitch_upbeat : int, default: 69
-        pitch for the upbeat click signal
-    downbeat_sample : str, default: ''
-        path to the desired downbeat sample
-    upbeat_sample : str, default: ''
-        path to the desired upbeat sample
-    amplitude_downbeat : float, default: 1.0
-        amplitude for the downbeat click signal
-    amplitude_upbeat : float, default: 1.0
-        amplitude for the upbeat click signal
-    duration : float, default. 0.2
-        duration (in seconds) for downbeat and upbeat signal
-    fs : int, default: 44100
-        Sampling rate (in Samples per second)
+        duration = int(np.ceil(fs * (max_duration + click_duration)))
 
-    Returns
-    ----------
-    y: array-like
-        Sonified beat annotation
-    """
+    tse_sonification = np.zeros(duration)
 
-    # read annotation file
-    beat_events_df = pd.read_csv(path_to_csv, delimiter=';')
+    for times_pitch in times_pitches:
+        time_positions = times_pitch[0]
+        pitch = times_pitch[1]
 
-    # create empty array according to the time bounds given by the annotation file.
-    y = np.zeros(np.ceil((max(beat_events_df.start.unique() + duration) * fs)).astype(int))
+        tse_sonification += sonify_tse_click(time_positions=time_positions,
+                                             click_pitch=pitch,
+                                             click_duration=click_duration,
+                                             click_amplitude=click_amplitude,
+                                             offset_relative=offset_relative,
+                                             duration=duration,
+                                             fs=fs)
 
-    if sonification_method == 'click':
+    # TODO: Check Normalization
+    return tse_sonification
 
-        # create click-signals for downbeat and upbeat events
-        downbeat_signal = click(pitch=pitch_downbeat, amplitude=amplitude_downbeat, duration=duration, fs=fs)
-        upbeat_signal = click(pitch=pitch_upbeat, amplitude=amplitude_upbeat, duration=duration, fs=fs)
 
-    elif sonification_method == 'sample':
-        # load samples for downbeat and upbeat events
-        downbeat_signal, _ = load_sample(downbeat_sample, fs)
-        upbeat_signal, _ = load_sample(upbeat_sample, fs)
+def sonify_tse_multiple_samples(times_samples: list = None,
+                                offset_relative: float = 0.0,
+                                duration: int = None,
+                                fs: int = 22050):
+    if duration is None:
+        max_duration = 0
+        max_sample_duration_samples = 0
+        for time_sample in times_samples:
+            duration = time_sample[0][-1]
+            duration_sample_samples = len(time_sample[1])
+            max_duration = duration if duration > max_duration else max_duration
+            max_sample_duration_samples = duration_sample_samples if duration_sample_samples > max_sample_duration_samples else max_sample_duration_samples
 
-    # iterate beat events of the annotation file and insert corresponding signals at the corresponding temporal positions
-    for i, r in beat_events_df.iterrows():
-        start, beat = r
-        beat = Decimal(str(beat)).quantize(Decimal('0.000'), rounding=ROUND_DOWN)
+        duration = int(np.ceil(fs * max_duration)) + max_sample_duration_samples
 
-        # check if beat is downbeat or upbeat (see docs for more information)
-        if str(beat)[-3:] == '000' or str(beat)[-1] == '1' or beat == 1:
-            # add downbeat_signal to sonification
-            y = add_to_sonification(sonification=y, sonification_for_event=downbeat_signal, start=start, fs=fs)
-        else:
-            # add upbeat_signal to sonification
-            y = add_to_sonification(sonification=y, sonification_for_event=upbeat_signal, start=start, fs=fs)
+    tse_sonification = np.zeros(duration)
 
-    return y
+    for times_sample in times_samples:
+        time_positions = times_sample[0]
+        sample = times_sample[1]
+
+        tse_sonification += sonify_tse_sample(time_positions=time_positions,
+                                              sample=sample,
+                                              offset_relative=offset_relative,
+                                              duration=duration,
+                                              fs=fs)
+
+    return
 
 
 def sonify_tse_text():
