@@ -2,40 +2,55 @@ import pandas as pd
 import numpy as np
 from decimal import Decimal, ROUND_DOWN
 
-from libsoni.util.utils import click, load_sample, add_to_sonification
+from libsoni.util.utils import generate_click, load_sample, add_to_sonification
 
 
-def sonify_tse_click(times: np.ndarray = None,
-                     pitch: int = 69,
+def sonify_tse_click(time_positions: np.ndarray = None,
+                     click_pitch: int = 69,
                      click_duration: float = 0.25,
-                     amplitude: float = 1.0,
+                     click_amplitude: float = 1.0,
                      offset_relative: float = 0.0,
                      duration: int = None,
                      fs: int = 22050):
+    """This function sonifies an array containing time positions with clicks.
+    Parameters
+    ----------
+    time_positions: np.ndarray
+        Array with time positions for clicks.
+    click_pitch: int, default = 69
+        Pitch for click signal.
+    click_duration: float, default = 0.25
+        Duration for click signal.
+    click_amplitude: float, default = 1.0
+        amplitude for click signal.
+    offset_relative: float, default = 0.0
 
-    tse_sonification = np.zeros(int((times[-1]+click_duration) * fs))
+    duration
+    fs
 
-    click = click(pitch=pitch_downbeat, amplitude=amplitude_downbeat, duration=duration, fs=fs)
+    Returns
+    -------
+
+    """
+    tse_sonification = np.zeros(int((time_positions[-1] + click_duration) * fs))
+
+    click = generate_click(pitch=click_pitch, duration=click_duration, amplitude=click_amplitude)
+    offset = 0
+    for idx, time_position in enumerate(time_positions):
+        start_sec = time_position - offset_relative * click_duration
+        if idx == 0:
+            offset = -start_sec if start_sec < 0 else 0
+
+        start_sec += offset
+        end_sec = start_sec + click_duration
+
+        tse_sonification[int(start_sec * fs):
+                         int(end_sec * fs)] += click
+
+    return tse_sonification
 
 
-
-    # iterate beat events of the annotation file and insert corresponding signals at the corresponding temporal positions
-    for i, r in beat_events_df.iterrows():
-        start, beat = r
-        beat = Decimal(str(beat)).quantize(Decimal('0.000'), rounding=ROUND_DOWN)
-
-        # check if beat is downbeat or upbeat (see docs for more information)
-        if str(beat)[-3:] == '000' or str(beat)[-1] == '1' or beat == 1:
-            # add downbeat_signal to sonification
-            y = add_to_sonification(sonification=y, sonification_for_event=downbeat_signal, start=start, fs=fs)
-        else:
-            # add upbeat_signal to sonification
-            y = add_to_sonification(sonification=y, sonification_for_event=upbeat_signal, start=start, fs=fs)
-
-    return y
-    return
-
-
+###########################
 def sonify_beat_annotation(path_to_csv: str,
                            sonification_method: str = 'click',
                            pitch_downbeat: int = 81,
