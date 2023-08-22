@@ -13,7 +13,9 @@ SAMPLES = ['bass-drum', 'click', 'hi-hat']
 
 PRESETS = json.load(open(os.path.join('libsoni', 'util', 'presets.json')))
 
-
+def normalize():
+    #TODO; implement ;)
+    raise NotImplementedError
 def get_preset(preset_name: str = None) -> Dict:
     """Get preset parameters from presets.json
 
@@ -31,7 +33,7 @@ def get_preset(preset_name: str = None) -> Dict:
 
 
 def generate_click(pitch: int = 69, amplitude: float = 1.0, duration: float = 0.2, fs: int = 22050,
-                   tuning_frequency: int = 440) -> np.ndarray:
+                   tuning_frequency: float = 440.0) -> np.ndarray:
     """Returns a click signal
     Parameters
     ----------
@@ -220,6 +222,7 @@ def add_to_sonification(sonification: np.ndarray, sonification_for_event: np.nda
 
 
 def generate_additive_synthesized_tone(pitch=69, frequency_ratios=[], frequency_ratios_amp=[], frequency_ratios_phase_offsets=[], amp=1, dur=1, fs=44100, f_tuning=440, fade_dur=0.01):
+    # TODO: coding/toolbox conventions
     """Generate additive synthesized tone
 
     Args:
