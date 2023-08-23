@@ -13,9 +13,21 @@ SAMPLES = ['bass-drum', 'click', 'hi-hat']
 
 PRESETS = json.load(open(os.path.join('libsoni', 'util', 'presets.json')))
 
-def normalize():
-    #TODO; implement ;)
-    raise NotImplementedError
+def normalize(signal: np.ndarray) -> np.ndarray:
+    """Normalize audio signal
+        Parameters
+        ----------
+        signal: np.ndarray
+            Signal to be normalized
+        Returns
+        -------
+        normalized_signal: np.ndarray
+            Normalized signal
+        """
+    normalized_signal = signal / np.max(np.abs(signal))
+    return normalized_signal
+
+
 def get_preset(preset_name: str = None) -> Dict:
     """Get preset parameters from presets.json
 
