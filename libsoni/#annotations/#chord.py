@@ -6,7 +6,7 @@ from libsoni.util.utils import Hchord, add_to_sonification
 
 VALID_STYLES = ['majmin', 'majmin_inv', 'shorthand', 'majminNumeric', 'extended']
 
-
+#tests
 def sonify_chord_annotation(path_to_csv: str,
                             style: str = 'majmin',
                             filter: bool = False,
