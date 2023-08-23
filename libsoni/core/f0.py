@@ -9,7 +9,6 @@ def sonify_f0(time_f0: np.ndarray,
               partials_amplitudes: np.ndarray = np.array([1]),
               duration: int = None,
               fs: int = 22050) -> np.ndarray:
-    # TODO: correct documentation
     """This function sonifies a F0 trajectory from a 2D Numpy array.
     The sonification is related to the principle of a so-called numerical oscillator.
     The parameters partials and partials_amplitudes can be used to generate a desired sound through a specific
@@ -19,18 +18,18 @@ def sonify_f0(time_f0: np.ndarray,
     ----------
     time_f0 : np.ndarray
         2D array of time positions and f0s
-    partials : np.ndarray (default = [1])
+    partials : np.ndarray, default = [1]
         An array containing the desired partials of the fundamental frequencies for sonification.
             An array [1] leads to sonification with only the fundamental frequency core,
             while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.
-    partials_amplitudes : np.ndarray (default = [1])
+    partials_amplitudes : np.ndarray, default = [1]
         Array containing the amplitudes for partials.
             An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
             while the sinusoid with frequency 2*core has amplitude 0.5.
-    duration : int (default = None)
-        Duration of audio (given in samples)
-    fs: int (default = 22050)
-        Sampling rate (in Samples per second)
+    duration : int, default = None
+        Duration of audio, given in samples
+    fs: int, default = 22050
+        Sampling rate, in samples per second
 
     Returns
     -------
