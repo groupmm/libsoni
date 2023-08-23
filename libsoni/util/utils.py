@@ -97,10 +97,23 @@ def mix_sonification_and_original(sonification: np.ndarray,
     stereo_audio : np.ndarray
         Stereo mix of the signals
     """
-    min_length = min(len(original_audio), len(sonification)) if duration is None else duration
+    if duration is None:
+        num_samples = len(original_audio)
 
-    original_audio = original_audio[:min_length]
-    sonification = sonification[:min_length]
+    else:
+        num_samples = duration
+
+        if len(original_audio) < num_samples:
+            original_audio = np.append(original_audio, np.zeros(num_samples - len(original_audio)))
+
+        else:
+            original_audio = original_audio[:num_samples]
+
+    if len(sonification) < num_samples:
+        sonification = np.append(sonification, np.zeros(num_samples - len(sonification)))
+
+    else:
+        sonification = sonification[:num_samples]
 
     # Perform RMS normalization
     # Calculate the RMS amplitude of each signal
@@ -182,15 +195,16 @@ def generate_shepard_tone(pitch_class: int = 0,
     return y
 
 
-def generate_additive_synthesized_tone(pitch: int = 69,
-                                       partials: np.ndarray = np.array([1]),
-                                       partials_amplitudes: np.ndarray = np.array([1]),
-                                       amplitude: float = 1.0,
-                                       duration_seconds: float = 1.0,
-                                       fs: int = 22050,
-                                       f_tuning: float = 440,
-                                       fade_dur: float = 0.01):
-    """Generates additive synthesized tone.
+def generate_tone_additive_synthesis(pitch: int = 69,
+                                     partials: np.ndarray = np.array([1]),
+                                     partials_amplitudes: np.ndarray = None,
+                                     partials_phase_offsets: np.ndarray = None,
+                                     gain: float = 1.0,
+                                     duration_sec: float = 1.0,
+                                     fs: int = 22050,
+                                     f_tuning: float = 440,
+                                     fading_sec: float = 0.01):
+    """Generates signal using additive synthesis.
 
     Parameters
     ----------
@@ -204,38 +218,54 @@ def generate_additive_synthesized_tone(pitch: int = 69,
         Array containing the amplitudes for partials.
             An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
             while the sinusoid with frequency 2*core has amplitude 0.5.
-    amplitude: float, default = 1.0
-        Amplitude of generated signal.
-    duration_seconds: float, default = 1.0
+    partials_phase_offsets: np.ndarray, default = [0]
+        Array containing the phase offsets for partials.
+    gain: float, default = 1.0
+        Gain for generated signal.
+    duration_sec: float, default = 1.0
         Duration of generated signal, in seconds.
     fs: int, default = 22050
         Sampling rate, in samples per seconds,
     f_tuning: float, default = 440.0
         Tuning frequency, given in Hertz.
-    fade_dur: float, default = 0.01
+    fading_sec: float, default = 0.01
         Duration of fade in and fade out (to avoid clicks)
 
     Returns
     -------
-    y: np.ndarray
+    generated_tone: np.ndarray
         Generated signal
     """
-    N = int(dur * fs)
-    t = np.arange(N) / fs
-    y = np.zeros(len(t))
-    if 2 * int(fade_dur * fs) > N:
-        return y
-    for i, frequency_ratio in enumerate(frequency_ratios):
-        freq = f_tuning * 2 ** ((pitch - 69) / 12)
-        y += frequency_ratios_amp[i] * np.sin(
-            2 * np.pi * freq * frequency_ratio * t + frequency_ratios_phase_offsets[i])
+    if partials_amplitudes is None:
+        partials_amplitudes = np.ones(len(partials))
 
-    if not fade_dur == 0:
-        fade_samples = int(fade_dur * fs)
-        y[0:fade_samples] *= np.linspace(0, 1, fade_samples)
-        y[-fade_samples:] *= np.linspace(1, 0, fade_samples)
-    y = amp * (y / np.max(y))
-    return y
+    if partials_phase_offsets is None:
+        partials_phase_offsets = np.zeros(len(partials))
+
+    assert len(partials) == len(partials_amplitudes) == len(partials_phase_offsets),\
+        'Partials, Partials_amplitudes and Partials_phase_offsets must be of equal length.'
+
+    num_samples = int(duration_sec * fs)
+
+    t = np.arange(num_samples) / fs
+
+    generated_tone = np.zeros(len(t))
+
+    pitch_frequency = f_tuning * 2 ** ((pitch - 69) / 12)
+
+    if num_samples < 2 * int(fading_sec * fs):
+        fading_sec = 0
+
+    for partial, partial_amplitude, partials_phase_offset in zip(partials, partials_amplitudes, partials_phase_offsets):
+        generated_tone += partial_amplitude * np.sin(2 * np.pi * pitch_frequency * partial * t + partials_phase_offset)
+
+    if fading_sec != 0:
+        fading_samples = int(fading_sec * fs)
+        generated_tone[:fading_samples] *= np.linspace(0, 1, fading_samples)
+        generated_tone[-fading_samples:] *= np.linspace(1, 0, fading_samples)
+
+    generated_tone = gain * normalize(generated_tone)
+    return generated_tone
 
 
 def generate_fm_synthesized_tone(pitch=69, modulation_frequency=0, modulation_index=0, amp=1, dur=1, fs=44100,
@@ -271,26 +301,26 @@ def generate_fm_synthesized_tone(pitch=69, modulation_frequency=0, modulation_in
 def generate_sinusoid(frequency: float = 440.0,
                       amp: float = 1.0,
                       dur: float = 1.0,
-                      fs: int = 44100,
+                      fs: int = 22050,
                       fade_dur: float = 0.01) -> np.ndarray:
     """
     This function generates a sinusoid.
 
     Parameters
     ----------
-        frequency : float, default = 440.0 Hz
-            Frequency in Hertz for sinusoid
-        amp : float, default = 1.0
-            Amplitude for sinusoid
-        dur : float, default = 1.0 s
-            Duration in seconds for sinusoid
-        fade_dur : float, default = 0.01 s
-            Duration in seconds of fade in and fade out
-        fs : int, default = 44100
-            Sampling rate
+    frequency : float, default = 440.0 Hz
+        Frequency in Hertz for sinusoid
+    amp : float, default = 1.0
+        Amplitude for sinusoid
+    dur : float, default = 1.0 s
+        Duration in seconds for sinusoid
+    fade_dur : float, default = 0.01 s
+        Duration in seconds of fade in and fade out
+    fs : int, default = 22050
+        Sampling rate
     Returns
     -------
-        y : np.ndarray
+    y : np.ndarray
         sinusoid
     """
     N = int(dur * fs)
