@@ -117,7 +117,7 @@ def mix_sonification_and_original(sonification: np.ndarray,
     return stereo_audio
 
 
-def generate_shepard_tone(pitch_class: int = 0,  # TODO: check sigma parameter
+def generate_shepard_tone(pitch_class: int = 0,
                           filter: bool = False,
                           f_center: float = 440.0,
                           octave_cutoff: int = 1,
@@ -182,30 +182,6 @@ def generate_shepard_tone(pitch_class: int = 0,  # TODO: check sigma parameter
     return y
 
 
-def add_to_sonification(sonification: np.ndarray, sonification_for_event: np.ndarray, start: float, fs: int = 44100):
-    # TODO: recheck that boarders of sonification are kept
-    """
-    This function inserts the signal of a sonified event into the sonification array using the start time of the event.
-
-    Parameters
-    ----------
-    sonification : np.ndarray
-        sonification array
-    sonification_for_event : np.ndarray
-        signal to insert
-    start : float
-        start time for signal to insert
-    fs : int
-        sampling rate
-
-    Returns
-    ----------
-    sonification: array-like
-        sonification array with inserted signal
-    """
-    if (int(start * fs) + len(sonification_for_event)) < len(sonification):
-        sonification[int(start * fs):(int(start * fs) + len(sonification_for_event))] += sonification_for_event
-    return sonification
 
 
 def generate_additive_synthesized_tone(pitch=69,
