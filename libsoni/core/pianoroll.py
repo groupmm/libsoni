@@ -8,6 +8,25 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
                             tuning_frequency: float = 440.0,
                             duration: int = None,
                             fs: int = 22050) -> np.ndarray:
+    """This function sonifies a pianoroll representation containing pitch events described by start, duration or end
+    and the corresponding pitch with coloured clicks.
+
+    Parameters
+    ----------
+    pianoroll_df: pd.DataFrame
+        Data Frame containing pitch events.
+    tuning_frequency: float, default = 440.0
+        Tuning Frequency, given in Hertz
+    duration: float, default = None
+        Duration of the output waveform, given in samples.
+    fs: int, default = 22050
+        Sampling rate
+
+    Returns
+    -------
+    pianoroll_sonification: np.ndarray
+        Sonified waveform in form of a 1D Numpy array.
+    """
     pianoroll_df = __format_df(pianoroll_df)
 
     shorter_duration = False
@@ -18,11 +37,9 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
 
         duration_in_sec = duration / fs
 
-        # if duration equals num_samples, do nothing
         if duration == num_samples:
             pass
 
-        # if duration is less than num_samples, crop the arrays
         elif duration < num_samples:
             pianoroll_df = pianoroll_df[pianoroll_df['start'] < duration]
             pianoroll_df['end'] = pianoroll_df[pianoroll_df['end'] > duration] = duration
@@ -36,11 +53,12 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
         duration_samples = int(r['duration'] * fs)
         amplitude = r['velocity'] if 'velocity' in r else 1.0
 
-        pianoroll_sonification[start_samples:start_samples+duration_samples] += generate_click(pitch=r['pitch'],
-                                                                            amplitude=amplitude,
-                                                                            duration=r['duration'],
-                                                                            fs=fs,
-                                                                            tuning_frequency=tuning_frequency)
+        pianoroll_sonification[start_samples:start_samples + duration_samples] += generate_click(pitch=r['pitch'],
+                                                                                                 amplitude=amplitude,
+                                                                                                 duration=r['duration'],
+                                                                                                 fs=fs,
+                                                                                                 tuning_frequency=
+                                                                                                 tuning_frequency)
 
     return pianoroll_sonification
 
@@ -48,7 +66,7 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
 def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
                                         frequency_ratios: np.ndarray = np.array([1]),
                                         frequency_ratios_amp: np.ndarray = np.array([1]),
-                                        frequency_ratios_phase_offsets= np.array([1]),
+                                        frequency_ratios_phase_offsets=np.array([1]),
                                         tuning_frequency: float = 440.0,
                                         duration: int = None,
                                         fs: int = 22050) -> np.ndarray:
@@ -71,7 +89,9 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
     for i, r in pianoroll_df.iterrows():
         start_samples = int(r['start'] * fs)
         duration_samples = int(r['duration'] * fs)
+        # TODO: check velocity values -> right scaling
         amplitude = r['velocity'] if 'velocity' in r else 1.0
+
         pianoroll_sonification[start_samples:start_samples + duration_samples] += \
             generate_additive_synthesized_tone(pitch=r['pitch'],
                                                frequency_ratios=frequency_ratios,
@@ -82,9 +102,7 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
                                                fs=fs,
                                                f_tuning=tuning_frequency)
 
-
     return pianoroll_sonification
-
 
 
 def sonify_pianoroll_frequency_modulation_synthesis():
