@@ -69,7 +69,7 @@ def sonify_f0(time_f0: np.ndarray,
     for i, (time, f0) in enumerate(zip(time_positions, f0s)):
         if i == time_positions.shape[0] - 1:
             if not shorter_duration:
-                f0s_streched[int(time_positions[i-1] * fs):] = 0.0
+                f0s_streched[int(time_positions[i] * fs):] = 0.0
         else:
             next_time = time_positions[i+1]
             f0s_streched[int(time*fs):int(next_time*fs)] = f0
