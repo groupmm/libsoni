@@ -16,20 +16,20 @@ def sonify_f0(time_f0: np.ndarray,
 
     Parameters
     ----------
-    time_f0 : np.ndarray
+    time_f0: np.ndarray
         2D array of time positions and f0s
-    partials : np.ndarray, default = [1]
+    partials: np.ndarray, default = [1]
         An array containing the desired partials of the fundamental frequencies for sonification.
             An array [1] leads to sonification with only the fundamental frequency core,
             while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.
-    partials_amplitudes : np.ndarray, default = [1]
+    partials_amplitudes: np.ndarray, default = [1]
         Array containing the amplitudes for partials.
             An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
             while the sinusoid with frequency 2*core has amplitude 0.5.
-    duration : int, default = None
+    duration: int, default = None
         Duration of audio, given in samples
     fs: int, default = 22050
-        Sampling rate, in samples per second
+        Sampling rate, in samples per seconds.
 
     Returns
     -------
