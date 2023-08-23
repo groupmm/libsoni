@@ -41,70 +41,68 @@ def get_preset(preset_name: str = None) -> Dict:
     return PRESETS[preset_name]
 
 
-def generate_click(pitch: int = 69, amplitude: float = 1.0, duration: float = 0.2, fs: int = 22050,
+def generate_click(pitch: int = 69,
+                   amplitude: float = 1.0,
+                   duration: float = 0.2,
+                   fs: int = 22050,
                    tuning_frequency: float = 440.0) -> np.ndarray:
-    """Returns a click signal
+    """Returns a click signal.
+
     Parameters
     ----------
     pitch : int, default = 69
-        pitch for colored click
+        Pitch for colored click.
     amplitude : float, default = 1.0
-        amplitude of click signal
-    duration : float, default = 0.3
-        duration of click signal
+        Amplitude of click signal.
+    duration : float, default = 0.2
+        Duration of click signal.
     fs : int, default = 22050
-        sampling rate
+        Sampling rate.
     tuning_frequency : int, default = 440
-        tuning frequency
+        Tuning frequency.
     Returns
     -------
     click : np.ndarray
-        click signal
+        Click signal.
     """
     click_freq = tuning_frequency * 2 ** ((pitch - 69) / 12)
-
     angular_freq = 2 * np.pi * click_freq / float(fs)
-
     click = np.logspace(0, -10, num=int(fs * duration), base=2.0)
-
     click *= np.sin(angular_freq * np.arange(len(click)))
-
     click *= amplitude
-
     return click
-
-
-########################
 
 
 def mix_sonification_and_original(sonification: np.ndarray,
                                   original_audio: np.ndarray,
                                   gain_lin_sonification: float = 1.0,
-                                  gain_lin_original_audio: float = 1.0):
+                                  gain_lin_original_audio: float = 1.0,
+                                  duration: int = None):
+    """This function takes a sonification and an original_audio and mixes it to stereo
+
+    Parameters
+    ----------
+    sonification: np.ndarray
+        sonification
+    original_audio: np.ndarray
+        original_audio
+    gain_lin_sonification: float, default = 1.0
+        linear gain for sonification
+    gain_lin_original_audio: float, default = 1.0
+        linear gain for original audio
+    duration: int, default = None
+        Duration of the output waveform, given in samples.
+    Returns
+    -------
+    stereo_audio : np.ndarray
+        Stereo mix of the signals
     """
-        This function takes a sonification and an original_audio and mixes it to stereo
-
-        Parameters
-        ----------
-        sonification: np.ndarray
-            sonification
-        original_audio: np.ndarray
-            original_audio
-        gain_lin_sonification: float, default = 1.0
-            linear gain for sonification
-        gain_lin_original_audio: float, default = 1.0
-            linear gain for original audio
-
-        Returns
-        -------
-        stereo_audio : np.ndarray
-            stereo mix of the signals
-        """
-    min_length = min(len(original_audio), len(sonification))
+    min_length = min(len(original_audio), len(sonification)) if duration is None else duration
 
     original_audio = original_audio[:min_length]
     sonification = sonification[:min_length]
 
+    # Perform RMS normalization
     # Calculate the RMS amplitude of each signal
     rms_signal1 = np.sqrt(np.mean(np.square(original_audio)))
     rms_signal2 = np.sqrt(np.mean(np.square(sonification)))
@@ -117,19 +115,6 @@ def mix_sonification_and_original(sonification: np.ndarray,
         (gain_lin_original_audio * normalized_signal1, gain_lin_sonification * normalized_signal2)).T
 
     return stereo_audio
-
-
-def load_sample(name: str = 'click', target_sampling_rate: int = 44100) -> np.ndarray:
-    assert name in SAMPLES, 'No valid sample'
-    original_sampling_rate, data = wavfile.read(os.path.join('../..', 'data_audio', 'samples', name + '.wav'))
-
-    # Calculate the resampling ratio
-    resampling_ratio = target_sampling_rate / original_sampling_rate
-
-    # Resample the data using scipy's resample function
-    resampled_data = resample(data, int(len(data) * resampling_ratio))
-
-    return resampled_data, target_sampling_rate
 
 
 def generate_shepard_tone(pitch_class: int = 0,  # TODO: check sigma parameter
@@ -223,8 +208,14 @@ def add_to_sonification(sonification: np.ndarray, sonification_for_event: np.nda
     return sonification
 
 
-def generate_additive_synthesized_tone(pitch=69, frequency_ratios=[], frequency_ratios_amp=[],
-                                       frequency_ratios_phase_offsets=[], amp=1, dur=1, fs=44100, f_tuning=440,
+def generate_additive_synthesized_tone(pitch=69,
+                                       frequency_ratios=[],
+                                       frequency_ratios_amp=[],
+                                       frequency_ratios_phase_offsets=[],
+                                       amp=1,
+                                       dur=1,
+                                       fs=44100,
+                                       f_tuning=440,
                                        fade_dur=0.01):
     # TODO: coding/toolbox conventions
     """Generate additive synthesized tone
