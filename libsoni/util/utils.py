@@ -12,15 +12,15 @@ PRESETS = json.load(open(os.path.join('libsoni', 'util', 'presets.json')))
 
 def normalize(signal: np.ndarray) -> np.ndarray:
     """Normalize audio signal
-        Parameters
-        ----------
-        signal: np.ndarray
-            Signal to be normalized
-        Returns
-        -------
-        normalized_signal: np.ndarray
-            Normalized signal
-        """
+    Parameters
+    ----------
+    signal: np.ndarray
+        Signal to be normalized
+    Returns
+    -------
+    normalized_signal: np.ndarray
+        Normalized signal
+    """
     normalized_signal = signal / np.max(np.abs(signal))
     return normalized_signal
 
