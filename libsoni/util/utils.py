@@ -270,6 +270,7 @@ def generate_tone_additive_synthesis(pitch: int = 69,
 
 def generate_fm_synthesized_tone(pitch=69, modulation_frequency=0, modulation_index=0, amp=1, dur=1, fs=44100,
                                  f_tuning=440, fade_dur=0.01):
+    # TODO: adjust to generate_tone_additive_synthesis
     """Generate fm synthesized tone
 
     Args:
