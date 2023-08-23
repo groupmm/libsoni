@@ -182,34 +182,43 @@ def generate_shepard_tone(pitch_class: int = 0,
     return y
 
 
+def generate_additive_synthesized_tone(pitch: int = 69,
+                                       partials: np.ndarray = np.array([1]),
+                                       partials_amplitudes: np.ndarray = np.array([1]),
+                                       amplitude: float = 1.0,
+                                       duration_seconds: float = 1.0,
+                                       fs: int = 22050,
+                                       f_tuning: float = 440,
+                                       fade_dur: float = 0.01):
+    """Generates additive synthesized tone.
 
+    Parameters
+    ----------
+    pitch: int, default = 69
+        Pitch of the synthesized tone.
+    partials: np.ndarray (default = [1])
+        An array containing the desired partials of the fundamental frequencies for sonification.
+            An array [1] leads to sonification with only the fundamental frequency core,
+            while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.
+    partials_amplitudes: np.ndarray, default = [1]
+        Array containing the amplitudes for partials.
+            An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
+            while the sinusoid with frequency 2*core has amplitude 0.5.
+    amplitude: float, default = 1.0
+        Amplitude of generated signal.
+    duration_seconds: float, default = 1.0
+        Duration of generated signal, in seconds.
+    fs: int, default = 22050
+        Sampling rate, in samples per seconds,
+    f_tuning: float, default = 440.0
+        Tuning frequency, given in Hertz.
+    fade_dur: float, default = 0.01
+        Duration of fade in and fade out (to avoid clicks)
 
-def generate_additive_synthesized_tone(pitch=69,
-                                       frequency_ratios=[],
-                                       frequency_ratios_amp=[],
-                                       frequency_ratios_phase_offsets=[],
-                                       amp=1,
-                                       dur=1,
-                                       fs=44100,
-                                       f_tuning=440,
-                                       fade_dur=0.01):
-    # TODO: coding/toolbox conventions
-    """Generate additive synthesized tone
-
-    Args:
-        pitch: pitch of the synthesized tone
-        frequency_ratios: overtone frequencies based on pitch frequency
-        frequency_ratios_amp: amplitudes for overtone frequencies
-        frequency_ratios_phase_offsets: phase offsets for overtone frequencies
-        amp: amplitude of resulting signal
-        dur: duration (in seconds)
-        Fs: Sampling rate
-        f_tuning: Tuning frequency
-        fade_dur: Duration of fade in and fade out (to avoid clicks)
-
-    Returns:
-        y: synthesized tone
-        t: time axis (in seconds)
+    Returns
+    -------
+    y: np.ndarray
+        Generated signal
     """
     N = int(dur * fs)
     t = np.arange(N) / fs
