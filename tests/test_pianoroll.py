@@ -31,9 +31,9 @@ def test_pianoroll_additive_synthesis():
                                delimiter=';')
 
     y = pianoroll.sonify_pianoroll_additive_synthesis(pianoroll_df,
-                                                      frequency_ratios=[1, 2, 3, 4],
-                                                      frequency_ratios_amp=[1, 0.7, 0.3, 0.1],
-                                                      frequency_ratios_phase_offsets=[0, 0, 0, 0],
+                                                      partials=[1, 2, 3, 4],
+                                                      partials_amplitudes=[1, 0.7, 0.3, 0.1],
+                                                      partials_phase_offsets=[0, 0, 0, 0],
                                                       tuning_frequency=440.0,
                                                       duration=None,
                                                       fs=FS)

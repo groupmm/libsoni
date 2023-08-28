@@ -1,8 +1,12 @@
 import numpy as np
-from scipy.io import wavfile
-from scipy.signal import resample
+import pandas as pd
+import librosa
+from matplotlib import pyplot as plt
+from matplotlib import patches
 import os
 import json
+import libfmp.b
+import libfmp.c6
 from typing import Dict
 
 SAMPLES = ['bass-drum', 'click', 'hi-hat']
@@ -23,6 +27,25 @@ def normalize(signal: np.ndarray) -> np.ndarray:
     """
     normalized_signal = signal / np.max(np.abs(signal))
     return normalized_signal
+
+
+def warp_sample(sample: np.ndarray,
+                reference_pitch: int,
+                target_pitch: int,
+                target_duration_seconds: float,
+                fs=22050):
+    pitch_steps = target_pitch - reference_pitch
+
+    pitch_shifted_sample = librosa.effects.pitch_shift(y=sample,
+                                                       sr=fs,
+                                                       n_steps=pitch_steps)
+
+    rate = len(sample) / int(target_duration_seconds*fs)
+
+    time_streched_sample = librosa.effects.time_stretch(y=pitch_shifted_sample,
+                                                        rate=rate)
+
+    return time_streched_sample
 
 
 def get_preset(preset_name: str = None) -> Dict:
@@ -73,10 +96,108 @@ def generate_click(pitch: int = 69,
     return click
 
 
+# Taken from FMP Notebooks, https://www.audiolabs-erlangen.de/resources/MIR/FMP/C6/C6S2_TempoBeat.html
+def plot_sonify_novelty_beats(fn_wav, fn_ann, title=''):
+    ann, label_keys = libfmp.c6.read_annotation_pos(fn_ann, label='onset', header=0)
+    df = pd.read_csv(fn_ann, sep=';', keep_default_na=False, header=None)
+    Fs = 22050
+    x, _ = librosa.load(fn_wav, sr=Fs)
+    x_duration = len(x) / Fs
+    nov, Fs_nov = libfmp.c6.compute_novelty_spectrum(x, Fs=Fs, N=2048, H=256, gamma=1, M=10, norm=1)
+    figsize = (8, 1.5)
+    fig, ax, line = libfmp.b.plot_signal(nov, Fs_nov, color='k', figsize=figsize,
+                                         title=title)
+    libfmp.b.plot_annotation_line(ann, ax=ax, label_keys=label_keys,
+                                  nontime_axis=True, time_min=0, time_max=x_duration)
+    plt.show()
+
+    return fig, ax
+
+
+# Taken from FMP Notebooks, https://www.audiolabs-erlangen.de/resources/MIR/FMP/C1/C1S2_CSV.html
+
+
+def format_df(df):
+    df = df.copy().rename(columns=str.lower)
+
+    if 'duration' not in df.columns:
+        try:
+            df['duration'] = df['end'] - df['start']
+        except ValueError:
+            print('Input DataFrame must have start and duration/end columns.')
+    else:
+        try:
+            df['end'] = df['start'] + df['duration']
+        except ValueError:
+            print('Input DataFrame must have start and duration/end columns.')
+
+    return df
+
+
+def visualize_piano_roll(df, xlabel='Time (seconds)', ylabel='Pitch', colors='FMP_1', velocity_alpha=False,
+                         figsize=(12, 4), ax=None, dpi=72):
+    """Plot a pianoroll visualization
+
+    Notebook: C1/C1S2_CSV.ipynb
+
+    Args:
+        score: List of note events
+        xlabel: Label for x axis (Default value = 'Time (seconds)')
+        ylabel: Label for y axis (Default value = 'Pitch')
+        colors: Several options: 1. string of FMP_COLORMAPS, 2. string of matplotlib colormap,
+            3. list or np.ndarray of matplotlib color specifications,
+            4. dict that assigns labels  to colors (Default value = 'FMP_1')
+        velocity_alpha: Use the velocity value for the alpha value of the corresponding rectangle
+            (Default value = False)
+        figsize: Width, height in inches (Default value = (12)
+        ax: The Axes instance to plot on (Default value = None)
+        dpi: Dots per inch (Default value = 72)
+
+    Returns:
+        fig: The created matplotlib figure or None if ax was given.
+        ax: The used axes
+    """
+    df = format_df(df)
+    fig = None
+    if ax is None:
+        fig = plt.figure(figsize=figsize, dpi=dpi)
+        ax = plt.subplot(1, 1, 1)
+
+    labels_set = sorted(df['label'].unique())
+    colors = libfmp.b.color_argument_to_dict(colors, labels_set)
+
+    pitch_min = df['pitch'].min()
+    pitch_max = df['pitch'].max()
+    time_min = df['start'].min()
+    time_max = df['end'].max()
+
+    for i, r in df.iterrows():
+        if velocity_alpha is False:
+            velocity = None
+        rect = patches.Rectangle((r['start'], r['pitch'] - 0.5), r['duration'], 1, linewidth=1,
+                                 edgecolor='k', facecolor=colors[r['label']], alpha=r['velocity'])
+        ax.add_patch(rect)
+
+    ax.set_ylim([pitch_min - 1.5, pitch_max + 1.5])
+    ax.set_xlim([min(time_min, 0), time_max + 0.5])
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.grid()
+    ax.set_axisbelow(True)
+    ax.legend([patches.Patch(linewidth=1, edgecolor='k', facecolor=colors[key]) for key in labels_set],
+              labels_set, loc='upper right', framealpha=1)
+
+    if fig is not None:
+        plt.tight_layout()
+
+    return fig, ax
+
+
 def mix_sonification_and_original(sonification: np.ndarray,
                                   original_audio: np.ndarray,
                                   gain_lin_sonification: float = 1.0,
                                   gain_lin_original_audio: float = 1.0,
+                                  panning: float = 1.0,
                                   duration: int = None):
     """This function takes a sonification and an original_audio and mixes it to stereo
 
@@ -90,13 +211,19 @@ def mix_sonification_and_original(sonification: np.ndarray,
         linear gain for sonification
     gain_lin_original_audio: float, default = 1.0
         linear gain for original audio
+    panning: float, default = 1.0
+        Controls the panning of the mixed output
+            panning = 1.0 means original audio on left and sonification on right channel
+            panning = 0.5 means same amount of both signals on both channels.
+            panning = 0.0 means sonification on left and original audio on right channel
     duration: int, default = None
         Duration of the output waveform, given in samples.
     Returns
     -------
-    stereo_audio : np.ndarray
-        Stereo mix of the signals
+    mixed_audio : np.ndarray
+        Mix of the signals
     """
+    assert 0.0 <= panning <= 1.0, f'Panning must a value between 0.0 and 1.0.'
     if duration is None:
         num_samples = len(original_audio)
 
@@ -125,7 +252,10 @@ def mix_sonification_and_original(sonification: np.ndarray,
     normalized_signal2 = sonification * (rms_signal1 / rms_signal2)
 
     stereo_audio = np.column_stack(
-        (gain_lin_original_audio * normalized_signal1, gain_lin_sonification * normalized_signal2)).T
+        (panning * (gain_lin_original_audio * normalized_signal1) +
+         (1 - panning) * (gain_lin_sonification * normalized_signal2),
+         panning * (gain_lin_sonification * normalized_signal2) +
+         (1 - panning) * (gain_lin_original_audio * normalized_signal1))).T
 
     return stereo_audio
 
@@ -242,7 +372,7 @@ def generate_tone_additive_synthesis(pitch: int = 69,
     if partials_phase_offsets is None:
         partials_phase_offsets = np.zeros(len(partials))
 
-    assert len(partials) == len(partials_amplitudes) == len(partials_phase_offsets),\
+    assert len(partials) == len(partials_amplitudes) == len(partials_phase_offsets), \
         'Partials, Partials_amplitudes and Partials_phase_offsets must be of equal length.'
 
     num_samples = int(duration_sec * fs)

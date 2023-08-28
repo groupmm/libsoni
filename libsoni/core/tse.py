@@ -129,7 +129,7 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
     return tse_sonification[:duration]
 
 
-def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, float]] = None,
+def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = None,
                                duration: int = None,
                                click_duration: float = 0.25,
                                click_amplitude: float = 1.0,
@@ -139,7 +139,7 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, float]] = N
 
     Parameters
     ----------
-    times_pitches: List[Tuple[np.ndarray, float]]
+    times_pitches: List[Tuple[np.ndarray, int]]
         List of tuples comprising the time positions and pitches of the clicks
     duration: int
         Duration of the output waveform, given in samples.
@@ -169,8 +169,7 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, float]] = N
     tse_sonification = np.zeros(duration)
 
     for times_pitch in times_pitches:
-        time_positions = times_pitch[0]
-        pitch = times_pitch[1]
+        time_positions, pitch = times_pitch
 
         tse_sonification += sonify_tse_click(time_positions=time_positions,
                                              click_pitch=pitch,
@@ -212,8 +211,9 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
         max_duration = 0
         max_sample_duration_samples = 0
         for time_sample in times_samples:
-            duration = time_sample[0][-1]
-            duration_sample_samples = len(time_sample[1])
+            time_positions, sample = time_sample
+            duration = time_positions[-1]
+            duration_sample_samples = len(sample)
             max_duration = duration if duration > max_duration else max_duration
             max_sample_duration_samples = duration_sample_samples \
                 if duration_sample_samples > max_sample_duration_samples else max_sample_duration_samples
@@ -223,8 +223,7 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
     tse_sonification = np.zeros(duration)
 
     for times_sample in times_samples:
-        time_positions = times_sample[0]
-        sample = times_sample[1]
+        time_positions, sample = times_sample
         tse_sonification += sonify_tse_sample(time_positions=time_positions,
                                               sample=sample,
                                               offset_relative=offset_relative,
