@@ -30,17 +30,10 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
         pianoroll_sonification: np.ndarray
             Sonified waveform in form of a 1D Numpy array.
         """
-
     pianoroll_df = format_df(pianoroll_df)
-
-    shorter_duration = False
-
     num_samples = int(pianoroll_df['end'].max() * fs)
 
     if duration is not None:
-
-        duration_in_sec = duration / fs
-
         if duration == num_samples:
             pass
 
@@ -48,15 +41,13 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
             pianoroll_df = pianoroll_df[pianoroll_df['start'] < duration]
             pianoroll_df['end'] = pianoroll_df[pianoroll_df['end'] > duration] = duration
             pianoroll_df['duration'] = pianoroll_df['end'] - pianoroll_df['start']
+
         num_samples = duration
 
     pianoroll_sonification = np.zeros(num_samples)
 
     for i, r in pianoroll_df.iterrows():
         start_samples = int(r['start'] * fs)
-        duration_samples = int(r['duration'] * fs)
-        amplitude = r['velocity'] if 'velocity' in r else 1.0
-
         warped_sample = warp_sample(sample=sample,
                                     reference_pitch=reference_pitch,
                                     target_pitch=r['pitch'],
@@ -66,6 +57,7 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
         pianoroll_sonification[start_samples:start_samples + len(warped_sample)] += warped_sample
 
     return pianoroll_sonification
+
 
 def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
                             tuning_frequency: float = 440.0,
@@ -91,15 +83,9 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
         Sonified waveform in form of a 1D Numpy array.
     """
     pianoroll_df = format_df(pianoroll_df)
-
-    shorter_duration = False
-
     num_samples = int(pianoroll_df['end'].max() * fs)
 
     if duration is not None:
-
-        duration_in_sec = duration / fs
-
         if duration == num_samples:
             pass
 
@@ -135,7 +121,6 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
                                         fs: int = 22050) -> np.ndarray:
     # TODO: conventions as in sonify_f0 (partials..)
     pianoroll_df = format_df(pianoroll_df)
-    shorter_duration = False
     num_samples = int(pianoroll_df['end'].max() * fs)
     if duration is not None:
         duration_in_sec = duration / fs
