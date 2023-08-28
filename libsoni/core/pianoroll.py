@@ -60,7 +60,7 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
         warped_sample = warp_sample(sample=sample,
                                     reference_pitch=reference_pitch,
                                     target_pitch=r['pitch'],
-                                    target_duration_seconds=r['duration'],
+                                    target_duration_sec=r['duration'],
                                     fs=fs)
 
         pianoroll_sonification[start_samples:start_samples + len(warped_sample)] += warped_sample

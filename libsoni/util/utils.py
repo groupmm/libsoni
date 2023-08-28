@@ -32,15 +32,28 @@ def normalize(signal: np.ndarray) -> np.ndarray:
 def warp_sample(sample: np.ndarray,
                 reference_pitch: int,
                 target_pitch: int,
-                target_duration_seconds: float,
+                target_duration_sec: float,
                 fs=22050):
+    """TODO: Docstrings
+    Parameters
+    ----------
+    sample
+    reference_pitch
+    target_pitch
+    target_duration_sec
+    fs
+
+    Returns
+    -------
+
+    """
     pitch_steps = target_pitch - reference_pitch
 
     pitch_shifted_sample = librosa.effects.pitch_shift(y=sample,
                                                        sr=fs,
                                                        n_steps=pitch_steps)
 
-    rate = len(sample) / int(target_duration_seconds*fs)
+    rate = len(sample) / int(target_duration_sec * fs)
 
     time_streched_sample = librosa.effects.time_stretch(y=pitch_shifted_sample,
                                                         rate=rate)
@@ -117,7 +130,7 @@ def plot_sonify_novelty_beats(fn_wav, fn_ann, title=''):
 # Taken from FMP Notebooks, https://www.audiolabs-erlangen.de/resources/MIR/FMP/C1/C1S2_CSV.html
 
 
-def format_df(df):
+def format_df(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy().rename(columns=str.lower)
 
     if 'duration' not in df.columns:
@@ -466,8 +479,8 @@ def generate_sinusoid(frequency: float = 440.0,
     return y
 
 
-def envelop_signal(signal: np.ndarray, attack_time: float = 0, decay_time: float = 0, sustain_level: float = 0,
-                   release_time: float = 0, fs=44100):
+def envelope_signal(signal: np.ndarray, attack_time: float = 0, decay_time: float = 0, sustain_level: float = 0,
+                    release_time: float = 0, fs=44100):
     """
     Envelopes a given signal. If the length of the signal is too short regarding the specified ADSR parameters, the returned signal is zero.
     Parameters

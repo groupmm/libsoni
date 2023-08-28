@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from libsoni.util.utils import click, add_to_sonification, generate_additive_synthesized_tone, \
-    generate_fm_synthesized_tone, envelop_signal
+    generate_fm_synthesized_tone, envelope_signal
 from typing import List
 
 
@@ -144,8 +144,9 @@ def sonify_pitch_annotation(path_to_csv: str,
                                                               f_tuning=tuning_frequency,
                                                               fade_dur=fade_dur)
         if use_ADSR:
-            pitch_sonification = envelop_signal(pitch_sonification, attack_time=attack_time, decay_time=decay_time,
-                                                sustain_level=sustain_level, release_time=release_time)
+            # TODO: Needs revision
+            pitch_sonification = envelope_signal(pitch_sonification, attack_time=attack_time, decay_time=decay_time,
+                                                 sustain_level=sustain_level, release_time=release_time)
         y = add_to_sonification(sonification=y, sonification_for_event=pitch_sonification, start=start, fs=fs)
 
     return y
