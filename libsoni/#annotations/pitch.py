@@ -141,7 +141,7 @@ def sonify_pitch_annotation(path_to_csv: str,
                                                               amp=amplitude,
                                                               dur=duration,
                                                               fs=fs,
-                                                              f_tuning=tuning_frequency,
+                                                              tuning_frequency=tuning_frequency,
                                                               fade_dur=fade_dur)
         if use_ADSR:
             # TODO: Needs revision

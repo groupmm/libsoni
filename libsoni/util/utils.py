@@ -127,9 +127,6 @@ def plot_sonify_novelty_beats(fn_wav, fn_ann, title=''):
     return fig, ax
 
 
-# Taken from FMP Notebooks, https://www.audiolabs-erlangen.de/resources/MIR/FMP/C1/C1S2_CSV.html
-
-
 def format_df(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy().rename(columns=str.lower)
 
@@ -149,9 +146,7 @@ def format_df(df: pd.DataFrame) -> pd.DataFrame:
 
 def visualize_piano_roll(df, xlabel='Time (seconds)', ylabel='Pitch', colors='FMP_1', velocity_alpha=False,
                          figsize=(12, 4), ax=None, dpi=72):
-    """Plot a pianoroll visualization
-
-    Notebook: C1/C1S2_CSV.ipynb
+    """Plot a pianoroll visualization, inspired from FMP Notebook C1/C1S2_CSV.ipynb
 
     Args:
         score: List of note events
@@ -346,7 +341,7 @@ def generate_tone_additive_synthesis(pitch: int = 69,
                                      duration_sec: float = 1.0,
                                      fs: int = 22050,
                                      f_tuning: float = 440,
-                                     fading_sec: float = 0.01):
+                                     fading_sec: float = 0.01) -> np.ndarray:
     """Generates signal using additive synthesis.
 
     Parameters
@@ -411,8 +406,14 @@ def generate_tone_additive_synthesis(pitch: int = 69,
     return generated_tone
 
 
-def generate_fm_synthesized_tone(pitch=69, modulation_frequency=0, modulation_index=0, amp=1, dur=1, fs=44100,
-                                 f_tuning=440, fade_dur=0.01):
+def generate_fm_synthesized_tone(pitch: int = 69,
+                                 modulation_frequency: float = 0.0,
+                                 modulation_index: int = 0,
+                                 amp: float = 1,
+                                 dur: float = 1,
+                                 fs: int = 22050,
+                                 tuning_frequency: float = 440,
+                                 fade_dur: float = 0.01):
     # TODO: adjust to generate_tone_additive_synthesis
     """Generate fm synthesized tone
 
@@ -423,7 +424,7 @@ def generate_fm_synthesized_tone(pitch=69, modulation_frequency=0, modulation_in
         amp: amplitude of resulting signal
         dur: duration (in seconds)
         Fs: Sampling rate
-        f_tuning: Tuning frequency
+        tuning_frequency: Tuning frequency
         fade_dur: Duration of fade in and fade out (to avoid clicks)
 
     Returns:
@@ -432,7 +433,7 @@ def generate_fm_synthesized_tone(pitch=69, modulation_frequency=0, modulation_in
     """
     N = int(dur * fs)
     t = np.arange(N) / fs
-    freq = f_tuning * 2 ** ((pitch - 69) / 12)
+    freq = tuning_frequency * 2 ** ((pitch - 69) / 12)
     y = np.sin(2 * np.pi * freq * t + modulation_index * np.sin(2 * np.pi * modulation_frequency * t))
     if not fade_dur == 0:
         fade_samples = int(fade_dur * fs)

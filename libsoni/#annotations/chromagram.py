@@ -217,7 +217,7 @@ def sonify_chromagram_with_noc(chroma_data,
     #
     #         N = int(dur * Fs)
     #         t = np.arange(N) / Fs
-    #         freqs = f_tuning * 2 ** ((pitch_class + np.arange(12) * 12 - 69) / 12)
+    #         freqs = tuning_frequency * 2 ** ((pitch_class + np.arange(12) * 12 - 69) / 12)
     #         f_log = 2 * np.logspace(1, 4, 20000)
     #         f_lin = np.linspace(20, 20000, 20000)
     #         f_center_lin = np.argmin(np.abs(f_log - f_center))
