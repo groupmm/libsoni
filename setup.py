@@ -22,7 +22,7 @@ setup(
         "Topic :: Multimedia :: Sound/Audio :: Analysis",
         "Programming Language :: Python :: 3",
     ],
-    keywords='audio music sound synchronization dtw mrmsdtw',
+    keywords='',
     license='MIT',
     install_requires=['ipython >= 7.8.0, < 8.0.0',
                       'librosa >= 0.8.0, < 1.0.0',
