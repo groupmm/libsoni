@@ -10,8 +10,11 @@ import libfmp.c6
 from typing import Dict
 
 SAMPLES = ['bass-drum', 'click', 'hi-hat']
-
-PRESETS = json.load(open(os.path.join('libsoni', 'util', 'presets.json')))
+try:
+    PRESETS = json.load(open(os.path.join('libsoni', 'util', 'presets.json')))
+except:
+    # TODO: Clean up this mess, this is a workaround for the Sphinx documentation
+    PRESETS = json.load(open('../../libsoni/libsoni/util/presets.json'))
 
 
 def normalize(signal: np.ndarray) -> np.ndarray:
