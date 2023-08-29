@@ -111,7 +111,7 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
             duration_in_sec = duration / fs
             time_positions = time_positions[time_positions < duration_in_sec]
 
-        num_samples = int(duration * fs)
+        num_samples = duration
 
     tse_sonification = np.zeros(num_samples)
     offset_samples = int(offset_relative * sample_len)
