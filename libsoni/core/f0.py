@@ -7,7 +7,7 @@ from libsoni.util.utils import get_preset, normalize_signal
 def sonify_f0(time_f0: np.ndarray,
               partials: np.ndarray = np.array([1]),
               partials_amplitudes: np.ndarray = np.array([1]),
-              duration: int = None,
+              sonification_duration: int = None,
               normalize: bool = True,
               fs: int = 22050) -> np.ndarray:
     """This function sonifies a F0 trajectory from a 2D Numpy array.
@@ -27,7 +27,7 @@ def sonify_f0(time_f0: np.ndarray,
         Array containing the amplitudes for partials.
             An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
             while the sinusoid with frequency 2*core has amplitude 0.5.
-    duration: int, default = None
+    sonification_duration: int, default = None
         Duration of audio, given in samples
     normalize: bool, default = True
         Decides, if output signal is normalized to [-1,1].
@@ -45,20 +45,20 @@ def sonify_f0(time_f0: np.ndarray,
     num_samples = int(time_positions[-1] * fs)
 
     shorter_duration = False
-    if duration is not None:
-        duration_in_sec = duration / fs
+    if sonification_duration is not None:
+        duration_in_sec = sonification_duration / fs
 
-        # if duration equals num_samples, do nothing
-        if duration == num_samples:
+        # if sonification_duration equals num_samples, do nothing
+        if sonification_duration == num_samples:
             pass
 
-        # if duration is less than num_samples, crop the arrays
-        elif duration < num_samples:
+        # if sonification_duration is less than num_samples, crop the arrays
+        elif sonification_duration < num_samples:
             time_positions = time_positions[time_positions < duration_in_sec]
             time_positions = np.append(time_positions, duration_in_sec)
             f0s = f0s[:time_positions.shape[0]]
             shorter_duration = True
-        # if duration is greater than num_samples, append
+        # if sonification_duration is greater than num_samples, append
         else:
             time_positions = np.append(time_positions, duration_in_sec)
             f0s = np.append(f0s, 0.0)
@@ -94,7 +94,7 @@ def sonify_f0(time_f0: np.ndarray,
 
 
 def sonify_f0_with_presets(preset_dict: Dict = None,
-                           duration: int = None,
+                           sonification_duration: int = None,
                            normalize: bool = True,
                            fs: int = 22050) -> np.ndarray:
     """This function sonifies multiple f0 annotations with a certain preset.
@@ -105,7 +105,7 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
         Dictionary of presets in the following key-value pair format:
             {str: np.ndarray}
             preset: time_f0s
-    duration: int
+    sonification_duration: int
         Duration of the output waveform, given in samples
     normalize: bool, default = True
         Decides, if output signal is normalized to [-1,1].
@@ -117,14 +117,14 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
     f0_sonification: np.ndarray
         Sonified waveform
     """
-    if duration is None:
+    if sonification_duration is None:
         max_duration = 0
         for label in preset_dict:
-            duration = preset_dict[label]['time_f0'][-1, 0]
-            max_duration = duration if duration > max_duration else max_duration
-        duration = int(np.ceil(fs * max_duration))
+            sonification_duration = preset_dict[label]['time_f0'][-1, 0]
+            max_duration = sonification_duration if sonification_duration > max_duration else max_duration
+        sonification_duration = int(np.ceil(fs * max_duration))
 
-    f0_sonification = np.zeros(duration)
+    f0_sonification = np.zeros(sonification_duration)
 
     for label in preset_dict:
         preset_features_dict = get_preset(preset_dict[label]['preset'])
@@ -133,7 +133,7 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
         f0_sonification += sonify_f0(time_f0=preset_dict[label]['time_f0'],
                                      partials=preset_features_dict['partials'],
                                      partials_amplitudes=preset_features_dict['amplitudes'],
-                                     duration=duration,
+                                     sonification_duration=sonification_duration,
                                      fs=fs) * gain
 
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
