@@ -148,62 +148,6 @@ def format_df(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def visualize_piano_roll(df, xlabel='Time (seconds)', ylabel='Pitch', colors='FMP_1', velocity_alpha=False,
-                         figsize=(12, 4), ax=None, dpi=72):
-    """Plot a pianoroll visualization, inspired from FMP Notebook C1/C1S2_CSV.ipynb
-
-    Args:
-        score: List of note events
-        xlabel: Label for x axis (Default value = 'Time (seconds)')
-        ylabel: Label for y axis (Default value = 'Pitch')
-        colors: Several options: 1. string of FMP_COLORMAPS, 2. string of matplotlib colormap,
-            3. list or np.ndarray of matplotlib color specifications,
-            4. dict that assigns labels  to colors (Default value = 'FMP_1')
-        velocity_alpha: Use the velocity value for the alpha value of the corresponding rectangle
-            (Default value = False)
-        figsize: Width, height in inches (Default value = (12)
-        ax: The Axes instance to plot on (Default value = None)
-        dpi: Dots per inch (Default value = 72)
-
-    Returns:
-        fig: The created matplotlib figure or None if ax was given.
-        ax: The used axes
-    """
-    df = format_df(df)
-    fig = None
-    if ax is None:
-        fig = plt.figure(figsize=figsize, dpi=dpi)
-        ax = plt.subplot(1, 1, 1)
-
-    labels_set = sorted(df['label'].unique())
-    colors = libfmp.b.color_argument_to_dict(colors, labels_set)
-
-    pitch_min = df['pitch'].min()
-    pitch_max = df['pitch'].max()
-    time_min = df['start'].min()
-    time_max = df['end'].max()
-
-    for i, r in df.iterrows():
-        if velocity_alpha is False:
-            velocity = None
-        rect = patches.Rectangle((r['start'], r['pitch'] - 0.5), r['duration'], 1, linewidth=1,
-                                 edgecolor='k', facecolor=colors[r['label']], alpha=r['velocity'])
-        ax.add_patch(rect)
-
-    ax.set_ylim([pitch_min - 1.5, pitch_max + 1.5])
-    ax.set_xlim([min(time_min, 0), time_max + 0.5])
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    ax.grid()
-    ax.set_axisbelow(True)
-    ax.legend([patches.Patch(linewidth=1, edgecolor='k', facecolor=colors[key]) for key in labels_set],
-              labels_set, loc='upper right', framealpha=1)
-
-    if fig is not None:
-        plt.tight_layout()
-
-    return fig, ax
-
 
 def mix_sonification_and_original(sonification: np.ndarray,
                                   original_audio: np.ndarray,
@@ -296,13 +240,13 @@ def generate_shepard_tone(pitch_class: int = 0,
             amplitude: float (default: 1.0)
                 amplitude of resulting signal
             duration: float (default: 1.0)
-                duration (in seconds)
+                sonification_duration (in seconds)
             fs: int (default: 44100)
                 sampling rate in Samples/second
             f_tuning: float (default: 440.0)
                 tuning frequency (in Hz)
             fade_dur: float (default: 0.01)
-                duration (in seconds) of fade in and fade out (to avoid clicks)
+                sonification_duration (in seconds) of fade in and fade out (to avoid clicks)
 
         Returns:
             y: synthesized tone
@@ -425,7 +369,7 @@ def generate_fm_synthesized_tone(pitch: int = 69,
         modulation_frequency: frequency to modulate
         modulation_index: strength of modulation
         amp: amplitude of resulting signal
-        dur: duration (in seconds)
+        dur: sonification_duration (in seconds)
         Fs: Sampling rate
         tuning_frequency: Tuning frequency
         fade_dur: Duration of fade in and fade out (to avoid clicks)
