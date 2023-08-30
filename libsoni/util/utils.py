@@ -405,7 +405,6 @@ def generate_tone_additive_synthesis(pitch: int = 69,
         generated_tone[:fading_samples] *= np.linspace(0, 1, fading_samples)
         generated_tone[-fading_samples:] *= np.linspace(1, 0, fading_samples)
 
-    generated_tone = gain * normalize(generated_tone)
     return generated_tone
 
 
@@ -442,7 +441,7 @@ def generate_fm_synthesized_tone(pitch: int = 69,
         fade_samples = int(fade_dur * fs)
         y[0:fade_samples] *= np.linspace(0, 1, fade_samples)
         y[-fade_samples:] *= np.linspace(1, 0, fade_samples)
-    y = amp * (y / np.max(y))
+
     return y
 
 
@@ -479,7 +478,6 @@ def generate_sinusoid(frequency: float = 440.0,
         fade_samples = int(fade_dur * fs)
         y[0:fade_samples] *= np.linspace(0, 1, fade_samples)
         y[-fade_samples:] *= np.linspace(1, 0, fade_samples)
-    y = amp * (y / np.max(y))
     return y
 
 
