@@ -17,7 +17,7 @@ except:
     PRESETS = json.load(open('../../libsoni/libsoni/util/presets.json'))
 
 
-def normalize(signal: np.ndarray) -> np.ndarray:
+def normalize_signal(signal: np.ndarray) -> np.ndarray:
     """Normalize audio signal
     Parameters
     ----------
