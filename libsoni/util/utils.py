@@ -83,7 +83,7 @@ def get_preset(preset_name: str = None) -> Dict:
 
 def generate_click(pitch: int = 69,
                    amplitude: float = 1.0,
-                   duration: float = 0.2,
+                   reverb_duration: float = 0.2,
                    fs: int = 22050,
                    tuning_frequency: float = 440.0) -> np.ndarray:
     """Returns a click signal.
@@ -94,8 +94,8 @@ def generate_click(pitch: int = 69,
         Pitch for colored click.
     amplitude : float, default = 1.0
         Amplitude of click signal.
-    duration : float, default = 0.2
-        Duration of click signal.
+    reverb_duration : float, default = 0.2
+        Reverb duration of click signal.
     fs : int, default = 22050
         Sampling rate.
     tuning_frequency : int, default = 440
@@ -107,7 +107,7 @@ def generate_click(pitch: int = 69,
     """
     click_freq = tuning_frequency * 2 ** ((pitch - 69) / 12)
     angular_freq = 2 * np.pi * click_freq / float(fs)
-    click = np.logspace(0, -10, num=int(fs * duration), base=2.0)
+    click = np.logspace(0, -10, num=int(fs * reverb_duration), base=2.0)
     click *= np.sin(angular_freq * np.arange(len(click)))
     click *= amplitude
     return click
