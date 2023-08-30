@@ -332,7 +332,7 @@ def generate_shepard_tone(pitch_class: int = 0,
 
     y[0:fade_samples] *= np.linspace(0, 1, fade_samples)
     y[-fade_samples:] *= np.linspace(1, 0, fade_samples)
-    y = amplitude * (y / np.max(y))
+
     return y
 
 
