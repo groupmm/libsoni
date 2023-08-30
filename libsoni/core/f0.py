@@ -119,21 +119,22 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
     """
     if duration is None:
         max_duration = 0
-        for preset in preset_dict:
-            duration = preset_dict[preset][-1, 0]
+        for label in preset_dict:
+            duration = preset_dict[label]['time_f0'][-1, 0]
             max_duration = duration if duration > max_duration else max_duration
         duration = int(np.ceil(fs * max_duration))
 
     f0_sonification = np.zeros(duration)
 
-    for preset in preset_dict:
-        preset_features_dict = get_preset(preset)
+    for label in preset_dict:
+        preset_features_dict = get_preset(preset_dict[label]['preset'])
+        gain = preset_dict[label]['gain'] if 'gain' in preset_dict[label] else 1
 
-        f0_sonification += sonify_f0(time_f0=preset_dict[preset],
+        f0_sonification += sonify_f0(time_f0=preset_dict[label]['time_f0'],
                                      partials=preset_features_dict['partials'],
                                      partials_amplitudes=preset_features_dict['amplitudes'],
                                      duration=duration,
-                                     fs=fs)
+                                     fs=fs) * gain
 
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 
