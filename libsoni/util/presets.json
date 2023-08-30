@@ -166,5 +166,10 @@
             9,
             10
         ]
+    },
+    "sinusoid":{
+        "amplitudes":[1.0],
+        "envelope":null,
+        "partials":[1]
     }
 }
