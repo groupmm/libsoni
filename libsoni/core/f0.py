@@ -1,13 +1,14 @@
 import numpy as np
 from typing import Dict
 
-from libsoni.util.utils import get_preset
+from libsoni.util.utils import get_preset, normalize_signal
 
 
 def sonify_f0(time_f0: np.ndarray,
               partials: np.ndarray = np.array([1]),
               partials_amplitudes: np.ndarray = np.array([1]),
               duration: int = None,
+              normalize: bool = True,
               fs: int = 22050) -> np.ndarray:
     """This function sonifies a F0 trajectory from a 2D Numpy array.
     The sonification is related to the principle of a so-called numerical oscillator.
@@ -28,6 +29,8 @@ def sonify_f0(time_f0: np.ndarray,
             while the sinusoid with frequency 2*core has amplitude 0.5.
     duration: int, default = None
         Duration of audio, given in samples
+    normalize: bool, default = True
+        Decides, if output signal is normalized to [-1,1].
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -85,11 +88,14 @@ def sonify_f0(time_f0: np.ndarray,
 
         f0_sonification += np.sin(phase_result) * partial_amplitude
 
+    f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
+
     return f0_sonification
 
 
 def sonify_f0_with_presets(preset_dict: Dict = None,
                            duration: int = None,
+                           normalize: bool = True,
                            fs: int = 22050) -> np.ndarray:
     """This function sonifies multiple f0 annotations with a certain preset.
 
@@ -101,6 +107,8 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
             preset: time_f0s
     duration: int
         Duration of the output waveform, given in samples
+    normalize: bool, default = True
+        Decides, if output signal is normalized to [-1,1].
     fs: int
         Sampling rate
 
@@ -127,5 +135,6 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
                                      duration=duration,
                                      fs=fs)
 
-    # TODO: Check Normalization
+    f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
+
     return f0_sonification

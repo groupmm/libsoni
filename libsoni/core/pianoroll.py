@@ -1,13 +1,14 @@
 import numpy as np
 import pandas as pd
 
-from libsoni.util.utils import generate_click, generate_tone_additive_synthesis, format_df, warp_sample
+from libsoni.util.utils import generate_click, generate_tone_additive_synthesis, format_df, warp_sample, normalize_signal
 
 
 def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
                             sample: np.ndarray = None,
                             reference_pitch: int = 69,
                             duration: int = None,
+                            normalize: bool = True,
                             fs: int = 22050) -> np.ndarray:
     """This function sonifies a pianoroll representation containing pitch events described by start, duration or end
         and the corresponding pitch with pitch-shifted and time-warped versions of a sample.
@@ -18,10 +19,12 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
             Data Frame containing pitch events.
         sample: np.ndarray
             Sample
-        sample_pitch: int, default = 69
+        reference_pitch: int, default = 69
             Pitch of the Sample
         duration: float, default = None
             Duration of the output waveform, given in samples.
+        normalize: bool, default = True
+            Decides, if output signal is normalized to [-1,1].
         fs: int, default = 22050
             Sampling rate
 
@@ -56,12 +59,15 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
 
         pianoroll_sonification[start_samples:start_samples + len(warped_sample)] += warped_sample
 
+    pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
+
     return pianoroll_sonification
 
 
 def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
                             tuning_frequency: float = 440.0,
                             duration: int = None,
+                            normalize: bool = True,
                             fs: int = 22050) -> np.ndarray:
     """This function sonifies a pianoroll representation containing pitch events described by start, duration or end
     and the corresponding pitch with coloured clicks.
@@ -74,6 +80,8 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
         Tuning Frequency, given in Hertz
     duration: float, default = None
         Duration of the output waveform, given in samples.
+    normalize: bool, default = True
+        Decides, if output signal is normalized to [-1,1].
     fs: int, default = 22050
         Sampling rate
 
@@ -109,6 +117,8 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
                                                                                                  tuning_frequency=
                                                                                                  tuning_frequency)
 
+    pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
+
     return pianoroll_sonification
 
 
@@ -118,7 +128,21 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
                                         partials_phase_offsets=None,
                                         tuning_frequency: float = 440.0,
                                         duration: int = None,
+                                        normalize: bool = True,
                                         fs: int = 22050) -> np.ndarray:
+    """This function needs a DOCSTRING -> TODO
+        Parameters
+        ----------
+        normalize: bool = True
+             Decides, if output signal is normalized to [-1,1].
+        fs: int
+            Sampling rate
+
+        Returns
+        -------
+        f0_sonification: np.ndarray
+            Sonified waveform
+        """
     # TODO: conventions as in sonify_f0 (partials..)
     pianoroll_df = format_df(pianoroll_df)
     num_samples = int(pianoroll_df['end'].max() * fs)
@@ -150,6 +174,7 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
                                              fs=fs,
                                              f_tuning=tuning_frequency)
 
+    pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
 
     return pianoroll_sonification
 
