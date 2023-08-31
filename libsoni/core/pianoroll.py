@@ -63,10 +63,13 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
         num_samples = sonification_duration
 
     pianoroll_sonification = np.zeros(num_samples)
+
+    if 'velocity' in pianoroll_df.columns() and pianoroll_df['velocity'].max() > 1:
+        pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
+
     for i, r in pianoroll_df.iterrows():
         start_samples = int(r['start'] * fs)
         duration_samples = int(r['duration'] * fs)
-        # TODO: check velocity values -> right scaling
         amplitude = r['velocity'] if 'velocity' in r else 1.0
 
         pianoroll_sonification[start_samples:start_samples + duration_samples] += \
@@ -84,11 +87,11 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
     return pianoroll_sonification
 
 
-def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
-                            tuning_frequency: float = 440.0,
-                            sonification_duration: int = None,
-                            normalize: bool = True,
-                            fs: int = 22050) -> np.ndarray:
+def sonify_pianoroll_click(pianoroll_df: pd.DataFrame,
+                           tuning_frequency: float = 440.0,
+                           sonification_duration: int = None,
+                           normalize: bool = True,
+                           fs: int = 22050) -> np.ndarray:
     """This function sonifies a pianoroll representation containing pitch events described by start, duration or end
     and the corresponding pitch with coloured clicks.
 
@@ -124,6 +127,9 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
         num_samples = sonification_duration
 
     pianoroll_sonification = np.zeros(num_samples)
+
+    if 'velocity' in pianoroll_df.columns() and pianoroll_df['velocity'].max() > 1:
+        pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
 
     for i, r in pianoroll_df.iterrows():
         start_samples = int(r['start'] * fs)
@@ -187,7 +193,11 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
 
     pianoroll_sonification = np.zeros(num_samples)
 
+    if 'velocity' in pianoroll_df.columns() and pianoroll_df['velocity'].max() > 1:
+        pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
+
     for i, r in pianoroll_df.iterrows():
+        #TODO: use velocity as scaling?
         start_samples = int(r['start'] * fs)
         warped_sample = warp_sample(sample=sample,
                                     reference_pitch=reference_pitch,
@@ -247,10 +257,13 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
         num_samples = sonification_duration
 
     pianoroll_sonification = np.zeros(num_samples)
+
+    if 'velocity' in pianoroll_df.columns() and pianoroll_df['velocity'].max() > 1:
+        pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
+
     for i, r in pianoroll_df.iterrows():
         start_samples = int(r['start'] * fs)
         duration_samples = int(r['duration'] * fs)
-        # TODO: check velocity values -> right scaling
         amplitude = r['velocity'] if 'velocity' in r else 1.0
 
         pianoroll_sonification[start_samples:start_samples + duration_samples] += \
