@@ -5,14 +5,14 @@ from libsoni.util.utils import normalize_signal
 from libsoni.core.methods import generate_click
 
 
-def sonify_tse_click(time_positions: np.ndarray = None,
-                     click_pitch: int = 69,
-                     click_fading_duration: float = 0.25,
-                     click_amplitude: float = 1.0,
-                     offset_relative: float = 0.0,
-                     sonification_duration: int = None,
-                     normalize: bool = True,
-                     fs: int = 22050) -> np.ndarray:
+def sonify_tse_clicks(time_positions: np.ndarray = None,
+                      click_pitch: int = 69,
+                      click_fading_duration: float = 0.25,
+                      click_amplitude: float = 1.0,
+                      offset_relative: float = 0.0,
+                      sonification_duration: int = None,
+                      normalize: bool = True,
+                      fs: int = 22050) -> np.ndarray:
     """This function sonifies an array containing time positions with clicks.
 
     Parameters
@@ -185,13 +185,13 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
     for times_pitch in times_pitches:
         time_positions, pitch = times_pitch
 
-        tse_sonification += sonify_tse_click(time_positions=time_positions,
-                                             click_pitch=pitch,
-                                             click_fading_duration=click_fading_duration,
-                                             click_amplitude=click_amplitude,
-                                             offset_relative=offset_relative,
-                                             sonification_duration=sonification_duration,
-                                             fs=fs)
+        tse_sonification += sonify_tse_clicks(time_positions=time_positions,
+                                              click_pitch=pitch,
+                                              click_fading_duration=click_fading_duration,
+                                              click_amplitude=click_amplitude,
+                                              offset_relative=offset_relative,
+                                              sonification_duration=sonification_duration,
+                                              fs=fs)
 
     tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
 
