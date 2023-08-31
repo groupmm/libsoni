@@ -172,14 +172,14 @@ def generate_tone_additive_synthesis(pitch: int = 69,
     return generated_tone * gain
 
 
-def generate_fm_synthesized_tone(pitch: int = 69,
-                                 modulation_frequency_factor: float = 0.0,
-                                 modulation_index: float = 0.0,
-                                 gain: float = 1.0,
-                                 duration_sec: float = 1.0,
-                                 fs: int = 22050,
-                                 f_tuning: float = 440,
-                                 fading_sec: float = 0.01) -> np.ndarray:
+def generate_tone_fm_synthesis(pitch: int = 69,
+                               modulation_frequency_factor: float = 0.0,
+                               modulation_index: float = 0.0,
+                               gain: float = 1.0,
+                               duration_sec: float = 1.0,
+                               fs: int = 22050,
+                               f_tuning: float = 440,
+                               fading_sec: float = 0.01) -> np.ndarray:
     """Generates signal using frequency modulation synthesis.
 
     Parameters
