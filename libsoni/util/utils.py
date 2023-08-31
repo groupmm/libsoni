@@ -15,7 +15,7 @@ try:
     PRESETS = json.load(open(os.path.join('libsoni', 'util', 'presets.json')))
 except:
     # TODO: Clean up this mess, this is a workaround for the Sphinx documentation
-    PRESETS = json.load(open('../../libsoni/libsoni/util/presets.json'))
+    PRESETS = json.load(open(os.path.join('..', '..', 'libsoni', 'libsoni', 'util', 'presets.json')))
 
 
 def normalize_signal(signal: np.ndarray) -> np.ndarray:
