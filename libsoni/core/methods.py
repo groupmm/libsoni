@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def generate_click(pitch: int = 69,
                    amplitude: float = 1.0,
                    fading_duration: float = 0.2,
@@ -36,7 +37,7 @@ def generate_shepard_tone(pitch_class: int = 0,
                           filter: bool = False,
                           f_center: float = 440.0,
                           octave_cutoff: int = 1,
-                          amplitude: float = 1.0,
+                          gain: float = 1.0,
                           duration: float = 1.0,
                           fs: int = 44100,
                           f_tuning: float = 440,
@@ -44,28 +45,30 @@ def generate_shepard_tone(pitch_class: int = 0,
                           ) -> np.ndarray:
     """Generate shepard tone
 
-        Args:
-            pitch_class: int (default: 0)
-                pitch class of the synthesized tone
-            filter: bool (default: False)
-                decides, if shepard tones are filtered or not
-            f_center : float (default: 440.0)
-                center_frequency in Hertz for bell-shaped filter
-            octave_cutoff: int (default: 1)
-                determines, at which multiple of f_center, the harmonics get attenuated by 2.
-            amplitude: float (default: 1.0)
-                amplitude of resulting signal
-            duration: float (default: 1.0)
-                sonification_duration (in seconds)
-            fs: int (default: 44100)
-                sampling rate in Samples/second
-            f_tuning: float (default: 440.0)
-                tuning frequency (in Hz)
-            fade_dur: float (default: 0.01)
-                sonification_duration (in seconds) of fade in and fade out (to avoid clicks)
+    Parameters
+    ----------
+    pitch_class: int, default: 0
+        pitch class of the synthesized tone
+    filter: bool, default: False
+        decides, if shepard tones are filtered or not
+    f_center : float, default: 440.0
+        center_frequency in Hertz for bell-shaped filter
+    octave_cutoff: int, default: 1
+        determines, at which multiple of f_center, the harmonics get attenuated by 2.
+    amplitude: float, default: 1.0
+        amplitude of resulting signal
+    duration: float, default: 1.0
+        sonification_duration (in seconds)
+    fs: int, default: 44100
+        sampling rate in Samples/second
+    f_tuning: float, default: 440.0
+        tuning frequency (in Hz)
+    fade_dur: float, default: 0.01
+        sonification_duration (in seconds) of fade in and fade out (to avoid clicks)
 
-        Returns:
-            y: synthesized tone
+    Returns
+    -------
+        y: synthesized tone
     """
     assert 0 <= pitch_class <= 11, "pitch class out of range"
 
@@ -94,7 +97,8 @@ def generate_shepard_tone(pitch_class: int = 0,
     y[0:fade_samples] *= np.linspace(0, 1, fade_samples)
     y[-fade_samples:] *= np.linspace(1, 0, fade_samples)
 
-    return y
+    return y * gain
+
 
 def generate_tone_additive_synthesis(pitch: int = 69,
                                      partials: np.ndarray = np.array([1]),
@@ -111,7 +115,7 @@ def generate_tone_additive_synthesis(pitch: int = 69,
     ----------
     pitch: int, default = 69
         Pitch of the synthesized tone.
-    partials: np.ndarray (default = [1])
+    partials: np.ndarray, default = [1]
         An array containing the desired partials of the fundamental frequencies for sonification.
             An array [1] leads to sonification with only the fundamental frequency core,
             while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.
@@ -165,40 +169,51 @@ def generate_tone_additive_synthesis(pitch: int = 69,
         generated_tone[:fading_samples] *= np.linspace(0, 1, fading_samples)
         generated_tone[-fading_samples:] *= np.linspace(1, 0, fading_samples)
 
-    return generated_tone
+    return generated_tone * gain
 
-def generate_fm_synthesized_tone(pitch: int = 69,
-                                 modulation_frequency: float = 0.0,
-                                 modulation_index: int = 0,
-                                 amp: float = 1,
-                                 dur: float = 1,
-                                 fs: int = 22050,
-                                 tuning_frequency: float = 440,
-                                 fade_dur: float = 0.01):
-    # TODO: adjust to generate_tone_additive_synthesis
-    """Generate fm synthesized tone
 
-    Args:
-        pitch: pitch of the synthesized tone
-        modulation_frequency: frequency to modulate
-        modulation_index: strength of modulation
-        amp: amplitude of resulting signal
-        dur: sonification_duration (in seconds)
-        Fs: Sampling rate
-        tuning_frequency: Tuning frequency
-        fade_dur: Duration of fade in and fade out (to avoid clicks)
+def generate_tone_fm_synthesis(pitch: int = 69,
+                               modulation_frequency_factor: float = 0.0,
+                               modulation_index: float = 0.0,
+                               gain: float = 1.0,
+                               duration_sec: float = 1.0,
+                               fs: int = 22050,
+                               f_tuning: float = 440,
+                               fading_sec: float = 0.01) -> np.ndarray:
+    """Generates signal using frequency modulation synthesis.
 
-    Returns:
-        y: synthesized tone
-        t: time axis (in seconds)
+    Parameters
+    ----------
+    pitch: int, default = 69
+        Pitch of the synthesized tone.
+    modulation_frequency_factor: float, default = 0.0
+        Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.
+    modulation_index: float, default = 0.0
+        Determines the amount of modulation in the generated signal.
+    gain: float, default = 1.0
+        Gain for generated signal
+    duration_sec: float, default = 1.0
+        Duration of generated signal, in seconds.
+    fs: int, default = 22050
+        Sampling rate, in samples per seconds,
+    f_tuning: float, default = 440.0
+        Tuning frequency, given in Hertz.
+    fading_sec: float, default = 0.01
+        Duration of fade in and fade out (to avoid clicks)
+
+    Returns
+    -------
+    generated_tone: np.ndarray
+        Generated signal
+
     """
-    N = int(dur * fs)
+    N = int(duration_sec * fs)
     t = np.arange(N) / fs
-    freq = tuning_frequency * 2 ** ((pitch - 69) / 12)
-    y = np.sin(2 * np.pi * freq * t + modulation_index * np.sin(2 * np.pi * modulation_frequency * t))
-    if not fade_dur == 0:
-        fade_samples = int(fade_dur * fs)
-        y[0:fade_samples] *= np.linspace(0, 1, fade_samples)
-        y[-fade_samples:] *= np.linspace(1, 0, fade_samples)
+    freq = f_tuning * 2 ** ((pitch - 69) / 12)
+    generated_tone = np.sin(2 * np.pi * freq * t + modulation_index * np.sin(2 * np.pi * freq * modulation_frequency_factor * t))
+    if not fading_sec == 0:
+        fade_samples = int(fading_sec * fs)
+        generated_tone[0:fade_samples] *= np.linspace(0, 1, fade_samples)
+        generated_tone[-fade_samples:] *= np.linspace(1, 0, fade_samples)
 
-    return y
+    return generated_tone * gain
