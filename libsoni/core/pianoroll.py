@@ -66,7 +66,7 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
 
     pianoroll_sonification = np.zeros(num_samples)
 
-    if 'velocity' in list(pianoroll_df.columns()) and pianoroll_df['velocity'].max() > 1:
+    if 'velocity' in list(pianoroll_df.columns) and pianoroll_df['velocity'].max() > 1:
         pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
 
     for i, r in pianoroll_df.iterrows():
@@ -130,7 +130,7 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
 
     pianoroll_sonification = np.zeros(num_samples)
 
-    if 'velocity' in list(pianoroll_df.columns()) and pianoroll_df['velocity'].max() > 1:
+    if 'velocity' in list(pianoroll_df.columns) and pianoroll_df['velocity'].max() > 1:
         pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
 
     for i, r in pianoroll_df.iterrows():
@@ -196,7 +196,7 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
 
     pianoroll_sonification = np.zeros(num_samples)
 
-    if 'velocity' in list(pianoroll_df.columns()) and pianoroll_df['velocity'].max() > 1:
+    if 'velocity' in list(pianoroll_df.columns) and pianoroll_df['velocity'].max() > 1:
         pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
 
     for i, r in pianoroll_df.iterrows():
@@ -262,7 +262,7 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
 
     pianoroll_sonification = np.zeros(num_samples)
 
-    if 'velocity' in list(pianoroll_df.columns()) and pianoroll_df['velocity'].max() > 1:
+    if 'velocity' in list(pianoroll_df.columns) and pianoroll_df['velocity'].max() > 1:
         pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
 
     for i, r in pianoroll_df.iterrows():
