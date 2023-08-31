@@ -29,7 +29,7 @@ def sonify_tse_click(time_positions: np.ndarray = None,
         Relative offset coefficient for the beginning of a click. 
         0 indicates that the beginning of the click event is at the time position. 1 indicates the ending of the click
         event corresponds to the time position. 
-    sonification_duration: float, default = None
+    sonification_duration: int, default = None
         Duration of the output waveform, given in samples.
     normalize: bool, default = True
         Decides, if output signal is normalized to [-1,1].
@@ -93,7 +93,7 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
         Relative offset coefficient for the beginning of the given audio sample.
         0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
         corresponding to the time position.
-    sonification_duration: float, default = None
+    sonification_duration: int, default = None
         Duration of the output waveform, given in samples.
     normalize: bool, default = True
         Decides, if output signal is normalized to [-1,1].
@@ -153,7 +153,7 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
     ----------
     times_pitches: List[Tuple[np.ndarray, int]]
         List of tuples comprising the time positions and pitches of the clicks
-    sonification_duration: int
+    sonification_duration: int, default = None
         Duration of the output waveform, given in samples.
     click_fading_duration: float, default = 0.25
         Duration for click signal.
@@ -200,7 +200,7 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
 
 def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray]] = None,
                                 offset_relative: float = 0.0,
-                                duration: int = None,
+                                sonification_duration: int = None,
                                 normalize: bool = True,
                                 fs: int = 22050) -> np.ndarray:
     """Given multiple arrays in form of a list, this function creates the sonification of different sources.
@@ -213,7 +213,7 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
         Relative offset coefficient for the beginning of the given audio sample.
         0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
         corresponding to the time position.
-    duration: int
+    sonification_duration: int, default = None
         Duration of the output waveform, given in samples.
     normalize: bool, default = True
         Decides, if output signal is normalized to [-1,1].
@@ -225,27 +225,27 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
         Sonified waveform in form of a 1D Numpy array.
     """
 
-    if duration is None:
+    if sonification_duration is None:
         max_duration = 0
         max_sample_duration_samples = 0
         for time_sample in times_samples:
             time_positions, sample = time_sample
-            duration = time_positions[-1]
+            sonification_duration = time_positions[-1]
             duration_sample_samples = len(sample)
-            max_duration = duration if duration > max_duration else max_duration
+            max_duration = sonification_duration if sonification_duration > max_duration else max_duration
             max_sample_duration_samples = duration_sample_samples \
                 if duration_sample_samples > max_sample_duration_samples else max_sample_duration_samples
 
-        duration = int(np.ceil(fs * max_duration)) + max_sample_duration_samples
+        sonification_duration = int(np.ceil(fs * max_duration)) + max_sample_duration_samples
 
-    tse_sonification = np.zeros(duration)
+    tse_sonification = np.zeros(sonification_duration)
 
     for times_sample in times_samples:
         time_positions, sample = times_sample
         tse_sonification += sonify_tse_sample(time_positions=time_positions,
                                               sample=sample,
                                               offset_relative=offset_relative,
-                                              sonification_duration=duration,
+                                              sonification_duration=sonification_duration,
                                               fs=fs)
 
     tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
