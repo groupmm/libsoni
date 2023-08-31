@@ -105,7 +105,7 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
         Dictionary of presets in the following key-value pair format:
             {str: np.ndarray}
             preset: time_f0s
-    sonification_duration: int
+    sonification_duration: int, default = None
         Duration of the output waveform, given in samples
     normalize: bool, default = True
         Decides, if output signal is normalized to [-1,1].
