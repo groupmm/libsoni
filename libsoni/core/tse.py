@@ -1,7 +1,8 @@
 import numpy as np
 from typing import List, Tuple
 
-from libsoni.util.utils import generate_click, normalize_signal
+from libsoni.util.utils import normalize_signal
+from libsoni.core.methods import generate_click
 
 
 def sonify_tse_click(time_positions: np.ndarray = None,
