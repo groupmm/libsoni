@@ -1,5 +1,6 @@
 import numpy as np
 
+#TODO: Wavetable synth
 
 def generate_click(pitch: int = 69,
                    amplitude: float = 1.0,

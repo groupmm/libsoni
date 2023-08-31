@@ -7,6 +7,7 @@ import pandas as pd
 from libsoni.util.utils import format_df, warp_sample, normalize_signal
 from libsoni.core.methods import generate_click, generate_tone_additive_synthesis, generate_tone_fm_synthesis
 
+#TODO: Wavetable synth
 
 def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
                                         partials: np.ndarray = np.array([1]),
