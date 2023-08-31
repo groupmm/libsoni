@@ -6,7 +6,7 @@ from libsoni.util.utils import generate_click, normalize_signal
 
 def sonify_tse_click(time_positions: np.ndarray = None,
                      click_pitch: int = 69,
-                     click_reverb_duration: float = 0.25,
+                     click_fading_duration: float = 0.25,
                      click_amplitude: float = 1.0,
                      offset_relative: float = 0.0,
                      sonification_duration: int = None,
@@ -20,8 +20,8 @@ def sonify_tse_click(time_positions: np.ndarray = None,
         Array with time positions for clicks.
     click_pitch: int, default = 69
         Pitch for click signal.
-    click_reverb_duration: float, default = 0.25
-        Duration for click signal.
+    click_fading_duration: float, default = 0.25
+        Fading duration for click signal.
     click_amplitude: float, default = 1.0
         Amplitude for click signal.
     offset_relative: float, default = 0.0
@@ -41,7 +41,7 @@ def sonify_tse_click(time_positions: np.ndarray = None,
         Sonified waveform in form of a 1D Numpy array.
 
     """
-    num_samples = int((time_positions[-1] + click_reverb_duration) * fs)
+    num_samples = int((time_positions[-1] + click_fading_duration) * fs)
     if sonification_duration is None:
         sonification_duration = num_samples
     else:
@@ -54,7 +54,7 @@ def sonify_tse_click(time_positions: np.ndarray = None,
 
     tse_sonification = np.zeros(num_samples)
 
-    click = generate_click(pitch=click_pitch, reverb_duration=click_reverb_duration, amplitude=click_amplitude)
+    click = generate_click(pitch=click_pitch, fading_duration=click_fading_duration, amplitude=click_amplitude)
 
     num_click_samples = len(click)
     offset_samples = int(offset_relative * num_click_samples)
@@ -141,7 +141,7 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
 
 def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = None,
                                sonification_duration: int = None,
-                               click_reverb_duration: float = 0.25,
+                               click_fading_duration: float = 0.25,
                                click_amplitude: float = 1.0,
                                offset_relative: float = 0.0,
                                normalize: bool = True,
@@ -154,7 +154,7 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
         List of tuples comprising the time positions and pitches of the clicks
     sonification_duration: int
         Duration of the output waveform, given in samples.
-    click_reverb_duration: float, default = 0.25
+    click_fading_duration: float, default = 0.25
         Duration for click signal.
     click_amplitude: float, default = 1.0
         Amplitude for click signal.
@@ -177,7 +177,7 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
             sonification_duration = times_pitch[0][-1]
             max_duration = sonification_duration if sonification_duration > max_duration else max_duration
 
-        sonification_duration = int(np.ceil(fs * (max_duration + click_reverb_duration)))
+        sonification_duration = int(np.ceil(fs * (max_duration + click_fading_duration)))
 
     tse_sonification = np.zeros(sonification_duration)
 
@@ -186,7 +186,7 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
 
         tse_sonification += sonify_tse_click(time_positions=time_positions,
                                              click_pitch=pitch,
-                                             click_reverb_duration=click_reverb_duration,
+                                             click_fading_duration=click_fading_duration,
                                              click_amplitude=click_amplitude,
                                              offset_relative=offset_relative,
                                              sonification_duration=sonification_duration,

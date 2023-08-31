@@ -71,7 +71,7 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
 
 def sonify_pianoroll_clicks(time_positions: np.ndarray = None,
                             pitches: np.ndarray = None,
-                            reverb_durations: np.ndarray = None,
+                            fading_durations: np.ndarray = None,
                             velocities: np.ndarray = None,
                             tuning_frequency: float = 440.0,
                             sonification_duration: int = None,
@@ -86,8 +86,8 @@ def sonify_pianoroll_clicks(time_positions: np.ndarray = None,
         1D-array of starting time positions of the pitches in the piano roll
     pitches: np.ndarray
         1D-array of MIDI pitches in the piano roll
-    reverb_durations: np.ndarray
-        1D-array of reverb durations of the clicks. If None, 0.25 seconds are used for each click.
+    fading_durations: np.ndarray
+        1D-array of fading durations of the clicks. If None, 0.25 seconds are used for each click.
     velocities: np.ndarray
         1D-array of key velocities. If None, 1.0 is used for each click.
     tuning_frequency: float, default = 440.0
@@ -104,7 +104,7 @@ def sonify_pianoroll_clicks(time_positions: np.ndarray = None,
     pianoroll_sonification: np.ndarray
         Sonified waveform in form of a 1D Numpy array.
     """
-    num_samples = int(time_positions[-1] * fs) + int(reverb_durations[-1] * fs) if reverb_durations is not None \
+    num_samples = int(time_positions[-1] * fs) + int(fading_durations[-1] * fs) if fading_durations is not None \
         else int(time_positions[-1] * fs) + int(0.25 * fs)
 
     if sonification_duration is not None:
@@ -116,8 +116,8 @@ def sonify_pianoroll_clicks(time_positions: np.ndarray = None,
             time_positions = time_positions[time_positions < duration_in_sec]
             len_cropped_indices = len(time_positions)
             pitches = pitches[:len_cropped_indices] if pitches is not None else pitches
-            reverb_durations = reverb_durations[:len_cropped_indices] if pitches is not None else\
-                reverb_durations
+            fading_durations = fading_durations[:len_cropped_indices] if pitches is not None else\
+                fading_durations
             velocities = velocities[:len_cropped_indices] if velocities is not None else velocities
         num_samples = sonification_duration
 
@@ -128,14 +128,14 @@ def sonify_pianoroll_clicks(time_positions: np.ndarray = None,
 
     for idx in range(len(time_positions)):
         pitch = 69 if pitches is None else pitches[idx]
-        reverb_duration = 0.25 if reverb_durations is None else reverb_durations[idx]
+        fading_duration = 0.25 if fading_durations is None else fading_durations[idx]
         amplitude = 1.0 if velocities is None else velocities[idx]
         start_samples = int(time_positions[idx] * fs)
-        end_samples = start_samples + int(reverb_duration * fs)
+        end_samples = start_samples + int(fading_duration * fs)
 
         click = generate_click(pitch=pitch,
                                amplitude=amplitude,
-                               reverb_duration=reverb_duration,
+                               fading_duration=fading_duration,
                                fs=fs,
                                tuning_frequency=tuning_frequency)
 
