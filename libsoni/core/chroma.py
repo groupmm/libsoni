@@ -1,274 +1,98 @@
 import numpy as np
-from scipy.signal import sawtooth
 
-
-def sonify_chroma(chromagram):
-    # TODO: implement (;
-    return
+from libsoni.util.utils import normalize_signal
+from libsoni.core.methods import generate_shepard_tone
 
 
 
-def shepard_tone(frequencies, amplitude, duration, sample_rate=44100):
-    t = np.linspace(0, duration, int(sample_rate * duration), False)
-    tones = np.zeros_like(t)
-    for freq in frequencies:
-        tones += amplitude * sawtooth(2 * np.pi * freq * t)
-    return tones
+def sonify_chromagram(chromagram: np.ndarray,
+                      H: int = 0,
+                      filter: bool = False,
+                      f_center: float = 440.0,
+                      octave_cutoff: int = 1,
+                      sonification_duration: int = None,
+                      fade_duration: float = 0.05,
+                      normalize: bool = True,
+                      fs: int = 22050,
+                      tuning_frequency: float = 440.0) -> np.ndarray:
+    """Sonify chromagram
 
+        Parameters
+        ----------
+        tuning_frequency
+        chromagram: np.ndarray
+            Chromagram to sonify.
+        H: int, default = 0
+            Hop size of STFT, used to calculate chromagram.
+        filter: bool, default: False
+            decides, if shepard tones are filtered or not
+        f_center : float, default: 440.0
+            center_frequency in Hertz for bell-shaped filter
+        octave_cutoff: int, default: 1
+            determines, at which multiple of f_center, the harmonics get attenuated by 2.
+        sonification_duration: int, default = None
+            Duration of audio, given in samples
+        fade_duration: float, default = 0.05
+            Duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.
+        fs: int, default: 44100
+            sampling rate in Samples/second
+        normalize: bool, default = True
+            Decides, if output signal is normalized to [-1,1].
+        fs: int, default = 22050
+            Sampling rate, in samples per seconds.
+        tuning_frequency : float, default = 440
+            Tuning frequency.
 
-def sonify_chroma_matrix(chroma_matrix, sample_rate=22050, base_frequency=220, duration_per_frame=0.5):
-    num_frames, num_notes = chroma_matrix.shape
-    chroma_notes = len(chroma_matrix[0])
+        Returns
+        -------
+            y: synthesized tone
+        """
+    assert chromagram.shape[0] == 12, f'The chromagram must have shape 12xN.'
 
-    output = np.zeros(0)
+    # Compute frame rate
+    frame_rate = fs / H
 
-    for frame_idx in range(num_frames):
-        active_notes = [note_idx for note_idx, amplitude in enumerate(chroma_matrix[frame_idx]) if amplitude > 0]
-        frequencies = [base_frequency * 2 ** (note_idx / 12.0) for note_idx in active_notes]
-        frame_wave = shepard_tone(frequencies, 0.5, duration_per_frame, sample_rate)
-        output = np.concatenate((output, frame_wave))
+    # Determine length of sonification
+    num_samples = sonification_duration if sonification_duration is not None else int(chromagram.shape[1] * fs / frame_rate)
 
-    return output
+    # Compute length of fading in samples
+    fade_values = int(H / 8)
 
-
-def _list_to_chromagram(note_list, num_frames, frame_rate):
-    """Create a chromagram matrix from a list of note events
-
-    Parameters
-    ----------
-    note_list : List
-        A list of note events (e.g. gathered from a CSV file by libfmp.c1.pianoroll.csv_to_list())
-
-    num_frames : int
-        Desired number of frames for the matrix
-
-    frame_rate : float
-        Frame rate for C (in Hz)
-
-    Returns
-    -------
-    C : NumPy Array
-        Chromagram matrix
-    """
-    C = np.zeros((12, num_frames))
-    for l in note_list:
-        start_frame = max(0, int(l[0] * frame_rate))
-        end_frame = min(num_frames, int((l[0] + l[1]) * frame_rate) + 1)
-        C[int(l[2] % 12), start_frame:end_frame] = 1
-    return C
-
-
-def _generate_shepard_tone(chromaNum, Fs, N, weight=1, Fc=440, sigma=15, phase=0):
-    """
-    inputs:
-        chromaNum: 1=C,...
-        Fs: sampling frequency
-        N: desired length (in samples)
-        weight: scaling factor [0:1]
-        Fc: frequency for A4
-        sigma: parameter for envelope of Shepard tone
-        fading: fading at the beginning and end of the tone (in ms)
-    output:
-        shepard tone
-    """
-    tone = np.zeros(N)
-    # Envelope function for Shepard tones
-    p = 24 + chromaNum
-    if p > 32:
-        p = p - 12
-    while p < 108:
-        scale_factor = 1 / (np.sqrt(2 * np.pi) * sigma)
-        A = scale_factor * np.exp(-(p - 60) ** 2 / (2 * sigma ** 2))
-        f_axis = np.arange(N) / Fs
-        sine = np.sin(2 * np.pi * np.power(2, ((p - 69) / 12)) * Fc * (f_axis + phase))
-        tmp = weight * A * sine
-        tone = tone + tmp
-        p = p + 12
-    return tone
-
-
-def sonify_chromagram(chroma_data, N, frame_rate, Fs, fading_msec=5):
-    """Sonify the chroma features from a chromagram
-
-    Parameters
-    ----------
-    chroma_data : NumPy Array
-        A chromagram (e.g. gathered from a list of note events by list_to_chromagram())
-
-    N : int
-        Length of the sonification (in samples)
-
-    frame_rate : float
-        Frame rate for P (in Hz)
-
-    Fs : float
-        Sampling frequency (in Hz)
-
-    fading_msec : float
-        The length of the fade in and fade out for sonified tones (in msec)
-
-    Returns
-    -------
-    chroma_son : NumPy Array
-        Sonification of the chromagram
-    """
-
-    # empty chromagram
-    chroma_son = np.zeros((N,))
-
-    fade_sample = int(fading_msec / 1000 * Fs)
-
-    # iterate chromagram rows
-
-    for i in range(12):
-
-        # Case: sum of entries in i-th row of chromagram is greater zero
-        if np.sum(np.abs(chroma_data[i, :])) > 0:
-
-            # generate a shepard tone with length of sonification (chromagram)
-
-            shepard_tone = _generate_shepard_tone(i, Fs, N)
-
-            # empty weights
-            weights = np.zeros((N,))
-
-            # iterate chroma columns
-            for j in range(chroma_data.shape[1]):
-
-                # Case: entry [i,j] is greater zero
-                if np.abs(chroma_data[i, j]) > 0:
-                    start = min(N, max(0, int((j - 0.5) * Fs / frame_rate)))
-                    end = min(N, int((j + 0.5) * Fs / frame_rate))
-                    fade_start = min(N, max(0, start + fade_sample))
-                    fade_end = min(N, end + fade_sample)
-
-                    weights[fade_start:end] += chroma_data[i, j]
-                    weights[start:fade_start] += np.linspace(0, chroma_data[i, j], fade_start - start)
-                    weights[end:fade_end] += np.linspace(chroma_data[i, j], 0, fade_end - end)
-
-            chroma_son += shepard_tone * weights
-
-    chroma_son = chroma_son / np.max(np.abs(chroma_son))
-
-    return chroma_son
-
-
-def sonify_chromagram_with_noc(chroma_data,
-                               H,
-                               # frame_rate,
-                               fs=44100,
-                               f_tuning=440.0,
-                               fading_msec=5):
-    """Sonify the chroma features from a chromagram
-
-    Parameters
-    ----------
-    chroma_data : NumPy Array
-        A chromagram (e.g. gathered from a list of note events by list_to_chromagram())
-
-    N : int
-        Length of the sonification (in samples)
-
-    frame_rate : float
-        Frame rate for P (in Hz)
-
-    Fs : float
-        Sampling frequency (in Hz)
-
-    fading_msec : float
-        The length of the fade in and fade out for sonified tones (in msec)
-
-    Returns
-    -------
-    chroma_son : NumPy Array
-        Sonification of the chromagram
-    """
-
-    chroma_sonification = np.zeros((chroma_data.shape[1] * H))
-
-    # iterate pitch classes
+    # Initialize sonification
+    chroma_sonification = np.zeros(num_samples)
 
     for pitch_class in range(12):
+        if np.sum(np.abs(chromagram[pitch_class, :])) > 0:
+            weighting_vector = np.repeat(chromagram[pitch_class, :], 512)
+            weighting_vector_smoothed = np.copy(weighting_vector)
+            for i in range(1, len(weighting_vector)):
+                if weighting_vector[i] != weighting_vector[i - 1]:
+                    frequency = 1
+                    amplitude = (np.abs(weighting_vector[i - 1] - weighting_vector[i])) / 2
 
-        shepard_frequencies = f_tuning * 2 ** ((np.arange(start=24 + pitch_class, stop=127, step=12) - 69) / 12)
+                    x = np.linspace(-1 * (np.pi / 2), np.pi / 2, fade_values) * -1 * np.sign(weighting_vector[i - 1] - weighting_vector[i])
 
-        weights = chroma_data[pitch_class, :]
-        weights_stretched = np.zeros_like(chroma_sonification)
+                    y = amplitude * np.sin(frequency * x) + (weighting_vector[i - 1] + weighting_vector[i]) / 2
 
-        for m in range(chroma_data.shape[1] - 1):
-            weights_stretched[m * H:m + 1 * H] = weights[m]
+                    weighting_vector_smoothed[i - int(fade_values / 2):i - int(fade_values / 2) + len(y)] = y
 
-        for shepard_frequency in shepard_frequencies:
+            shepard_tone = generate_shepard_tone(pitch_class=pitch_class,
+                                                 filter=filter,
+                                                 f_center=f_center,
+                                                 octave_cutoff=octave_cutoff,
+                                                 gain=1,
+                                                 duration_sec=num_samples/fs,
+                                                 fs=fs,
+                                                 f_tuning=tuning_frequency,
+                                                 fade_dur=0)
 
-            phase = 0
-            phase_result = []
+            chroma_sonification += shepard_tone * weighting_vector_smoothed
 
-            for j, weight in enumerate(weights_stretched):
-                phase_step = 2 * np.pi * shepard_frequency * 1 / fs
-                phase += phase_step
-                phase_result.append(phase)
+    # Fading in & out
+    N = np.round(fade_duration * fs).astype(int)
+    chroma_sonification[:N] *= np.sin(np.pi * np.arange(N) / fade_duration / 2 / fs)
+    chroma_sonification[-N:] *= np.cos(np.pi * np.arange(N) / fade_duration / 2 / fs)
 
-        chroma_sonification += np.sin(phase_result)
+    chroma_sonification = normalize_signal(chroma_sonification) if normalize else chroma_sonification
 
     return chroma_sonification
-    #     for i, shepard_frequency in enumerate(shepard_frequencies):
-    #         phase = 0
-    #         phase_result = []
-    #         for frequency in frequency_vector:
-    #             phase_step = 2 * np.pi * frequency * harmonic * 1 / fs
-    #             phase += phase_step
-    #             phase_result.append(phase)
-    #         # generate a shepard tone with length of sonification (chromagram)
-    #         y += np.sin(phase_result) #* harmonics_amplitudes[i]
-    #
-    #         N = int(dur * Fs)
-    #         t = np.arange(N) / Fs
-    #         freqs = f_tuning * 2 ** ((pitch_class + np.arange(12) * 12 - 69) / 12)
-    #         f_log = 2 * np.logspace(1, 4, 20000)
-    #         f_lin = np.linspace(20, 20000, 20000)
-    #         f_center_lin = np.argmin(np.abs(f_log - f_center))
-    #         weights = np.exp(- (f_lin - f_center_lin) ** 2 / (1.4427 * ((octave_cutoff * 2) * 1000) ** 2))
-    #         y = np.zeros(N)
-    #
-    #         for freq in freqs:
-    #             y += weights[np.argmin(np.abs(f_log - freq))] * np.sin(2 * np.pi * freq * t)
-    #
-    #         fade_samples = int(fade_dur * Fs)
-    #         y[0:fade_samples] *= np.linspace(0, 1, fade_samples)
-    #         y[-fade_samples:] *= np.linspace(1, 0, fade_samples)
-    #         y = amp * (y / np.max(y))
-    #         shepard_tone = _generate_shepard_tone(i, Fs, N)
-    #
-    #         # empty weights
-    #         weights = np.zeros((N,))
-    #         tone = np.zeros(N)
-    #         # Envelope function for Shepard tones
-    #         p = 24 + chromaNum
-    #         if p > 32:
-    #             p = p - 12
-    #         while p < 108:
-    #             scale_factor = 1 / (np.sqrt(2 * np.pi) * sigma)
-    #             A = scale_factor * np.exp(-(p - 60) ** 2 / (2 * sigma ** 2))
-    #             f_axis = np.arange(N) / Fs
-    #             sine = np.sin(2 * np.pi * np.power(2, ((p - 69) / 12)) * Fc * (f_axis + phase))
-    #             tmp = weight * A * sine
-    #             tone = tone + tmp
-    #             p = p + 12
-    #
-    #         # iterate chroma columns
-    #         for j in range(chroma_data.shape[1]):
-    #
-    #             # Case: entry [i,j] is greater zero
-    #             if np.abs(chroma_data[i, j]) > 0:
-    #                 start = min(N, max(0, int((j - 0.5) * Fs / frame_rate)))
-    #                 end = min(N, int((j + 0.5) * Fs / frame_rate))
-    #                 fade_start = min(N, max(0, start + fade_sample))
-    #                 fade_end = min(N, end + fade_sample)
-    #
-    #                 weights[fade_start:end] += chroma_data[i, j]
-    #                 weights[start:fade_start] += np.linspace(0, chroma_data[i, j], fade_start - start)
-    #                 weights[end:fade_end] += np.linspace(chroma_data[i, j], 0, fade_end - end)
-    #
-    #         chroma_son += shepard_tone * weights
-    #
-    # chroma_son = chroma_son / np.max(np.abs(chroma_son))
