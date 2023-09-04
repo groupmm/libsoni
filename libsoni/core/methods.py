@@ -106,7 +106,7 @@ def generate_shepard_tone(pitch_class: int = 0,
     if not fading_sec == 0:
         generated_tone = fade_signal(generated_tone, fs=fs, fading_sec=fading_sec)
 
-        return generated_tone * gain
+    return generated_tone * gain
 
 
 def generate_tone_additive_synthesis(pitch: int = 69,
