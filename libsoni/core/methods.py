@@ -218,3 +218,7 @@ def generate_tone_fm_synthesis(pitch: int = 69,
         generated_tone[-fade_samples:] *= np.linspace(1, 0, fade_samples)
 
     return generated_tone * gain
+
+def generate_tone_wavetable():
+    # TODO: implement (;
+    return
