@@ -19,7 +19,7 @@ def generate_click(pitch: int = 69,
         Fading duration of click signal.
     fs : int, default = 22050
         Sampling rate.
-    tuning_frequency : int, default = 440
+    tuning_frequency : float, default = 440
         Tuning frequency.
     Returns
     -------
@@ -39,8 +39,8 @@ def generate_shepard_tone(pitch_class: int = 0,
                           f_center: float = 440.0,
                           octave_cutoff: int = 1,
                           gain: float = 1.0,
-                          duration: float = 1.0,
-                          fs: int = 44100,
+                          duration_sec: float = 1.0,
+                          fs: int = 22050,
                           f_tuning: float = 440,
                           fade_dur: float = 0.01,
                           ) -> np.ndarray:
@@ -73,12 +73,12 @@ def generate_shepard_tone(pitch_class: int = 0,
     """
     assert 0 <= pitch_class <= 11, "pitch class out of range"
 
-    N = int(duration * fs)
+    N = int(duration_sec*fs)
     t = np.arange(N) / fs
     freqs = f_tuning * 2 ** ((pitch_class + np.arange(11) * 12 - 69) / 12)
     y = np.zeros(N)
 
-    if duration < fade_dur * 2:
+    if duration_sec < fade_dur * 2:
         return y
     if filter:
         f_log = 2 * np.logspace(1, 4, 20000)
@@ -92,11 +92,11 @@ def generate_shepard_tone(pitch_class: int = 0,
     else:
         for freq in freqs:
             y += np.sin(2 * np.pi * freq * t)
+    if fade_dur > 0:
+        fade_samples = int(fade_dur * fs)
 
-    fade_samples = int(fade_dur * fs)
-
-    y[0:fade_samples] *= np.linspace(0, 1, fade_samples)
-    y[-fade_samples:] *= np.linspace(1, 0, fade_samples)
+        y[0:fade_samples] *= np.linspace(0, 1, fade_samples)
+        y[-fade_samples:] *= np.linspace(1, 0, fade_samples)
 
     return y * gain
 
