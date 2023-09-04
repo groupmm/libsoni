@@ -1,6 +1,5 @@
 import numpy as np
 
-#TODO: Wavetable synth
 
 def generate_click(pitch: int = 69,
                    amplitude: float = 1.0,
@@ -56,10 +55,10 @@ def generate_shepard_tone(pitch_class: int = 0,
         center_frequency in Hertz for bell-shaped filter
     octave_cutoff: int, default: 1
         determines, at which multiple of f_center, the harmonics get attenuated by 2.
-    amplitude: float, default: 1.0
-        amplitude of resulting signal
-    duration: float, default: 1.0
-        sonification_duration (in seconds)
+    gain: float, default: 1.0
+        gain of resulting signal
+    duration_sec: float, default: 1.0
+        duration of generated signal (in seconds)
     fs: int, default: 44100
         sampling rate in Samples/second
     f_tuning: float, default: 440.0
