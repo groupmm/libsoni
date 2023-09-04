@@ -2,13 +2,11 @@ import numpy as np
 import pandas as pd
 import librosa
 from matplotlib import pyplot as plt
-from matplotlib import patches
 import os
 import json
 import libfmp.b
 import libfmp.c6
 from typing import Dict
-from IPython import display as ipd
 
 SAMPLES = ['bass-drum', 'click', 'hi-hat']
 try:
@@ -17,6 +15,29 @@ except:
     # TODO: Clean up this mess, this is a workaround for the Sphinx documentation
     PRESETS = json.load(open(os.path.join('..', '..', 'libsoni', 'libsoni', 'util', 'presets.json')))
 
+
+def fade_signal(signal: np.ndarray = None,
+                fs: int = 22050,
+                fading_sec: float = 0.01) -> np.ndarray:
+    """Fade in / out audio signal
+    Parameters
+    ----------
+    signal: np.ndarray, default = None
+        Signal to be faded
+    fs: int, default = 22050
+        sampling rate
+    fading_sec: float, default = 0
+    Returns
+    -------
+    normalized_signal: np.ndarray
+        Normalized signal
+    """
+    num_samples = int(fading_sec * fs)
+    assert len(signal) > 2*num_samples, 'The signal to be faded must be longer than two times the fading duration!'
+
+    signal[:num_samples] *= np.sin(np.pi * np.arange(num_samples) / fading_sec / 2 / fs)
+    signal[-num_samples:] *= np.cos(np.pi * np.arange(num_samples) / fading_sec / 2 / fs)
+    return signal
 
 def normalize_signal(signal: np.ndarray) -> np.ndarray:
     """Normalize audio signal
@@ -39,6 +60,7 @@ def warp_sample(sample: np.ndarray,
                 target_duration_sec: float,
                 fs=22050):
     """TODO: Docstrings
+       TODO: fading?
     Parameters
     ----------
     sample
@@ -59,8 +81,13 @@ def warp_sample(sample: np.ndarray,
 
     rate = len(sample) / int(target_duration_sec * fs)
 
-    time_streched_sample = librosa.effects.time_stretch(y=pitch_shifted_sample,
-                                                        rate=rate)
+    if int(target_duration_sec*fs) < len(sample):
+
+        time_streched_sample = pitch_shifted_sample[:int(target_duration_sec*fs)]
+    #TODO: handle case, that duration is longer than sample
+    else:
+        time_streched_sample = librosa.effects.time_stretch(y=pitch_shifted_sample,
+                                                            rate=rate)
 
     return time_streched_sample
 
