@@ -1,12 +1,13 @@
 import numpy as np
+from typing import Tuple
 
 from libsoni.util.utils import normalize_signal
 from libsoni.core.methods import generate_shepard_tone
 
 
-
 def sonify_chromagram(chromagram: np.ndarray,
                       H: int = 0,
+                      pitch_range: Tuple[np.ndarray, int] = [20, 108],
                       filter: bool = False,
                       f_center: float = 440.0,
                       octave_cutoff: int = 1,
@@ -19,11 +20,12 @@ def sonify_chromagram(chromagram: np.ndarray,
 
         Parameters
         ----------
-        tuning_frequency
         chromagram: np.ndarray
             Chromagram to sonify.
         H: int, default = 0
             Hop size of STFT, used to calculate chromagram.
+        pitch_range: Tuple[int, int], default = [20,108]
+            pitches to encounter in shepard tone
         filter: bool, default: False
             decides, if shepard tones are filtered or not
         f_center : float, default: 440.0
@@ -77,11 +79,12 @@ def sonify_chromagram(chromagram: np.ndarray,
                     weighting_vector_smoothed[i - int(fade_values / 2):i - int(fade_values / 2) + len(y)] = y
 
             shepard_tone = generate_shepard_tone(pitch_class=pitch_class,
+                                                 pitch_range=pitch_range,
                                                  filter=filter,
                                                  f_center=f_center,
                                                  octave_cutoff=octave_cutoff,
                                                  gain=1,
-                                                 duration_sec=num_samples/fs,
+                                                 duration_sec=num_samples / fs,
                                                  fs=fs,
                                                  f_tuning=tuning_frequency,
                                                  fade_dur=0)
