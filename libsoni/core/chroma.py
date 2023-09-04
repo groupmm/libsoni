@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Tuple
 
-from libsoni.util.utils import normalize_signal
+from libsoni.util.utils import normalize_signal, fade_signal
 from libsoni.core.methods import generate_shepard_tone
 
 
@@ -87,14 +87,14 @@ def sonify_chromagram(chromagram: np.ndarray,
                                                  duration_sec=num_samples / fs,
                                                  fs=fs,
                                                  f_tuning=tuning_frequency,
-                                                 fade_dur=0)
+                                                 fading_sec=0)
 
-            chroma_sonification += shepard_tone * weighting_vector_smoothed
+            chroma_sonification += (shepard_tone * weighting_vector_smoothed)
 
     # Fading in & out
     N = np.round(fade_duration * fs).astype(int)
-    chroma_sonification[:N] *= np.sin(np.pi * np.arange(N) / fade_duration / 2 / fs)
-    chroma_sonification[-N:] *= np.cos(np.pi * np.arange(N) / fade_duration / 2 / fs)
+
+    chroma_sonification = fade_signal(chroma_sonification, fs=fs, fading_sec=fade_duration)
 
     chroma_sonification = normalize_signal(chroma_sonification) if normalize else chroma_sonification
 
