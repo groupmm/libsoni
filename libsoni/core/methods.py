@@ -37,7 +37,7 @@ def generate_click(pitch: int = 69,
 
 
 def generate_shepard_tone(pitch_class: int = 0,
-                          pitch_range: Tuple[np.ndarray, int] = [20, 108],
+                          pitch_range: Tuple[np.ndarray, int] = (0, 127),
                           filter: bool = False,
                           f_center: float = 440.0,
                           octave_cutoff: int = 1,

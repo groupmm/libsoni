@@ -7,7 +7,7 @@ from libsoni.core.methods import generate_shepard_tone
 
 def sonify_chromagram(chromagram: np.ndarray,
                       H: int = 0,
-                      pitch_range: Tuple[np.ndarray, int] = [20, 108],
+                      pitch_range: Tuple[int, int] = (20, 108),
                       filter: bool = False,
                       f_center: float = 440.0,
                       octave_cutoff: int = 1,
@@ -90,9 +90,6 @@ def sonify_chromagram(chromagram: np.ndarray,
                                                  fading_sec=0)
 
             chroma_sonification += (shepard_tone * weighting_vector_smoothed)
-
-    # Fading in & out
-    N = np.round(fade_duration * fs).astype(int)
 
     chroma_sonification = fade_signal(chroma_sonification, fs=fs, fading_sec=fade_duration)
 
