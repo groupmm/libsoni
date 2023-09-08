@@ -200,7 +200,7 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
         pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
 
     for i, r in pianoroll_df.iterrows():
-        # TODO: use velocity as scaling?
+        # TODO: use velocity as scaling -> yes
         start_samples = int(r['start'] * fs)
         warped_sample = warp_sample(sample=sample,
                                     reference_pitch=reference_pitch,

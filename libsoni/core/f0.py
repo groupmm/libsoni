@@ -1,10 +1,11 @@
 import numpy as np
-from typing import Dict
+from typing import Dict, Optional
 
 from libsoni.util.utils import get_preset, normalize_signal
 
 
 def sonify_f0(time_f0: np.ndarray,
+              confidence: Optional[np.ndarray, None],
               partials: np.ndarray = np.array([1]),
               partials_amplitudes: np.ndarray = np.array([1]),
               sonification_duration: int = None,
@@ -15,7 +16,8 @@ def sonify_f0(time_f0: np.ndarray,
     The sonification is related to the principle of a so-called numerical oscillator.
     The parameters partials and partials_amplitudes can be used to generate a desired sound through a specific
     overtone behavior.
-
+    # TODO: Incorporate 'confidence'
+    # TODO: Omit consecutive 0 Hz entries in f0 -> efficiency
     Parameters
     ----------
     time_f0: np.ndarray
