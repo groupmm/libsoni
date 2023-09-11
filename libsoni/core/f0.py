@@ -21,7 +21,7 @@ def sonify_f0(time_f0: np.ndarray,
     Parameters
     ----------
     time_f0: np.ndarray
-        2D array of time positions and f0s
+        2D array of time positions and f0s.
     partials: np.ndarray, default = [1]
         An array containing the desired partials of the fundamental frequencies for sonification.
             An array [1] leads to sonification with only the fundamental frequency core,
