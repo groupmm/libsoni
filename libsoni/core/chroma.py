@@ -65,7 +65,7 @@ def sonify_chromagram(chromagram: np.ndarray,
 
     for pitch_class in range(12):
         if np.sum(np.abs(chromagram[pitch_class, :])) > 0:
-            weighting_vector = np.repeat(chromagram[pitch_class, :], 512)
+            weighting_vector = np.repeat(chromagram[pitch_class, :], H)
             weighting_vector_smoothed = np.copy(weighting_vector)
             for i in range(1, len(weighting_vector)):
                 if weighting_vector[i] != weighting_vector[i - 1]:
