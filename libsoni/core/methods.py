@@ -104,7 +104,7 @@ def generate_shepard_tone(pitch_class: int = 0,
             generated_tone += np.sin(2 * np.pi * freq * t)
 
     if not fading_sec == 0:
-        generated_tone = fade_signal(generated_tone, fs=fs, fading_sec=fading_sec)
+        generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_sec=fading_sec)
 
     return generated_tone * gain
 
@@ -174,7 +174,7 @@ def generate_tone_additive_synthesis(pitch: int = 69,
         generated_tone += partial_amplitude * np.sin(2 * np.pi * pitch_frequency * partial * t + partials_phase_offset)
 
     if not fading_sec == 0:
-        generated_tone = fade_signal(generated_tone, fs=fs, fading_sec=fading_sec)
+        generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_sec=fading_sec)
 
     return generated_tone * gain
 
@@ -219,7 +219,7 @@ def generate_tone_fm_synthesis(pitch: int = 69,
     freq = f_tuning * 2 ** ((pitch - 69) / 12)
     generated_tone = np.sin(2 * np.pi * freq * t + mod_amp * np.sin(2 * np.pi * freq * mod_rate_relative * t))
     if not fading_sec == 0:
-        generated_tone = fade_signal(generated_tone, fs=fs, fading_sec=fading_sec)
+        generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_sec=fading_sec)
 
     return generated_tone * gain
 
@@ -265,6 +265,6 @@ def generate_tone_wavetable(pitch: int = 69,
     generated_tone = np.array(generated_tone)
 
     if not fading_sec == 0:
-        generated_tone = fade_signal(generated_tone, fs=fs, fading_sec=fading_sec)
+        generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_sec=fading_sec)
 
     return generated_tone * gain
