@@ -5,7 +5,7 @@ from libsoni.util.utils import get_preset, normalize_signal
 
 
 def sonify_f0(time_f0: np.ndarray,
-              confidence: Optional[np.ndarray, None],
+              confidence: np.ndarray = None,
               partials: np.ndarray = np.array([1]),
               partials_amplitudes: np.ndarray = np.array([1]),
               sonification_duration: int = None,
@@ -22,6 +22,8 @@ def sonify_f0(time_f0: np.ndarray,
     ----------
     time_f0: np.ndarray
         2D array of time positions and f0s.
+    confidence: np.ndarray, default = None
+        An array containing confidence values for f0-values.
     partials: np.ndarray, default = [1]
         An array containing the desired partials of the fundamental frequencies for sonification.
             An array [1] leads to sonification with only the fundamental frequency core,
@@ -44,7 +46,19 @@ def sonify_f0(time_f0: np.ndarray,
     y: np.ndarray
         Sonified f0-trajectory.
     """
-    # TODO: check for case, that time_positions are not monotonous (Sorting?)
+    if confidence is None:
+
+        # Omit consecutive and equal frequency values:
+        time_f0_omitted = np.copy(time_f0)
+        rows_to_delete = []
+        for i, row in enumerate(time_f0):
+            if i < time_f0.shape[0] - 1 and time_f0[i + 1, 1] == time_f0[i, 1]:
+                rows_to_delete.append(i)
+        time_f0 = np.delete(time_f0_omitted, rows_to_delete, axis=0)
+
+    else:
+        assert time_f0.shape[0] == len(confidence), 'Array for confidence must have same length as time_f0.'
+
     time_positions = time_f0[:, 0]
     f0s = time_f0[:, 1]
     num_samples = int(time_positions[-1] * fs)
@@ -70,27 +84,26 @@ def sonify_f0(time_f0: np.ndarray,
 
         num_samples = int(time_positions[-1] * fs)
 
-    f0s_streched = np.zeros(num_samples)
+    f0s_stretched = np.zeros(num_samples)
     f0_sonification = np.zeros(num_samples)
 
-    # Strech f0s_streched to match the given time positions.
+    # Strech f0s_stretched to match the given time positions.
     for i, (time, f0) in enumerate(zip(time_positions, f0s)):
         if i == time_positions.shape[0] - 1:
             if not shorter_duration:
-                f0s_streched[int(time_positions[i] * fs):] = 0.0
+                f0s_stretched[int(time_positions[i] * fs):] = 0.0
         else:
             next_time = time_positions[i+1]
-            f0s_streched[int(time*fs):int(next_time*fs)] = f0
+            f0s_stretched[int(time*fs):int(next_time*fs)] = f0
 
     #
     for partial, partial_amplitude in zip(partials, partials_amplitudes):
         phase = 0
         phase_result = []
-        for f0 in f0s_streched:
+        for f0 in f0s_stretched:
             phase_step = 2 * np.pi * f0 * partial * 1 / fs
             phase += phase_step
             phase_result.append(phase)
-
         f0_sonification += np.sin(phase_result) * partial_amplitude
 
     # Fading in & out
