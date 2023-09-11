@@ -180,8 +180,8 @@ def generate_tone_additive_synthesis(pitch: int = 69,
 
 
 def generate_tone_fm_synthesis(pitch: int = 69,
-                               modulation_frequency_factor: float = 0.0,
-                               modulation_index: float = 0.0,
+                               mod_rate_relative: float = 0.0,
+                               mod_amp: float = 0.0,
                                gain: float = 1.0,
                                duration_sec: float = 1.0,
                                fs: int = 22050,
@@ -193,9 +193,9 @@ def generate_tone_fm_synthesis(pitch: int = 69,
     ----------
     pitch: int, default = 69
         Pitch of the synthesized tone.
-    modulation_frequency_factor: float, default = 0.0
+    mod_rate_relative: float, default = 0.0
         Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.
-    modulation_index: float, default = 0.0
+    mod_amp: float, default = 0.0
         Determines the amount of modulation in the generated signal.
     gain: float, default = 1.0
         Gain for generated signal
@@ -217,7 +217,7 @@ def generate_tone_fm_synthesis(pitch: int = 69,
     N = int(duration_sec * fs)
     t = np.arange(N) / fs
     freq = f_tuning * 2 ** ((pitch - 69) / 12)
-    generated_tone = np.sin(2 * np.pi * freq * t + modulation_index * np.sin(2 * np.pi * freq * modulation_frequency_factor * t))
+    generated_tone = np.sin(2 * np.pi * freq * t + mod_amp * np.sin(2 * np.pi * freq * mod_rate_relative * t))
     if not fading_sec == 0:
         generated_tone = fade_signal(generated_tone, fs=fs, fading_sec=fading_sec)
 

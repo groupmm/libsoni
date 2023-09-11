@@ -216,8 +216,8 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
 
 
 def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
-                                  modulation_frequency_factor: float = 0.0,
-                                  modulation_index: float = 0.0,
+                                  mod_rate_relative: float = 0.0,
+                                  mod_amp: float = 0.0,
                                   tuning_frequency: float = 440.0,
                                   sonification_duration: int = None,
                                   normalize: bool = True,
@@ -229,9 +229,9 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
     ----------
     pianoroll_df: pd.DataFrame
         Dataframe
-    modulation_frequency_factor: float, default = 0.0
+    mod_rate_relative: float, default = 0.0
         Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.
-    modulation_index: float, default = 0.0
+    mod_amp: float, default = 0.0
         Determines the amount of modulation in the generated signal.
     tuning_frequency: float, default = 440.0
         Tuning frequency in Her
@@ -272,8 +272,8 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
 
         pianoroll_sonification[start_samples:start_samples + duration_samples] += \
             generate_tone_fm_synthesis(pitch=r['pitch'],
-                                       modulation_frequency_factor=modulation_frequency_factor,
-                                       modulation_index=modulation_index,
+                                       mod_rate_relative=mod_rate_relative,
+                                       mod_amp=mod_amp,
                                        gain=amplitude,
                                        duration_sec=r['duration'],
                                        fs=fs,
