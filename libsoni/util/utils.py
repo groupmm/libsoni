@@ -59,37 +59,47 @@ def warp_sample(sample: np.ndarray,
                 target_pitch: int,
                 target_duration_sec: float,
                 fs=22050):
-    """TODO: Docstrings
-       TODO: fading?
+    """This function warps a sample. Given the reference pitch of the sample provided as np.ndarray,
+    the warped version of the sample gets pitch-shifted using librosa.effects.pitch_shift().
+    For the temporal alignment, if the desired duration is shorter than the original sample, the sample gets cropped,
+    else if the desired duration is longer of the provided sample, the returned signal gets zero-padded at the end.
     Parameters
     ----------
-    sample
-    reference_pitch
-    target_pitch
-    target_duration_sec
-    fs
-
+    sample: np.ndarray
+        Sample to be warped.
+    reference_pitch: int
+        Reference pitch for the given sample.
+    target_pitch: int
+        Target pitch for the warped sample.
+    target_duration_sec: float
+        Duration, given in seconds, for the returned signal.
+    fs: int, default = 22050
+        Sampling rate, in samples per seconds.
     Returns
     -------
-
+    warped_sample: np.ndarray
+        Warped sample.
     """
+    # Compute pitch difference
     pitch_steps = target_pitch - reference_pitch
 
+    # Apply pitch-shifting to original sample
     pitch_shifted_sample = librosa.effects.pitch_shift(y=sample,
                                                        sr=fs,
                                                        n_steps=pitch_steps)
 
-    rate = len(sample) / int(target_duration_sec * fs)
+    # Case: target duration is shorter than sample -> cropping
+    if int(target_duration_sec*fs) <= len(sample):
 
-    if int(target_duration_sec*fs) < len(sample):
+        warped_sample = pitch_shifted_sample[:int(target_duration_sec*fs)]
 
-        time_streched_sample = pitch_shifted_sample[:int(target_duration_sec*fs)]
-    #TODO: handle case, that duration is longer than sample
+    # Case: target duration is longer than sample -> zero-filling
     else:
-        time_streched_sample = librosa.effects.time_stretch(y=pitch_shifted_sample,
-                                                            rate=rate)
 
-    return time_streched_sample
+        warped_sample = np.zeros(int(target_duration_sec*fs))
+        warped_sample[:len(sample)] = sample
+
+    return warped_sample
 
 
 def get_preset(preset_name: str = None) -> Dict:
