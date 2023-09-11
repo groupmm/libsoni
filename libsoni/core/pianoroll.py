@@ -4,7 +4,7 @@ from matplotlib import patches
 import numpy as np
 import pandas as pd
 
-from libsoni.util.utils import format_df, warp_sample, normalize_signal
+from libsoni.util.utils import format_df, warp_sample, normalize_signal, fade_signal
 from libsoni.core.methods import generate_click, generate_tone_additive_synthesis, generate_tone_fm_synthesis
 
 
@@ -146,6 +146,7 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
                                                                                                  tuning_frequency=
                                                                                                  tuning_frequency)
 
+    # Normalization
     pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
 
     return pianoroll_sonification
