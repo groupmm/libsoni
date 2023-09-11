@@ -58,7 +58,8 @@ def warp_sample(sample: np.ndarray,
                 reference_pitch: int,
                 target_pitch: int,
                 target_duration_sec: float,
-                fs=22050):
+                fs=22050,
+                fading_sec: float = 0.01):
     """This function warps a sample. Given the reference pitch of the sample provided as np.ndarray,
     the warped version of the sample gets pitch-shifted using librosa.effects.pitch_shift().
     For the temporal alignment, if the desired duration is shorter than the original sample, the sample gets cropped,
@@ -75,6 +76,8 @@ def warp_sample(sample: np.ndarray,
         Duration, given in seconds, for the returned signal.
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
+    fading_sec: float, default = 0.01
+        Duration of fade in and fade out (to avoid clicks)
     Returns
     -------
     warped_sample: np.ndarray
@@ -98,6 +101,9 @@ def warp_sample(sample: np.ndarray,
 
         warped_sample = np.zeros(int(target_duration_sec*fs))
         warped_sample[:len(sample)] = sample
+
+    if not fading_sec == 0:
+        warped_sample = fade_signal(signal=warped_sample, fs=fs, fading_sec=fading_sec)
 
     return warped_sample
 
