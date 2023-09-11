@@ -268,3 +268,32 @@ def generate_tone_wavetable(pitch: int = 69,
         generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_sec=fading_sec)
 
     return generated_tone * gain
+
+def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
+                                      partials: np.ndarray = np.array([1]),
+                                      partials_amplitudes: np.ndarray = None,
+                                      partials_phase_offsets: np.ndarray = None,
+                                      gain_vector: np.ndarray = None,
+                                      duration_sec: float = 1.0,
+                                      fs: int = 22050,
+                                      f_tuning: float = 440,
+                                      fading_sec: float = 0.01) -> np.ndarray:
+
+    generated_tone = np.zeros(len(gain_vector))
+
+    phase = 0
+    phase_result = []
+    for frequency, gain in zip(frequency_vector, gain_vector):
+        phase_step = 2 * np.pi * frequency * 1 / fs
+        phase += phase_step
+        phase_result.append(phase)
+
+    generated_tone += np.sin(phase_result)
+    #print(generated_tone)
+    #for partial, partial_amplitude in zip(partials, partials_amplitudes):
+
+        #generated_tone += np.sin(phase_result*partial) * partial_amplitude
+
+    generated_tone = np.multiply(generated_tone, gain_vector)
+
+    return generated_tone
