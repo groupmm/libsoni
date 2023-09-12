@@ -6,7 +6,7 @@ import os
 import re
 import sys
 
-#sys.path.insert(0, os.path.abspath(os.path.join('..', '..', '..', '..')))
+sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
 LIBSONI_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 assert os.path.exists(os.path.join(LIBSONI_DIR, 'libsoni'))
 sys.path.insert(0, LIBSONI_DIR)

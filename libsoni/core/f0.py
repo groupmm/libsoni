@@ -1,5 +1,5 @@
 import numpy as np
-from typing import Dict, Optional
+from typing import Dict
 
 from libsoni.util.utils import get_preset, normalize_signal
 
@@ -16,8 +16,7 @@ def sonify_f0(time_f0: np.ndarray,
     The sonification is related to the principle of a so-called numerical oscillator.
     The parameters partials and partials_amplitudes can be used to generate a desired sound through a specific
     overtone behavior.
-    # TODO: Incorporate 'confidence'
-    # TODO: Omit consecutive 0 Hz entries in f0 -> efficiency
+
     Parameters
     ----------
     time_f0: np.ndarray
@@ -46,6 +45,8 @@ def sonify_f0(time_f0: np.ndarray,
     y: np.ndarray
         Sonified f0-trajectory.
     """
+    # TODO: Incorporate 'confidence'
+    # TODO: Omit consecutive 0 Hz entries in f0 -> efficiency
     if gains is not None:
         assert len(gains) == time_f0.shape[0], 'Array for confidence must have same length as time_f0.'
 
@@ -87,10 +88,9 @@ def sonify_f0(time_f0: np.ndarray,
                 f0s_stretched[int(time_positions[i] * fs):] = 0.0
                 gains[int(time_positions[i] * fs):] = 0.0
         else:
-            next_time = time_positions[i+1]
-            f0s_stretched[int(time*fs):int(next_time*fs)] = f0
-            gains[int(time*fs):int(next_time*fs)] = gain
-
+            next_time = time_positions[i + 1]
+            f0s_stretched[int(time * fs):int(next_time * fs)] = f0
+            gains[int(time * fs):int(next_time * fs)] = gain
 
     # This loop can be made better
     for partial, partial_amplitude in zip(partials, partials_amplitudes):

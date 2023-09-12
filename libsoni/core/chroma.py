@@ -1,8 +1,14 @@
 import numpy as np
 from typing import Tuple
 
-from libsoni.util.utils import normalize_signal, fade_signal
+from libsoni.util.utils import normalize_signal, fade_signal, smooth_weights
 from libsoni.core.methods import generate_shepard_tone
+
+
+def sonify_chroma_vector():
+    #TODO: DocString
+    #TODO: Implement
+    return
 
 
 def sonify_chromagram(chromagram: np.ndarray,
@@ -55,10 +61,8 @@ def sonify_chromagram(chromagram: np.ndarray,
     frame_rate = fs / H
 
     # Determine length of sonification
-    num_samples = sonification_duration if sonification_duration is not None else int(chromagram.shape[1] * fs / frame_rate)
-
-    # Compute length of fading in samples
-    fade_values = int(H / 8)
+    num_samples = sonification_duration if sonification_duration is not None else int(
+        chromagram.shape[1] * fs / frame_rate)
 
     # Initialize sonification
     chroma_sonification = np.zeros(num_samples)
@@ -66,17 +70,7 @@ def sonify_chromagram(chromagram: np.ndarray,
     for pitch_class in range(12):
         if np.sum(np.abs(chromagram[pitch_class, :])) > 0:
             weighting_vector = np.repeat(chromagram[pitch_class, :], H)
-            weighting_vector_smoothed = np.copy(weighting_vector)
-            for i in range(1, len(weighting_vector)):
-                if weighting_vector[i] != weighting_vector[i - 1]:
-                    frequency = 1
-                    amplitude = (np.abs(weighting_vector[i - 1] - weighting_vector[i])) / 2
-
-                    x = np.linspace(-1 * (np.pi / 2), np.pi / 2, fade_values) * -1 * np.sign(weighting_vector[i - 1] - weighting_vector[i])
-
-                    y = amplitude * np.sin(frequency * x) + (weighting_vector[i - 1] + weighting_vector[i]) / 2
-
-                    weighting_vector_smoothed[i - int(fade_values / 2):i - int(fade_values / 2) + len(y)] = y
+            weighting_vector_smoothed = smooth_weights(weights=weighting_vector, fading_samples=int(H / 8))
 
             shepard_tone = generate_shepard_tone(pitch_class=pitch_class,
                                                  pitch_range=pitch_range,

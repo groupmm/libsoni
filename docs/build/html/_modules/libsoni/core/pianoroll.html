@@ -30,7 +30,7 @@
           
           <a href="../../../index.html" class="icon icon-home">
             libsoni
-              <img src="../../../_static/audiolabs.png" class="logo" alt="Logo"/>
+              <img src="../../../_static/libsoni_logo.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -76,146 +76,80 @@
            <div itemprop="articleBody">
              
   <h1>Source code for libsoni.core.pianoroll</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span> <span class="nn">libfmp.b</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">patches</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="kn">from</span> <span class="nn">libsoni.util.utils</span> <span class="kn">import</span> <span class="n">generate_click</span><span class="p">,</span> <span class="n">generate_tone_additive_synthesis</span><span class="p">,</span> <span class="n">format_df</span><span class="p">,</span> <span class="n">warp_sample</span>
+<span class="kn">from</span> <span class="nn">libsoni.util.utils</span> <span class="kn">import</span> <span class="n">format_df</span><span class="p">,</span> <span class="n">warp_sample</span><span class="p">,</span> <span class="n">normalize_signal</span><span class="p">,</span> <span class="n">fade_signal</span>
+<span class="kn">from</span> <span class="nn">libsoni.core.methods</span> <span class="kn">import</span> <span class="n">generate_click</span><span class="p">,</span> <span class="n">generate_tone_additive_synthesis</span><span class="p">,</span> <span class="n">generate_tone_fm_synthesis</span>
 
 
-<div class="viewcode-block" id="sonify_pianoroll_sample"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_sample">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_sample</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-                            <span class="n">sample</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                            <span class="n">reference_pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
-                            <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                            <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="c1"># TODO: Wavetable synth</span>
+
+<div class="viewcode-block" id="sonify_pianoroll_additive_synthesis"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_additive_synthesis">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_additive_synthesis</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                                        <span class="n">partials</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
+                                        <span class="n">partials_amplitudes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                        <span class="n">partials_phase_offsets</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                        <span class="n">tuning_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">440.0</span><span class="p">,</span>
+                                        <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                        <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                        <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function sonifies a pianoroll representation containing pitch events described by start, duration or end</span>
-<span class="sd">        and the corresponding pitch with pitch-shifted and time-warped versions of a sample.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        pianoroll_df: pd.DataFrame</span>
-<span class="sd">            Data Frame containing pitch events.</span>
-<span class="sd">        sample: np.ndarray</span>
-<span class="sd">            Sample</span>
-<span class="sd">        sample_pitch: int, default = 69</span>
-<span class="sd">            Pitch of the Sample</span>
-<span class="sd">        duration: float, default = None</span>
-<span class="sd">            Duration of the output waveform, given in samples.</span>
-<span class="sd">        fs: int, default = 22050</span>
-<span class="sd">            Sampling rate</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        pianoroll_sonification: np.ndarray</span>
-<span class="sd">            Sonified waveform in form of a 1D Numpy array.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-    <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">format_df</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">)</span>
-    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">duration</span> <span class="o">==</span> <span class="n">num_samples</span><span class="p">:</span>
-            <span class="k">pass</span>
-
-        <span class="k">elif</span> <span class="n">duration</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
-            <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">duration</span><span class="p">]</span>
-            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">duration</span><span class="p">]</span> <span class="o">=</span> <span class="n">duration</span>
-            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
-
-        <span class="n">num_samples</span> <span class="o">=</span> <span class="n">duration</span>
-
-    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pianoroll_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-        <span class="n">start_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
-        <span class="n">warped_sample</span> <span class="o">=</span> <span class="n">warp_sample</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span>
-                                    <span class="n">reference_pitch</span><span class="o">=</span><span class="n">reference_pitch</span><span class="p">,</span>
-                                    <span class="n">target_pitch</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;pitch&#39;</span><span class="p">],</span>
-                                    <span class="n">target_duration_sec</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">],</span>
-                                    <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-
-        <span class="n">pianoroll_sonification</span><span class="p">[</span><span class="n">start_samples</span><span class="p">:</span><span class="n">start_samples</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">warped_sample</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">warped_sample</span>
-
-    <span class="k">return</span> <span class="n">pianoroll_sonification</span></div>
-
-
-<div class="viewcode-block" id="sonify_pianoroll_clicks"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_clicks">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_clicks</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-                            <span class="n">tuning_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">440.0</span><span class="p">,</span>
-                            <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                            <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function sonifies a pianoroll representation containing pitch events described by start, duration or end</span>
-<span class="sd">    and the corresponding pitch with coloured clicks.</span>
+<span class="sd">    and the corresponding pitch with additive synthesis.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
-<span class="sd">        Data Frame containing pitch events.</span>
+<span class="sd">        Dataframe</span>
+<span class="sd">    partials: np.ndarray, default = [1]</span>
+<span class="sd">        An array containing the desired partials of the fundamental frequencies for sonification.</span>
+<span class="sd">            An array [1] leads to sonification with only the fundamental frequency core,</span>
+<span class="sd">            while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.</span>
+<span class="sd">    partials_amplitudes: np.ndarray, default = [1]</span>
+<span class="sd">        Array containing the amplitudes for partials.</span>
+<span class="sd">            An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,</span>
+<span class="sd">            while the sinusoid with frequency 2*core has amplitude 0.5.</span>
+<span class="sd">    partials_phase_offsets: np.ndarray, default = [0]</span>
+<span class="sd">        Array containing the phase offsets for partials.</span>
 <span class="sd">    tuning_frequency: float, default = 440.0</span>
-<span class="sd">        Tuning Frequency, given in Hertz</span>
-<span class="sd">    duration: float, default = None</span>
+<span class="sd">        Tuning frequency in Her</span>
+<span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Duration of the output waveform, given in samples.</span>
+<span class="sd">    normalize: bool, default = True</span>
+<span class="sd">        Decides, if output signal is normalized to [-1,1].</span>
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pianoroll_sonification: np.ndarray</span>
-<span class="sd">        Sonified waveform in form of a 1D Numpy array.</span>
+<span class="sd">        Sonified waveform in form of a 1D Numpy array</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">format_df</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">)</span>
     <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">duration</span> <span class="o">==</span> <span class="n">num_samples</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># if sonification_duration equals num_samples, do nothing</span>
+        <span class="k">if</span> <span class="n">sonification_duration</span> <span class="o">==</span> <span class="n">num_samples</span><span class="p">:</span>
             <span class="k">pass</span>
-
-        <span class="k">elif</span> <span class="n">duration</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
-            <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">duration</span><span class="p">]</span>
-            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">duration</span><span class="p">]</span> <span class="o">=</span> <span class="n">duration</span>
+        <span class="c1"># if sonification_duration is less than num_samples, crop the arrays</span>
+        <span class="k">elif</span> <span class="n">sonification_duration</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
+            <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">sonification_duration</span><span class="p">]</span>
+            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">sonification_duration</span><span class="p">]</span> <span class="o">=</span> <span class="n">sonification_duration</span>
             <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
-        <span class="n">num_samples</span> <span class="o">=</span> <span class="n">duration</span>
+        <span class="n">num_samples</span> <span class="o">=</span> <span class="n">sonification_duration</span>
 
     <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pianoroll_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
         <span class="n">start_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
         <span class="n">duration_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
-        <span class="n">amplitude</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">r</span> <span class="k">else</span> <span class="mf">1.0</span>
-
-        <span class="n">pianoroll_sonification</span><span class="p">[</span><span class="n">start_samples</span><span class="p">:</span><span class="n">start_samples</span> <span class="o">+</span> <span class="n">duration_samples</span><span class="p">]</span> <span class="o">+=</span> <span class="n">generate_click</span><span class="p">(</span><span class="n">pitch</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;pitch&#39;</span><span class="p">],</span>
-                                                                                                 <span class="n">amplitude</span><span class="o">=</span><span class="n">amplitude</span><span class="p">,</span>
-                                                                                                 <span class="n">duration</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">],</span>
-                                                                                                 <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
-                                                                                                 <span class="n">tuning_frequency</span><span class="o">=</span>
-                                                                                                 <span class="n">tuning_frequency</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">pianoroll_sonification</span></div>
-
-
-<div class="viewcode-block" id="sonify_pianoroll_additive_synthesis"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_additive_synthesis">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_additive_synthesis</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-                                        <span class="n">partials</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
-                                        <span class="n">partials_amplitudes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                        <span class="n">partials_phase_offsets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                        <span class="n">tuning_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">440.0</span><span class="p">,</span>
-                                        <span class="n">duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                        <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-    <span class="c1"># TODO: conventions as in sonify_f0 (partials..)</span>
-    <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">format_df</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">)</span>
-    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">duration_in_sec</span> <span class="o">=</span> <span class="n">duration</span> <span class="o">/</span> <span class="n">fs</span>
-        <span class="c1"># if duration equals num_samples, do nothing</span>
-        <span class="k">if</span> <span class="n">duration</span> <span class="o">==</span> <span class="n">num_samples</span><span class="p">:</span>
-            <span class="k">pass</span>
-        <span class="c1"># if duration is less than num_samples, crop the arrays</span>
-        <span class="k">elif</span> <span class="n">duration</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
-            <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">duration</span><span class="p">]</span>
-            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">duration</span><span class="p">]</span> <span class="o">=</span> <span class="n">duration</span>
-            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
-        <span class="n">num_samples</span> <span class="o">=</span> <span class="n">duration</span>
-    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pianoroll_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
-        <span class="n">start_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
-        <span class="n">duration_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
-        <span class="c1"># TODO: check velocity values -&gt; right scaling</span>
         <span class="n">amplitude</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">r</span> <span class="k">else</span> <span class="mf">1.0</span>
 
         <span class="n">pianoroll_sonification</span><span class="p">[</span><span class="n">start_samples</span><span class="p">:</span><span class="n">start_samples</span> <span class="o">+</span> <span class="n">duration_samples</span><span class="p">]</span> <span class="o">+=</span> \
@@ -228,19 +162,269 @@
                                              <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
                                              <span class="n">f_tuning</span><span class="o">=</span><span class="n">tuning_frequency</span><span class="p">)</span>
 
+    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">pianoroll_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">pianoroll_sonification</span>
 
     <span class="k">return</span> <span class="n">pianoroll_sonification</span></div>
 
 
-<div class="viewcode-block" id="sonify_pianoroll_frequency_modulation_synthesis"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_frequency_modulation_synthesis">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_frequency_modulation_synthesis</span><span class="p">():</span>
-    <span class="k">return</span></div>
+<div class="viewcode-block" id="sonify_pianoroll_clicks"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_clicks">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_clicks</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                            <span class="n">tuning_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">440.0</span><span class="p">,</span>
+                            <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function sonifies a pianoroll representation containing pitch events described by start, duration or end</span>
+<span class="sd">    and the corresponding pitch with coloured clicks.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pianoroll_df: pd.DataFrame</span>
+<span class="sd">        Data Frame containing pitch events.</span>
+<span class="sd">    tuning_frequency: float, default = 440.0</span>
+<span class="sd">        Tuning Frequency, given in Hertz</span>
+<span class="sd">    sonification_duration: int, default = None</span>
+<span class="sd">        Duration of the output waveform, given in samples.</span>
+<span class="sd">    normalize: bool, default = True</span>
+<span class="sd">        Decides, if output signal is normalized to [-1,1].</span>
+<span class="sd">    fs: int, default = 22050</span>
+<span class="sd">        Sampling rate</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pianoroll_sonification: np.ndarray</span>
+<span class="sd">        Sonified waveform in form of a 1D Numpy array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">format_df</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">)</span>
+    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sonification_duration</span> <span class="o">==</span> <span class="n">num_samples</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">elif</span> <span class="n">sonification_duration</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
+            <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">sonification_duration</span><span class="p">]</span>
+            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">sonification_duration</span><span class="p">]</span> <span class="o">=</span> <span class="n">sonification_duration</span>
+            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
+        <span class="n">num_samples</span> <span class="o">=</span> <span class="n">sonification_duration</span>
+
+    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pianoroll_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">start_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+        <span class="n">duration_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+        <span class="n">amplitude</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">r</span> <span class="k">else</span> <span class="mf">1.0</span>
+
+        <span class="n">pianoroll_sonification</span><span class="p">[</span><span class="n">start_samples</span><span class="p">:</span><span class="n">start_samples</span> <span class="o">+</span> <span class="n">duration_samples</span><span class="p">]</span> <span class="o">+=</span> <span class="n">generate_click</span><span class="p">(</span><span class="n">pitch</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;pitch&#39;</span><span class="p">],</span>
+                                                                                                 <span class="n">amplitude</span><span class="o">=</span><span class="n">amplitude</span><span class="p">,</span>
+                                                                                                 <span class="n">fading_duration</span><span class="o">=</span><span class="n">r</span><span class="p">[</span>
+                                                                                                     <span class="s1">&#39;duration&#39;</span><span class="p">],</span>
+                                                                                                 <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
+                                                                                                 <span class="n">tuning_frequency</span><span class="o">=</span>
+                                                                                                 <span class="n">tuning_frequency</span><span class="p">)</span>
+
+    <span class="c1"># Normalization</span>
+    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">pianoroll_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">pianoroll_sonification</span>
+
+    <span class="k">return</span> <span class="n">pianoroll_sonification</span></div>
+
+
+<div class="viewcode-block" id="sonify_pianoroll_sample"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_sample">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_sample</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                            <span class="n">sample</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">reference_pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
+                            <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                            <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function sonifies a pianoroll representation containing pitch events described by start, sonification_duration or end</span>
+<span class="sd">        and the corresponding pitch with pitch-shifted and time-warped versions of a sample.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pianoroll_df: pd.DataFrame</span>
+<span class="sd">        Data Frame containing pitch events.</span>
+<span class="sd">    sample: np.ndarray</span>
+<span class="sd">        Sample</span>
+<span class="sd">    reference_pitch: int, default = 69</span>
+<span class="sd">        Pitch of the Sample</span>
+<span class="sd">    sonification_duration: int, default = None</span>
+<span class="sd">        Duration of the output waveform, given in samples.</span>
+<span class="sd">    normalize: bool, default = True</span>
+<span class="sd">        Decides, if output signal is normalized to [-1,1].</span>
+<span class="sd">    fs: int, default = 22050</span>
+<span class="sd">        Sampling rate</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pianoroll_sonification: np.ndarray</span>
+<span class="sd">        Sonified waveform in form of a 1D Numpy array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">format_df</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">)</span>
+    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sonification_duration</span> <span class="o">==</span> <span class="n">num_samples</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">elif</span> <span class="n">sonification_duration</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
+            <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">sonification_duration</span><span class="p">]</span>
+            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">sonification_duration</span><span class="p">]</span> <span class="o">=</span> <span class="n">sonification_duration</span>
+            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
+
+        <span class="n">num_samples</span> <span class="o">=</span> <span class="n">sonification_duration</span>
+
+    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pianoroll_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="c1"># TODO: use velocity as scaling -&gt; yes</span>
+        <span class="n">start_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+        <span class="n">warped_sample</span> <span class="o">=</span> <span class="n">warp_sample</span><span class="p">(</span><span class="n">sample</span><span class="o">=</span><span class="n">sample</span><span class="p">,</span>
+                                    <span class="n">reference_pitch</span><span class="o">=</span><span class="n">reference_pitch</span><span class="p">,</span>
+                                    <span class="n">target_pitch</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;pitch&#39;</span><span class="p">],</span>
+                                    <span class="n">target_duration_sec</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">],</span>
+                                    <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+
+        <span class="n">pianoroll_sonification</span><span class="p">[</span><span class="n">start_samples</span><span class="p">:</span><span class="n">start_samples</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">warped_sample</span><span class="p">)]</span> <span class="o">+=</span> <span class="n">warped_sample</span>
+
+    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">pianoroll_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">pianoroll_sonification</span>
+
+    <span class="k">return</span> <span class="n">pianoroll_sonification</span></div>
+
+
+<div class="viewcode-block" id="sonify_pianoroll_fm_synthesis"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_fm_synthesis">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_fm_synthesis</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+                                  <span class="n">mod_rate_relative</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                                  <span class="n">mod_amp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                                  <span class="n">tuning_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">440.0</span><span class="p">,</span>
+                                  <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function sonifies a pianoroll representation containing pitch events described by start, duration or end</span>
+<span class="sd">    and the corresponding pitch with frequency major synthesis.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pianoroll_df: pd.DataFrame</span>
+<span class="sd">        Dataframe</span>
+<span class="sd">    mod_rate_relative: float, default = 0.0</span>
+<span class="sd">        Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.</span>
+<span class="sd">    mod_amp: float, default = 0.0</span>
+<span class="sd">        Determines the amount of modulation in the generated signal.</span>
+<span class="sd">    tuning_frequency: float, default = 440.0</span>
+<span class="sd">        Tuning frequency in Her</span>
+<span class="sd">    sonification_duration: int, default = None</span>
+<span class="sd">        Duration of the output waveform, given in samples.</span>
+<span class="sd">    normalize: bool, default = True</span>
+<span class="sd">        Decides, if output signal is normalized to [-1,1].</span>
+<span class="sd">    fs: int, default = 22050</span>
+<span class="sd">        Sampling rate</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pianoroll_sonification: np.ndarray</span>
+<span class="sd">            Sonified waveform in form of a 1D Numpy array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">format_df</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">)</span>
+    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># if sonification_duration equals num_samples, do nothing</span>
+        <span class="k">if</span> <span class="n">sonification_duration</span> <span class="o">==</span> <span class="n">num_samples</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="c1"># if sonification_duration is less than num_samples, crop the arrays</span>
+        <span class="k">elif</span> <span class="n">sonification_duration</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
+            <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">sonification_duration</span><span class="p">]</span>
+            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">sonification_duration</span><span class="p">]</span> <span class="o">=</span> <span class="n">sonification_duration</span>
+            <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
+        <span class="n">num_samples</span> <span class="o">=</span> <span class="n">sonification_duration</span>
+
+    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pianoroll_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">start_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+        <span class="n">duration_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+        <span class="n">amplitude</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;velocity&#39;</span> <span class="ow">in</span> <span class="n">r</span> <span class="k">else</span> <span class="mf">1.0</span>
+
+        <span class="n">pianoroll_sonification</span><span class="p">[</span><span class="n">start_samples</span><span class="p">:</span><span class="n">start_samples</span> <span class="o">+</span> <span class="n">duration_samples</span><span class="p">]</span> <span class="o">+=</span> \
+            <span class="n">generate_tone_fm_synthesis</span><span class="p">(</span><span class="n">pitch</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;pitch&#39;</span><span class="p">],</span>
+                                       <span class="n">mod_rate_relative</span><span class="o">=</span><span class="n">mod_rate_relative</span><span class="p">,</span>
+                                       <span class="n">mod_amp</span><span class="o">=</span><span class="n">mod_amp</span><span class="p">,</span>
+                                       <span class="n">gain</span><span class="o">=</span><span class="n">amplitude</span><span class="p">,</span>
+                                       <span class="n">duration_sec</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">],</span>
+                                       <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
+                                       <span class="n">f_tuning</span><span class="o">=</span><span class="n">tuning_frequency</span><span class="p">)</span>
+
+    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">pianoroll_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">pianoroll_sonification</span>
+
+    <span class="k">return</span> <span class="n">pianoroll_sonification</span></div>
 
 
 <div class="viewcode-block" id="sonify_pianoroll_etc"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_etc">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_etc</span><span class="p">():</span>
     <span class="k">return</span></div>
 
 
+<div class="viewcode-block" id="visualize_pianoroll"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.visualize_pianoroll">[docs]</a><span class="k">def</span> <span class="nf">visualize_pianoroll</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (seconds)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Pitch&#39;</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;FMP_1&#39;</span><span class="p">,</span>
+                        <span class="n">velocity_alpha</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">72</span><span class="p">):</span>
+    <span class="c1"># TODO: dtypes</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot a pianoroll visualization, inspired from FMP Notebook C1/C1S2_CSV.ipynb</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        score: List of note events</span>
+<span class="sd">        xlabel: Label for x axis (Default value = &#39;Time (seconds)&#39;)</span>
+<span class="sd">        ylabel: Label for y axis (Default value = &#39;Pitch&#39;)</span>
+<span class="sd">        colors: Several options: 1. string of FMP_COLORMAPS, 2. string of matplotlib colormap,</span>
+<span class="sd">            3. list or np.ndarray of matplotlib color specifications,</span>
+<span class="sd">            4. dict that assigns labels  to colors (Default value = &#39;FMP_1&#39;)</span>
+<span class="sd">        velocity_alpha: Use the velocity value for the alpha value of the corresponding rectangle</span>
+<span class="sd">            (Default value = False)</span>
+<span class="sd">        figsize: Width, height in inches (Default value = (12)</span>
+<span class="sd">        ax: The Axes instance to plot on (Default value = None)</span>
+<span class="sd">        dpi: Dots per inch (Default value = 72)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        fig: The created matplotlib figure or None if ax was given.</span>
+<span class="sd">        ax: The used axes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">format_df</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">labels_set</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="n">libfmp</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">color_argument_to_dict</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="n">labels_set</span><span class="p">)</span>
+
+    <span class="n">pitch_min</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;pitch&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">pitch_max</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;pitch&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">time_min</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">time_max</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">velocity_alpha</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">velocity</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">rect</span> <span class="o">=</span> <span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;pitch&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]],</span> <span class="n">alpha</span><span class="o">=</span><span class="n">r</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">pitch_min</span> <span class="o">-</span> <span class="mf">1.5</span><span class="p">,</span> <span class="n">pitch_max</span> <span class="o">+</span> <span class="mf">1.5</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="nb">min</span><span class="p">(</span><span class="n">time_min</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">time_max</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_axisbelow</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="n">patches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">labels_set</span><span class="p">],</span>
+              <span class="n">labels_set</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span> <span class="n">framealpha</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
 </pre></div>
 
            </div>

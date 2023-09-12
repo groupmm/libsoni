@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Tuple
 
-from libsoni.util.utils import fade_signal
+from libsoni.util.utils import fade_signal, smooth_weights
 
 
 def generate_click(pitch: int = 69,
@@ -35,7 +35,10 @@ def generate_click(pitch: int = 69,
     click *= amplitude
     return click
 
-
+def generate_sinusoid():
+    # TODO: DocString
+    # TODO: Implement
+    return
 def generate_shepard_tone(pitch_class: int = 0,
                           pitch_range: Tuple[np.ndarray, int] = (0, 127),
                           filter: bool = False,
@@ -212,7 +215,6 @@ def generate_tone_fm_synthesis(pitch: int = 69,
     -------
     generated_tone: np.ndarray
         Generated signal
-
     """
     N = int(duration_sec * fs)
     t = np.arange(N) / fs
@@ -269,17 +271,53 @@ def generate_tone_wavetable(pitch: int = 69,
 
     return generated_tone * gain
 
+
 def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
+                                      gain_vector: np.ndarray = None,
                                       partials: np.ndarray = np.array([1]),
                                       partials_amplitudes: np.ndarray = None,
                                       partials_phase_offsets: np.ndarray = None,
-                                      gain_vector: np.ndarray = None,
-                                      duration_sec: float = 1.0,
                                       fs: int = 22050,
-                                      f_tuning: float = 440,
                                       fading_sec: float = 0.01) -> np.ndarray:
+    """Generates signal using instantaneous phase.
+
+    Parameters
+    ----------
+    frequency_vector: np.ndarray
+        Array containing sample-wise frequencies.
+    gain_vector: np.ndarray, default = None
+        Array containing sample-wise gains.
+    partials: np.ndarray, default = [1]
+        An array containing the desired partials of the fundamental frequencies for sonification.
+            An array [1] leads to sonification with only the fundamental frequency core,
+            while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.
+    partials_amplitudes: np.ndarray, default = [1]
+        Array containing the amplitudes for partials.
+            An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
+            while the sinusoid with frequency 2*core has amplitude 0.5.
+    partials_phase_offsets: np.ndarray, default = [0]
+        Array containing the phase offsets for partials.
+    fs: int, default = 22050
+        Sampling rate, in samples per seconds,
+    fading_sec: float, default = 0.01
+        Duration of fade in and fade out (to avoid clicks)
+    Returns
+    -------
+    generated_tone: np.ndarray
+        Generated signal
+    """
+    if partials_amplitudes is None:
+        partials_amplitudes = np.ones(len(partials))
+
+    if partials_phase_offsets is None:
+        partials_phase_offsets = np.zeros(len(partials))
+
+    assert len(partials) == len(partials_amplitudes) == len(partials_phase_offsets), \
+        'Partials, Partials_amplitudes and Partials_phase_offsets must be of equal length.'
 
     generated_tone = np.zeros(len(gain_vector))
+
+    gain_vector = smooth_weights(weights=gain_vector, fading_samples=64)
 
     phase = 0
     phase_result = []
@@ -288,12 +326,13 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
         phase += phase_step
         phase_result.append(phase)
 
-    generated_tone += np.sin(phase_result)
-    #print(generated_tone)
-    #for partial, partial_amplitude in zip(partials, partials_amplitudes):
+    phase_result = np.asarray(phase_result)
 
-        #generated_tone += np.sin(phase_result*partial) * partial_amplitude
+    for partial, partial_amplitude, partials_phase_offset in zip(partials, partials_amplitudes, partials_phase_offsets):
+        generated_tone += np.sin((phase_result + partials_phase_offset) * partial) * partial_amplitude
 
     generated_tone = np.multiply(generated_tone, gain_vector)
+    if not fading_sec == 0:
+        generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_sec=fading_sec)
 
     return generated_tone
