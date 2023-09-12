@@ -35,10 +35,45 @@ def generate_click(pitch: int = 69,
     click *= amplitude
     return click
 
-def generate_sinusoid():
-    # TODO: DocString
-    # TODO: Implement
-    return
+def generate_sinusoid(frequency: float = 440.0,
+                      phase: float = 0.0,
+                      gain: float = 1.0,
+                      duration_sec: float = 1.0,
+                      fs: int = 22050,
+                      fading_sec: float = 0.01) -> np.ndarray:
+
+    """Generate sinusoid
+
+    Parameters
+    ----------
+    frequency: float, default: 440.0
+        frequency of sinusoid
+    phase: float, default: 0.0
+        phase of sinusoid
+    gain: float, default: 1.0
+        gain of resulting signal
+    duration_sec: float, default: 1.0
+        duration of generated signal (in seconds)
+    fs: int, default: 44100
+        sampling rate in Samples/second
+    fading_sec: float, default: 0.01
+        sonification_duration (in seconds) of fade in and fade out (to avoid clicks)
+
+    Returns
+    -------
+    y: sinusoid
+    """
+
+    num_samples = int(duration_sec * fs)
+
+    t = np.arange(num_samples) / fs
+
+    generated_tone = np.sin((2 * np.pi * frequency * t) + phase)
+
+    if not fading_sec == 0:
+        generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_sec=fading_sec)
+
+    return generated_tone * gain
 def generate_shepard_tone(pitch_class: int = 0,
                           pitch_range: Tuple[np.ndarray, int] = (0, 127),
                           filter: bool = False,
