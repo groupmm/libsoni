@@ -230,18 +230,18 @@ def smooth_weights(weights: np.ndarray, fading_samples: int = 0):
 
     weights_smoothed = np.copy(weights)
 
-    for i in range(1, len(weights)):
+    for i in range(1, len(weights)-1):
         if weights[i] != weights[i - 1]:
-            frequency = 1
+
             amplitude = (np.abs(weights[i - 1] - weights[i])) / 2
 
             x = np.linspace(-1 * (np.pi / 2), np.pi / 2, fading_samples) * -1 * np.sign(
                 weights[i - 1] - weights[i])
 
-            y = amplitude * np.sin(frequency * x) + (weights[i - 1] + weights[i]) / 2
+            y = amplitude * np.sin(x) + (weights[i - 1] + weights[i]) / 2
+            print(len(weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] ))
 
             weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] = y
-
     return weights_smoothed
 
 def envelope_signal(signal: np.ndarray, attack_time: float = 0, decay_time: float = 0, sustain_level: float = 0,

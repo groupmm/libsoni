@@ -350,14 +350,17 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
     assert len(partials) == len(partials_amplitudes) == len(partials_phase_offsets), \
         'Partials, Partials_amplitudes and Partials_phase_offsets must be of equal length.'
 
-    generated_tone = np.zeros(len(gain_vector))
+    generated_tone = np.zeros_like(frequency_vector)
 
-    gain_vector = smooth_weights(weights=gain_vector, fading_samples=64)
+    if gain_vector is None:
+        gain_vector = np.ones_like(frequency_vector)
+    else:
+        gain_vector = smooth_weights(weights=gain_vector, fading_samples=60)
 
     phase = 0
     phase_result = []
     for frequency, gain in zip(frequency_vector, gain_vector):
-        phase_step = 2 * np.pi * frequency * 1 / fs
+        phase_step = 2 * np.pi * frequency/ fs
         phase += phase_step
         phase_result.append(phase)
 
