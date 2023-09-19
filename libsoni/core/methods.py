@@ -39,6 +39,7 @@ def generate_sinusoid(frequency: float = 440.0,
                       phase: float = 0.0,
                       gain: float = 1.0,
                       duration_sec: float = 1.0,
+                      num_samples: int = None,
                       fs: int = 22050,
                       fading_sec: float = 0.01) -> np.ndarray:
 
@@ -64,7 +65,7 @@ def generate_sinusoid(frequency: float = 440.0,
     y: sinusoid
     """
 
-    num_samples = int(duration_sec * fs)
+    num_samples = num_samples if num_samples is not None else int(duration_sec * fs)
 
     t = np.arange(num_samples) / fs
 
