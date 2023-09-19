@@ -43,4 +43,4 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 html_use_index = True
 html_use_modindex = True
-html_logo = os.path.join(html_static_path[0], 'libsoni_logo.png')
+html_logo = os.path.join(html_static_path[0], 'logo.png')
