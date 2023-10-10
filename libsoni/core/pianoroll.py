@@ -8,7 +8,6 @@ from libsoni.util.utils import format_df, warp_sample, normalize_signal, fade_si
 from libsoni.core.methods import generate_click, generate_tone_additive_synthesis, generate_tone_fm_synthesis
 
 
-# TODO: Wavetable synth
 
 def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
                                         partials: np.ndarray = np.array([1]),
@@ -283,11 +282,6 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
     pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
 
     return pianoroll_sonification
-
-
-def sonify_pianoroll_etc():
-    return
-
 
 def visualize_pianoroll(df, xlabel='Time (seconds)', ylabel='Pitch', title: str = None, colors='FMP_1',
                         velocity_alpha=False,

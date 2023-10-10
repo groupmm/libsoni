@@ -3,6 +3,7 @@ from typing import Tuple
 
 from libsoni.util.utils import fade_signal, smooth_weights
 
+# TODO: Wavetable synth
 
 def generate_click(pitch: int = 69,
                    amplitude: float = 1.0,

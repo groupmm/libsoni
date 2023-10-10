@@ -4,17 +4,18 @@ from typing import Tuple
 from libsoni.util.utils import normalize_signal, fade_signal, smooth_weights
 from libsoni.core.methods import generate_shepard_tone
 
+
 def sonify_spectrum(chromagram: np.ndarray,
-                      H: int = 0,
-                      pitch_range: Tuple[int, int] = (20, 108),
-                      filter: bool = False,
-                      f_center: float = 440.0,
-                      octave_cutoff: int = 1,
-                      sonification_duration: int = None,
-                      fade_duration: float = 0.05,
-                      normalize: bool = True,
-                      fs: int = 22050,
-                      tuning_frequency: float = 440.0) -> np.ndarray:
+                    H: int = 0,
+                    pitch_range: Tuple[int, int] = (20, 108),
+                    filter: bool = False,
+                    f_center: float = 440.0,
+                    octave_cutoff: int = 1,
+                    sonification_duration: int = None,
+                    fade_duration: float = 0.05,
+                    normalize: bool = True,
+                    fs: int = 22050,
+                    tuning_frequency: float = 440.0) -> np.ndarray:
     """Sonify chromagram
 
         Parameters
