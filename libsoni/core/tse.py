@@ -251,8 +251,3 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
     tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
 
     return tse_sonification
-
-
-def sonify_tse_text():
-    # TODO: @yiitozer
-    raise NotImplementedError

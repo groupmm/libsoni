@@ -52,7 +52,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.tse.sonify_tse_multiple_clicks"><code class="docutils literal notranslate"><span class="pre">sonify_tse_multiple_clicks()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.tse.sonify_tse_multiple_samples"><code class="docutils literal notranslate"><span class="pre">sonify_tse_multiple_samples()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.tse.sonify_tse_sample"><code class="docutils literal notranslate"><span class="pre">sonify_tse_sample()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#libsoni.core.tse.sonify_tse_text"><code class="docutils literal notranslate"><span class="pre">sonify_tse_text()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pianoroll.html">Pianoroll (libsoni.core.pianoroll)</a></li>
@@ -103,22 +102,19 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_positions</strong> (<em>np.ndarray</em>) – Array with time positions for clicks.</p></li>
-<li><p><strong>click_pitch</strong> (<em>int</em><em>, </em><em>default = 69</em>) – Pitch for click signal.</p></li>
-<li><p><strong>click_fading_duration</strong> (<em>float</em><em>, </em><em>default = 0.25</em>) – Fading duration for click signal.</p></li>
-<li><p><strong>click_amplitude</strong> (<em>float</em><em>, </em><em>default = 1.0</em>) – Amplitude for click signal.</p></li>
-<li><p><strong>offset_relative</strong> (<em>float</em><em>, </em><em>default = 0.0</em>) – Relative offset coefficient for the beginning of a click.
+<li><p><strong>click_pitch</strong> (<em>int, default = 69</em>) – Pitch for click signal.</p></li>
+<li><p><strong>click_fading_duration</strong> (<em>float, default = 0.25</em>) – Fading duration for click signal.</p></li>
+<li><p><strong>click_amplitude</strong> (<em>float, default = 1.0</em>) – Amplitude for click signal.</p></li>
+<li><p><strong>offset_relative</strong> (<em>float, default = 0.0</em>) – Relative offset coefficient for the beginning of a click.
 0 indicates that the beginning of the click event is at the time position. 1 indicates the ending of the click
 event corresponds to the time position.</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of the output waveform, given in samples.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em><em>, </em><em>default = 22050</em>) – Sampling rate</p></li>
+<li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Duration of the output waveform, given in samples.</p></li>
+<li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>tse_sonification</strong> – Sonified waveform in form of a 1D Numpy array.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray</em>) – Sonified waveform in form of a 1D Numpy array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -130,22 +126,19 @@ event corresponds to the time position.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>times_pitches</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>np.ndarray</em><em>, </em><em>int</em><em>]</em><em>]</em>) – List of tuples comprising the time positions and pitches of the clicks</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of the output waveform, given in samples.</p></li>
-<li><p><strong>click_fading_duration</strong> (<em>float</em><em>, </em><em>default = 0.25</em>) – Duration for click signal.</p></li>
-<li><p><strong>click_amplitude</strong> (<em>float</em><em>, </em><em>default = 1.0</em>) – Amplitude for click signal.</p></li>
-<li><p><strong>offset_relative</strong> (<em>float</em><em>, </em><em>default = 0.0</em>) – Relative offset coefficient for the beginning of the given audio sample.
+<li><p><strong>times_pitches</strong> (<em>List[Tuple[np.ndarray, int]]</em>) – List of tuples comprising the time positions and pitches of the clicks</p></li>
+<li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Duration of the output waveform, given in samples.</p></li>
+<li><p><strong>click_fading_duration</strong> (<em>float, default = 0.25</em>) – Duration for click signal.</p></li>
+<li><p><strong>click_amplitude</strong> (<em>float, default = 1.0</em>) – Amplitude for click signal.</p></li>
+<li><p><strong>offset_relative</strong> (<em>float, default = 0.0</em>) – Relative offset coefficient for the beginning of the given audio sample.
 0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
 corresponding to the time position.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em><em>, </em><em>default = 22050</em>) – Sampling rate</p></li>
+<li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>tse_sonification</strong> – Sonified waveform in form of a 1D Numpy array.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray</em>) – Sonified waveform in form of a 1D Numpy array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -157,20 +150,17 @@ corresponding to the time position.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>times_samples</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>np.ndarray</em><em>, </em><em>np.ndarray</em><em>]</em><em>]</em>) – List of tuples comprising the time positions and samples</p></li>
-<li><p><strong>offset_relative</strong> (<em>float</em><em>, </em><em>default = 0.0</em>) – Relative offset coefficient for the beginning of the given audio sample.
+<li><p><strong>times_samples</strong> (<em>List[Tuple[np.ndarray, np.ndarray]]</em>) – List of tuples comprising the time positions and samples</p></li>
+<li><p><strong>offset_relative</strong> (<em>float, default = 0.0</em>) – Relative offset coefficient for the beginning of the given audio sample.
 0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
 corresponding to the time position.</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of the output waveform, given in samples.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em><em>, </em><em>default = 22050</em>) – Sampling rate</p></li>
+<li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Duration of the output waveform, given in samples.</p></li>
+<li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>tse_sonification</strong> – Sonified waveform in form of a 1D Numpy array.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray</em>) – Sonified waveform in form of a 1D Numpy array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -184,27 +174,19 @@ corresponding to the time position.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sample</strong> (<em>np.ndarray</em>) – Sample (e.g., recording of a kick drum)</p></li>
 <li><p><strong>time_positions</strong> (<em>np.ndarray</em>) – Array with time positions for clicks.</p></li>
-<li><p><strong>offset_relative</strong> (<em>float</em><em>, </em><em>default = 0.0</em>) – Relative offset coefficient for the beginning of the given audio sample.
+<li><p><strong>offset_relative</strong> (<em>float, default = 0.0</em>) – Relative offset coefficient for the beginning of the given audio sample.
 0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
 corresponding to the time position.</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of the output waveform, given in samples.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em><em>, </em><em>default = 22050</em>) – Sampling rate</p></li>
+<li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Duration of the output waveform, given in samples.</p></li>
+<li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>tse_sonification</strong> – Sonified waveform in form of a 1D Numpy array.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray</em>) – Sonified waveform in form of a 1D Numpy array.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="libsoni.core.tse.sonify_tse_text">
-<span class="sig-prename descclassname"><span class="pre">libsoni.core.tse.</span></span><span class="sig-name descname"><span class="pre">sonify_tse_text</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libsoni/core/tse.html#sonify_tse_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.tse.sonify_tse_text" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 </section>
 

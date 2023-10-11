@@ -50,6 +50,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tse.html">tse (libsoni.core.tse)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pianoroll.html">Pianoroll (libsoni.core.pianoroll)</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Chroma (libsoni.core.chroma)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#libsoni.core.chroma.sonify_chroma_vector"><code class="docutils literal notranslate"><span class="pre">sonify_chroma_vector()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.chroma.sonify_chromagram"><code class="docutils literal notranslate"><span class="pre">sonify_chromagram()</span></code></a></li>
 </ul>
 </li>
@@ -92,6 +93,11 @@
   <section id="module-libsoni.core.chroma">
 <span id="chroma-libsoni-core-chroma"></span><h1>Chroma (libsoni.core.chroma)<a class="headerlink" href="#module-libsoni.core.chroma" title="Permalink to this heading"></a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="libsoni.core.chroma.sonify_chroma_vector">
+<span class="sig-prename descclassname"><span class="pre">libsoni.core.chroma.</span></span><span class="sig-name descname"><span class="pre">sonify_chroma_vector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libsoni/core/chroma.html#sonify_chroma_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.chroma.sonify_chroma_vector" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="libsoni.core.chroma.sonify_chromagram">
 <span class="sig-prename descclassname"><span class="pre">libsoni.core.chroma.</span></span><span class="sig-name descname"><span class="pre">sonify_chromagram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chromagram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pitch_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(20,</span> <span class="pre">108)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">440.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">octave_cutoff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fade_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">440.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/chroma.html#sonify_chromagram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.chroma.sonify_chromagram" title="Permalink to this definition"></a></dt>
 <dd><p>Sonify chromagram</p>
@@ -99,24 +105,21 @@
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>chromagram</strong> (<em>np.ndarray</em>) – Chromagram to sonify.</p></li>
-<li><p><strong>H</strong> (<em>int</em><em>, </em><em>default = 0</em>) – Hop size of STFT, used to calculate chromagram.</p></li>
-<li><p><strong>pitch_range</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em><em>, </em><em>default =</em><em> [</em><em>20</em><em>,</em><em>108</em><em>]</em>) – pitches to encounter in shepard tone</p></li>
-<li><p><strong>filter</strong> (<em>bool</em><em>, </em><em>default: False</em>) – decides, if shepard tones are filtered or not</p></li>
-<li><p><strong>f_center</strong> (<em>float</em><em>, </em><em>default: 440.0</em>) – center_frequency in Hertz for bell-shaped filter</p></li>
-<li><p><strong>octave_cutoff</strong> (<em>int</em><em>, </em><em>default: 1</em>) – determines, at which multiple of f_center, the harmonics get attenuated by 2.</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of audio, given in samples</p></li>
-<li><p><strong>fade_duration</strong> (<em>float</em><em>, </em><em>default = 0.05</em>) – Duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.</p></li>
-<li><p><strong>fs</strong> (<em>int</em><em>, </em><em>default = 22050</em>) – sampling rate in Samples/second</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> – Sampling rate, in samples per seconds.</p></li>
-<li><p><strong>tuning_frequency</strong> (<em>float</em><em>, </em><em>default = 440</em>) – Tuning frequency.</p></li>
+<li><p><strong>H</strong> (<em>int, default = 0</em>) – Hop size of STFT, used to calculate chromagram.</p></li>
+<li><p><strong>pitch_range</strong> (<em>Tuple[int, int], default = [20,108]</em>) – pitches to encounter in shepard tone</p></li>
+<li><p><strong>filter</strong> (<em>bool, default: False</em>) – decides, if shepard tones are filtered or not</p></li>
+<li><p><strong>f_center</strong> (<em>float, default: 440.0</em>) – center_frequency in Hertz for bell-shaped filter</p></li>
+<li><p><strong>octave_cutoff</strong> (<em>int, default: 1</em>) – determines, at which multiple of f_center, the harmonics get attenuated by 2.</p></li>
+<li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Duration of audio, given in samples</p></li>
+<li><p><strong>fade_duration</strong> (<em>float, default = 0.05</em>) – Duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.</p></li>
+<li><p><strong>fs</strong> (<em>int, default: 44100</em>) – sampling rate in Samples/second</p></li>
+<li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate, in samples per seconds.</p></li>
+<li><p><strong>tuning_frequency</strong> (<em>float, default = 440</em>) – Tuning frequency.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>y</strong></p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>synthesized tone</p>
+<dd class="field-even"><p><strong>y</strong> (<em>synthesized tone</em>)</p>
 </dd>
 </dl>
 </dd></dl>
