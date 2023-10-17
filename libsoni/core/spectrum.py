@@ -1,18 +1,15 @@
 import numpy as np
-from typing import Tuple
 
 from libsoni.util.utils import normalize_signal, fade_signal, smooth_weights
-from libsoni.core.methods import generate_shepard_tone
+from libsoni.core.methods import generate_sinusoid
 
 
-def sonify_spectrum(chromagram: np.ndarray,
-                    H: int = 0,
-                    pitch_range: Tuple[int, int] = (20, 108),
-                    filter: bool = False,
-                    f_center: float = 440.0,
-                    octave_cutoff: int = 1,
-                    sonification_duration: int = None,
+def sonify_spectrum(spectrogram: np.ndarray,
+                    frequency_coef: np.ndarray,
+                    time_coef: np.ndarray,
+                    H: int = None,
                     fade_duration: float = 0.05,
+                    sonification_duration: int = None,
                     normalize: bool = True,
                     fs: int = 22050,
                     tuning_frequency: float = 440.0) -> np.ndarray:
@@ -20,18 +17,13 @@ def sonify_spectrum(chromagram: np.ndarray,
 
         Parameters
         ----------
-        chromagram: np.ndarray
-            Chromagram to sonify.
-        H: int, default = 0
-            Hop size of STFT, used to calculate chromagram.
-        pitch_range: Tuple[int, int], default = [20,108]
-            pitches to encounter in shepard tone
-        filter: bool, default: False
-            decides, if shepard tones are filtered or not
-        f_center : float, default: 440.0
-            center_frequency in Hertz for bell-shaped filter
-        octave_cutoff: int, default: 1
-            determines, at which multiple of f_center, the harmonics get attenuated by 2.
+        H
+        spectrogram: np.ndarray
+            Magnitude spectogram to be sonified.
+        frequency_coef: np.ndarray
+            Array containing frequencies for sonification.
+        time_coef: np.ndarray,
+            Array containing time coefficients, in seconds, for sonification.
         sonification_duration: int, default = None
             Duration of audio, given in samples
         fade_duration: float, default = 0.05
@@ -49,38 +41,34 @@ def sonify_spectrum(chromagram: np.ndarray,
         -------
             y: synthesized tone
         """
-    assert chromagram.shape[0] == 12, f'The chromagram must have shape 12xN.'
+    # Check if lengths of coefficient vectors match shape of spectrogram
+    assert spectrogram.shape[0] == len(frequency_coef), f'The length of frequency_coef must match spectrogram.shape[0]'
+    assert spectrogram.shape[1] == len(time_coef), f'The length of time_coef must match spectrogram.shape[1]'
 
-    # Compute frame rate
-    frame_rate = fs / H
+    # Calculate Hop size from time_coef if not explicitly given
+    H = H if H is not None else int((time_coef[1] - time_coef[0]) * fs)
 
     # Determine length of sonification
-    num_samples = sonification_duration if sonification_duration is not None else int(
-        chromagram.shape[1] * fs / frame_rate)
+    num_samples = sonification_duration if sonification_duration is not None else int((time_coef[-1] * fs)+H)
 
     # Initialize sonification
-    chroma_sonification = np.zeros(num_samples)
+    spectrogram_sonification = np.zeros(num_samples)
 
-    for pitch_class in range(12):
-        if np.sum(np.abs(chromagram[pitch_class, :])) > 0:
-            weighting_vector = np.repeat(chromagram[pitch_class, :], H)
-            weighting_vector_smoothed = smooth_weights(weights=weighting_vector, fading_samples=int(H / 8))
+    for i in range(spectrogram.shape[0]):
 
-            shepard_tone = generate_shepard_tone(pitch_class=pitch_class,
-                                                 pitch_range=pitch_range,
-                                                 filter=filter,
-                                                 f_center=f_center,
-                                                 octave_cutoff=octave_cutoff,
-                                                 gain=1,
-                                                 duration_sec=num_samples / fs,
-                                                 fs=fs,
-                                                 f_tuning=tuning_frequency,
-                                                 fading_sec=0)
+        weighting_vector = np.repeat(spectrogram[i, :], H)
 
-            chroma_sonification += (shepard_tone * weighting_vector_smoothed)
+        weighting_vector = smooth_weights(weights=weighting_vector, fading_samples=int(H/2))
 
-    chroma_sonification = fade_signal(chroma_sonification, fs=fs, fading_sec=fade_duration)
+        sinusoid = generate_sinusoid(frequency=frequency_coef[i],
+                                     phase=0,
+                                     duration_sec=num_samples / fs,
+                                     fs=fs)
 
-    chroma_sonification = normalize_signal(chroma_sonification) if normalize else chroma_sonification
+        spectrogram_sonification += (sinusoid * weighting_vector)
 
-    return chroma_sonification
+    spectrogram_sonification = fade_signal(spectrogram_sonification, fs=fs, fading_sec=fade_duration)
+
+    spectrogram_sonification = normalize_signal(spectrogram_sonification) if normalize else spectrogram_sonification
+
+    return spectrogram_sonification

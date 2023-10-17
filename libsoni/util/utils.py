@@ -239,7 +239,7 @@ def smooth_weights(weights: np.ndarray, fading_samples: int = 0):
                 weights[i - 1] - weights[i])
 
             y = amplitude * np.sin(x) + (weights[i - 1] + weights[i]) / 2
-            print(len(weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] ))
+            #print(len(weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] ))
 
             weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] = y
     return weights_smoothed
