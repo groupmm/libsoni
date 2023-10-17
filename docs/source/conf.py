@@ -33,6 +33,8 @@ extensions = ['sphinx_rtd_theme',
 
 templates_path = ['_templates']
 exclude_patterns = []
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = 'sphinx'
 
 
 
@@ -44,3 +46,4 @@ html_static_path = ['_static']
 html_use_index = True
 html_use_modindex = True
 html_logo = os.path.join(html_static_path[0], 'libsoni_logo.png')
+napoleon_custom_sections = [('Returns', 'params_style'), ('Parameters', 'params_style')]

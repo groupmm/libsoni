@@ -86,7 +86,6 @@
 <span class="kn">from</span> <span class="nn">libsoni.core.methods</span> <span class="kn">import</span> <span class="n">generate_click</span><span class="p">,</span> <span class="n">generate_tone_additive_synthesis</span><span class="p">,</span> <span class="n">generate_tone_fm_synthesis</span>
 
 
-<span class="c1"># TODO: Wavetable synth</span>
 
 <div class="viewcode-block" id="sonify_pianoroll_additive_synthesis"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_additive_synthesis">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_additive_synthesis</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
                                         <span class="n">partials</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
@@ -361,11 +360,6 @@
     <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">pianoroll_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">pianoroll_sonification</span>
 
     <span class="k">return</span> <span class="n">pianoroll_sonification</span></div>
-
-
-<div class="viewcode-block" id="sonify_pianoroll_etc"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_etc">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_etc</span><span class="p">():</span>
-    <span class="k">return</span></div>
-
 
 <div class="viewcode-block" id="visualize_pianoroll"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.visualize_pianoroll">[docs]</a><span class="k">def</span> <span class="nf">visualize_pianoroll</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (seconds)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Pitch&#39;</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;FMP_1&#39;</span><span class="p">,</span>
                         <span class="n">velocity_alpha</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>

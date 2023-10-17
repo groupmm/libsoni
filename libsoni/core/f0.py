@@ -1,12 +1,12 @@
 import numpy as np
-from typing import Dict
+from typing import Dict, List, Tuple, Optional
 
 from libsoni.core.methods import generate_tone_instantaneous_phase
 from libsoni.util.utils import get_preset, normalize_signal
 
 
 def sonify_f0(time_f0: np.ndarray,
-              gains: np.ndarray = None,
+              gains: np.ndarray=None,
               partials: np.ndarray = np.array([1]),
               partials_amplitudes: np.ndarray = np.array([1]),
               partials_phase_offsets: np.ndarray = None,
@@ -27,12 +27,12 @@ def sonify_f0(time_f0: np.ndarray,
         An array containing gain values for f0-values.
     partials: np.ndarray, default = [1]
         An array containing the desired partials of the fundamental frequencies for sonification.
-            An array [1] leads to sonification with only the fundamental frequency core,
-            while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.
+        An array [1] leads to sonification with only the fundamental frequency core,
+        while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.
     partials_amplitudes: np.ndarray, default = [1]
         Array containing the amplitudes for partials.
-            An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
-            while the sinusoid with frequency 2*core has amplitude 0.5.
+        An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
+        while the sinusoid with frequency 2*core has amplitude 0.5.
     partials_phase_offsets: np.ndarray, default = [0]
         Array containing the phase offsets for partials.
     sonification_duration: int, default = None
@@ -119,8 +119,8 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
     ----------
     preset_dict: dict
         Dictionary of presets in the following key-value pair format:
-            {str: np.ndarray}
-            preset: time_f0s
+        {str: np.ndarray}
+        preset: time_f0s
     sonification_duration: int, default = None
         Duration of the output waveform, given in samples
     fade_duration: float, default = 0.05
@@ -162,58 +162,6 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
                                      fade_duration=fade_duration,
                                      normalize=False,
                                      fs=fs)
-
-    f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
-
-    return f0_sonification
-
-
-def sonify_f0_with_presets_old(preset_dict: Dict = None,
-                               sonification_duration: int = None,
-                               fade_duration: float = 0.05,
-                               normalize: bool = True,
-                               fs: int = 22050) -> np.ndarray:
-    """This function sonifies multiple f0 annotations with a certain preset.
-
-    Parameters
-    ----------
-    preset_dict: dict
-        Dictionary of presets in the following key-value pair format:
-            {str: np.ndarray}
-            preset: time_f0s
-    sonification_duration: int, default = None
-        Duration of the output waveform, given in samples
-    fade_duration: float, default = 0.05
-        Duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.
-    normalize: bool, default = True
-        Decides, if output signal is normalized to [-1,1].
-    fs: int
-        Sampling rate
-
-    Returns
-    -------
-    f0_sonification: np.ndarray
-        Sonified waveform
-    """
-    if sonification_duration is None:
-        max_duration = 0
-        for label in preset_dict:
-            sonification_duration = preset_dict[label]['time_f0'][-1, 0]
-            max_duration = sonification_duration if sonification_duration > max_duration else max_duration
-        sonification_duration = int(np.ceil(fs * max_duration))
-
-    f0_sonification = np.zeros(sonification_duration)
-
-    for label in preset_dict:
-        preset_features_dict = get_preset(preset_dict[label]['preset'])
-        gain = preset_dict[label]['gain'] if 'gain' in preset_dict[label] else 1
-
-        f0_sonification += sonify_f0(time_f0=preset_dict[label]['time_f0'],
-                                     partials=preset_features_dict['partials'],
-                                     partials_amplitudes=preset_features_dict['amplitudes'],
-                                     sonification_duration=sonification_duration,
-                                     fade_duration=fade_duration,
-                                     fs=fs) * gain
 
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 
