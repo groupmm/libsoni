@@ -1,8 +1,8 @@
 import numpy as np
-from typing import Dict, List, Tuple, Optional
+from typing import Dict
 
 from libsoni.core.methods import generate_tone_instantaneous_phase
-from libsoni.util.utils import get_preset, normalize_signal
+from libsoni.util.utils import get_preset, normalize_signal, fade_signal
 
 
 def sonify_f0(time_f0: np.ndarray,
@@ -18,7 +18,7 @@ def sonify_f0(time_f0: np.ndarray,
 
     The 2D array must contain time positions and the associated instantaneous frequencies.
     The sonification is based on the phase information by summation of the instantaneous frequencies.
-    The parameters partials and partials_amplitudes can be used to generate a desired sound.
+    The parameters partials, partials_amplitudes and partials_phase_offsets can be used to shape the sound.
 
     Parameters
     ----------
@@ -47,7 +47,7 @@ def sonify_f0(time_f0: np.ndarray,
 
     Returns
     -------
-    y: np.ndarray
+    f0_sonification: np.ndarray
         Sonified f0-trajectory.
     """
     if gains is not None:
@@ -104,6 +104,9 @@ def sonify_f0(time_f0: np.ndarray,
                                                         partials_phase_offsets=partials_phase_offsets,
                                                         fs=fs,
                                                         fading_sec=fade_duration)
+
+    f0_sonification = fade_signal(f0_sonification, fs=fs, fading_sec=fade_duration)
+
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 
     return f0_sonification
@@ -132,6 +135,7 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
         Determines if output signal is normalized to [-1,1].
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
+
     Returns
     -------
     f0_sonification: np.ndarray
@@ -164,6 +168,7 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
                                      fade_duration=fade_duration,
                                      normalize=False,
                                      fs=fs)
+    f0_sonification = fade_signal(f0_sonification, fs=fs, fading_sec=fade_duration)
 
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 

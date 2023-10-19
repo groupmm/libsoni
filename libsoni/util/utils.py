@@ -33,11 +33,12 @@ def fade_signal(signal: np.ndarray = None,
         Normalized signal
     """
     num_samples = int(fading_sec * fs)
-    assert len(signal) > 2*num_samples, 'The signal to be faded must be longer than two times the fading duration!'
+    assert len(signal) > 2 * num_samples, 'The signal to be faded must be longer than two times the fading duration!'
 
     signal[:num_samples] *= np.sin(np.pi * np.arange(num_samples) / fading_sec / 2 / fs)
     signal[-num_samples:] *= np.cos(np.pi * np.arange(num_samples) / fading_sec / 2 / fs)
     return signal
+
 
 def normalize_signal(signal: np.ndarray) -> np.ndarray:
     """Normalize audio signal
@@ -58,6 +59,7 @@ def warp_sample(sample: np.ndarray,
                 reference_pitch: int,
                 target_pitch: int,
                 target_duration_sec: float,
+                gain: float = 1,
                 fs=22050,
                 fading_sec: float = 0.01):
     """This function warps a sample. Given the reference pitch of the sample provided as np.ndarray,
@@ -92,18 +94,20 @@ def warp_sample(sample: np.ndarray,
                                                        n_steps=pitch_steps)
 
     # Case: target duration is shorter than sample -> cropping
-    if int(target_duration_sec*fs) <= len(sample):
+    if int(target_duration_sec * fs) <= len(sample):
 
-        warped_sample = pitch_shifted_sample[:int(target_duration_sec*fs)]
+        warped_sample = pitch_shifted_sample[:int(target_duration_sec * fs)]
 
     # Case: target duration is longer than sample -> zero-filling
     else:
 
-        warped_sample = np.zeros(int(target_duration_sec*fs))
+        warped_sample = np.zeros(int(target_duration_sec * fs))
         warped_sample[:len(sample)] = sample
 
     if not fading_sec == 0:
         warped_sample = fade_signal(signal=warped_sample, fs=fs, fading_sec=fading_sec)
+
+    warped_sample *= gain
 
     return warped_sample
 
@@ -157,7 +161,6 @@ def format_df(df: pd.DataFrame) -> pd.DataFrame:
             print('Input DataFrame must have start and duration/end columns.')
 
     return df
-
 
 
 def mix_sonification_and_original(sonification: np.ndarray,
@@ -226,23 +229,23 @@ def mix_sonification_and_original(sonification: np.ndarray,
 
     return stereo_audio
 
-def smooth_weights(weights: np.ndarray, fading_samples: int = 0):
 
+def smooth_weights(weights: np.ndarray, fading_samples: int = 0):
     weights_smoothed = np.copy(weights)
 
-    for i in range(1, len(weights)-1):
+    for i in range(1, len(weights) - 1):
         if weights[i] != weights[i - 1]:
-
             amplitude = (np.abs(weights[i - 1] - weights[i])) / 2
 
             x = np.linspace(-1 * (np.pi / 2), np.pi / 2, fading_samples) * -1 * np.sign(
                 weights[i - 1] - weights[i])
 
             y = amplitude * np.sin(x) + (weights[i - 1] + weights[i]) / 2
-            #print(len(weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] ))
+            # print(len(weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] ))
 
             weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] = y
     return weights_smoothed
+
 
 def envelope_signal(signal: np.ndarray, attack_time: float = 0, decay_time: float = 0, sustain_level: float = 0,
                     release_time: float = 0, fs=44100):

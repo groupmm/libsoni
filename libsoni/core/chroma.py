@@ -45,6 +45,7 @@ def sonify_chroma_vector(chroma_vector: np.ndarray,
         Sampling rate, in samples per seconds.
     tuning_frequency : float, default = 440.0
         Tuning frequency, given in Hertz.
+
     Returns
     -------
     chroma_sonification: np.ndarray
@@ -105,11 +106,11 @@ def sonify_chromagram(chromagram: np.ndarray,
     H: int, default = 0
         Hop size of STFT used to calculate chromagram.
     pitch_range: Tuple[int, int], default = [20,108]
-        Determines the pitches to encounter for shepard tones.
+        Determines the pitch range to encounter for shepard tones.
     filter: bool, default: False
         Enables filtering of shepard tones.
     f_center : float, default: 440.0
-        Determines filter center frequency in Hertz.
+        Determines filter center frequency, in Hertz.
     octave_cutoff: int, default: 1
         Determines the width of the filter.
         For octave_cutoff of 1, the magnitude of the filter reaches 0.5 at half the center_frequency and twice the center_frequency.
@@ -122,7 +123,8 @@ def sonify_chromagram(chromagram: np.ndarray,
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
     tuning_frequency : float, default = 440.0
-        Tuning frequency, given in Hertz.
+        Tuning frequency, in Hertz.
+
     Returns
     -------
     chroma_sonification: np.ndarray

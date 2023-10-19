@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List, Tuple
 
-from libsoni.util.utils import normalize_signal
+from libsoni.util.utils import normalize_signal, fade_signal
 from libsoni.core.methods import generate_click
 
 
@@ -11,9 +11,10 @@ def sonify_tse_clicks(time_positions: np.ndarray = None,
                       click_amplitude: float = 1.0,
                       offset_relative: float = 0.0,
                       sonification_duration: int = None,
+                      fade_duration: float = 0.05,
                       normalize: bool = True,
                       fs: int = 22050) -> np.ndarray:
-    """This function sonifies an array containing time positions with clicks.
+    """Sonifies time positions with clicks.
 
     Parameters
     ----------
@@ -30,17 +31,18 @@ def sonify_tse_clicks(time_positions: np.ndarray = None,
         0 indicates that the beginning of the click event is at the time position. 1 indicates the ending of the click
         event corresponds to the time position. 
     sonification_duration: int, default = None
-        Duration of the output waveform, given in samples.
+        Determines duration of sonification, given in samples.
+    fade_duration: float, default = 0.05
+        Determines duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.
     normalize: bool, default = True
-        Decides, if output signal is normalized to [-1,1].
+        Determines if output signal is normalized to [-1,1].
     fs: int, default = 22050
-        Sampling rate
+        Sampling rate, in samples per seconds.
 
     Returns
     -------
     tse_sonification: np.ndarray
-        Sonified waveform in form of a 1D Numpy array.
-
+        Sonified time positions.
     """
     num_samples = int((time_positions[-1] + click_fading_duration) * fs)
     if sonification_duration is None:
@@ -70,6 +72,8 @@ def sonify_tse_clicks(time_positions: np.ndarray = None,
         else:
             tse_sonification[start_samples:end_samples] += click
 
+    tse_sonification = fade_signal(tse_sonification, fs=fs, fading_sec=fade_duration)
+
     tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
 
     return tse_sonification[:sonification_duration]
@@ -79,32 +83,34 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
                       sample: np.ndarray = None,
                       offset_relative: float = 0.0,
                       sonification_duration: int = None,
+                      fade_duration: float = 0.05,
                       normalize: bool = True,
                       fs: int = 22050) -> np.ndarray:
-    """This function sonifies an array containing time positions with clicks.
+    """Sonifies time positions with warped versions of a sample.
 
     Parameters
     ----------
-    sample: np.ndarray
-        Sample (e.g., recording of a kick drum)
     time_positions: np.ndarray
         Array with time positions for clicks.
+    sample: np.ndarray
+        Sample (e.g., recording of a kick drum)
     offset_relative: float, default = 0.0
-        Relative offset coefficient for the beginning of the given audio sample.
-        0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
-        corresponding to the time position.
+        Relative offset coefficient for the beginning of a click.
+        0 indicates that the beginning of the click event is at the time position. 1 indicates the ending of the click
+        event corresponds to the time position.
     sonification_duration: int, default = None
-        Duration of the output waveform, given in samples.
+        Determines duration of sonification, given in samples.
+    fade_duration: float, default = 0.05
+        Determines duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.
     normalize: bool, default = True
-        Decides, if output signal is normalized to [-1,1].
+        Determines if output signal is normalized to [-1,1].
     fs: int, default = 22050
-        Sampling rate
+        Sampling rate, in samples per seconds.
 
     Returns
     -------
     tse_sonification: np.ndarray
-        Sonified waveform in form of a 1D Numpy array.
-
+        Sonified time positions.
     """
     sample_len = len(sample)
     num_samples = int((time_positions[-1]) * fs) + sample_len
@@ -135,16 +141,19 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
         else:
             tse_sonification[start_samples:end_samples] += sample
 
+    tse_sonification = fade_signal(tse_sonification, fs=fs, fading_sec=fade_duration)
+
     tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
 
     return tse_sonification[:sonification_duration]
 
 
 def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = None,
-                               sonification_duration: int = None,
                                click_fading_duration: float = 0.25,
                                click_amplitude: float = 1.0,
                                offset_relative: float = 0.0,
+                               sonification_duration: int = None,
+                               fade_duration: float = 0.05,
                                normalize: bool = True,
                                fs: int = 22050) -> np.ndarray:
     """Given multiple arrays in form of a list, this function creates the sonification of different sources.
@@ -193,6 +202,8 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
                                               sonification_duration=sonification_duration,
                                               fs=fs)
 
+    tse_sonification = fade_signal(tse_sonification, fs=fs, fading_sec=fade_duration)
+
     tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
 
     return tse_sonification
@@ -201,6 +212,7 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
 def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray]] = None,
                                 offset_relative: float = 0.0,
                                 sonification_duration: int = None,
+                                fade_duration: float = 0.05,
                                 normalize: bool = True,
                                 fs: int = 22050) -> np.ndarray:
     """Given multiple arrays in form of a list, this function creates the sonification of different sources.
@@ -247,6 +259,8 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
                                               offset_relative=offset_relative,
                                               sonification_duration=sonification_duration,
                                               fs=fs)
+
+    tse_sonification = fade_signal(tse_sonification, fs=fs, fading_sec=fade_duration)
 
     tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
 
