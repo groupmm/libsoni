@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>tse (libsoni.core.tse) &mdash; libsoni 0.0.0 documentation</title>
+  <title>TSE (libsoni.core.tse) &mdash; libsoni 0.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -47,7 +47,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Core Features (libsoni.core)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="f0.html">F0 (libsoni.core.f0)</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">tse (libsoni.core.tse)</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">TSE (libsoni.core.tse)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.tse.sonify_tse_clicks"><code class="docutils literal notranslate"><span class="pre">sonify_tse_clicks()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.tse.sonify_tse_multiple_clicks"><code class="docutils literal notranslate"><span class="pre">sonify_tse_multiple_clicks()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.tse.sonify_tse_multiple_samples"><code class="docutils literal notranslate"><span class="pre">sonify_tse_multiple_samples()</span></code></a></li>
@@ -82,7 +82,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Core Features (libsoni.core)</a></li>
-      <li class="breadcrumb-item active">tse (libsoni.core.tse)</li>
+      <li class="breadcrumb-item active">TSE (libsoni.core.tse)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/core/tse.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -93,7 +93,7 @@
            <div itemprop="articleBody">
              
   <section id="module-libsoni.core.tse">
-<span id="tse-libsoni-core-tse"></span><h1>tse (libsoni.core.tse)<a class="headerlink" href="#module-libsoni.core.tse" title="Permalink to this heading"></a></h1>
+<span id="tse-libsoni-core-tse"></span><h1>TSE (libsoni.core.tse)<a class="headerlink" href="#module-libsoni.core.tse" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="libsoni.core.tse.sonify_tse_clicks">
 <span class="sig-prename descclassname"><span class="pre">libsoni.core.tse.</span></span><span class="sig-name descname"><span class="pre">sonify_tse_clicks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_positions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">click_pitch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">69</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">click_fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">click_amplitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset_relative</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/tse.html#sonify_tse_clicks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.tse.sonify_tse_clicks" title="Permalink to this definition"></a></dt>
