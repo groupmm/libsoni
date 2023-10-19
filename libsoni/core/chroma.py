@@ -47,7 +47,8 @@ def sonify_chroma_vector(chroma_vector: np.ndarray,
         Tuning frequency, given in Hertz.
     Returns
     -------
-    chroma_sonification: Sonified chroma vector.
+    chroma_sonification: np.ndarray
+        Sonified chroma vector.
     """
     assert len(chroma_vector) == 12, f'The chroma vector must have length 12.'
 
@@ -124,7 +125,8 @@ def sonify_chromagram(chromagram: np.ndarray,
         Tuning frequency, given in Hertz.
     Returns
     -------
-    chroma_sonification: Sonified chromagram.
+    chroma_sonification: np.ndarray
+        Sonified chromagram.
     """
 
     assert chromagram.shape[0] == 12, f'The chromagram must have shape 12xN.'
