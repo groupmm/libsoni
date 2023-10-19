@@ -137,6 +137,7 @@
                 <span class="n">reference_pitch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                 <span class="n">target_pitch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                 <span class="n">target_duration_sec</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                <span class="n">gain</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
                 <span class="n">fs</span><span class="o">=</span><span class="mi">22050</span><span class="p">,</span>
                 <span class="n">fading_sec</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function warps a sample. Given the reference pitch of the sample provided as np.ndarray,</span>
@@ -183,6 +184,8 @@
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">fading_sec</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">warped_sample</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">=</span><span class="n">warped_sample</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_sec</span><span class="o">=</span><span class="n">fading_sec</span><span class="p">)</span>
+
+    <span class="n">warped_sample</span> <span class="o">*=</span> <span class="n">gain</span>
 
     <span class="k">return</span> <span class="n">warped_sample</span></div>
 

@@ -11,3 +11,4 @@ Core Features (libsoni.core)
 	pianoroll
 	chroma
 	spectrum
+	methods

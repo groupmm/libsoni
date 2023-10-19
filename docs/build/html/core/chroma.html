@@ -117,7 +117,7 @@ For octave_cutoff of 1, the magnitude of the filter reaches 0.5 at half the cent
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>chroma_sonification</strong> (<em>Sonified chroma vector.</em>)</p>
+<dd class="field-even"><p><strong>chroma_sonification</strong> (<em>np.ndarray</em>) – Sonified chroma vector.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -135,20 +135,20 @@ while the octave cutoff determines at which octave the amplitude of the correspo
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>chromagram</strong> (<em>np.ndarray</em>) – Chromagram to sonify.</p></li>
 <li><p><strong>H</strong> (<em>int, default = 0</em>) – Hop size of STFT used to calculate chromagram.</p></li>
-<li><p><strong>pitch_range</strong> (<em>Tuple[int, int], default = [20,108]</em>) – Determines the pitches to encounter for shepard tones.</p></li>
+<li><p><strong>pitch_range</strong> (<em>Tuple[int, int], default = [20,108]</em>) – Determines the pitch range to encounter for shepard tones.</p></li>
 <li><p><strong>filter</strong> (<em>bool, default: False</em>) – Enables filtering of shepard tones.</p></li>
-<li><p><strong>f_center</strong> (<em>float, default: 440.0</em>) – Determines filter center frequency in Hertz.</p></li>
+<li><p><strong>f_center</strong> (<em>float, default: 440.0</em>) – Determines filter center frequency, in Hertz.</p></li>
 <li><p><strong>octave_cutoff</strong> (<em>int, default: 1</em>) – Determines the width of the filter.
 For octave_cutoff of 1, the magnitude of the filter reaches 0.5 at half the center_frequency and twice the center_frequency.</p></li>
 <li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Determines duration of sonification, given in samples.</p></li>
 <li><p><strong>fade_duration</strong> (<em>float, default = 0.05</em>) – Determines duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.</p></li>
 <li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Determines if output signal is normalized to [-1,1].</p></li>
 <li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate, in samples per seconds.</p></li>
-<li><p><strong>tuning_frequency</strong> (<em>float, default = 440.0</em>) – Tuning frequency, given in Hertz.</p></li>
+<li><p><strong>tuning_frequency</strong> (<em>float, default = 440.0</em>) – Tuning frequency, in Hertz.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>chroma_sonification</strong> (<em>Sonified chromagram.</em>)</p>
+<dd class="field-even"><p><strong>chroma_sonification</strong> (<em>np.ndarray</em>) – Sonified chromagram.</p>
 </dd>
 </dl>
 </dd></dl>
