@@ -304,8 +304,8 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
 
         pianoroll_sonification[start_samples:start_samples + duration_samples] += \
             generate_tone_fm_synthesis(pitch=r['pitch'],
-                                       mod_rate_relative=mod_rate_relative,
-                                       mod_amp=mod_amp,
+                                       modulation_rate_relative=mod_rate_relative,
+                                       modulation_amplitude=mod_amp,
                                        gain=amplitude,
                                        duration_sec=r['duration'],
                                        fs=fs,

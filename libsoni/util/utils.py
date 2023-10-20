@@ -18,7 +18,8 @@ except:
 
 def fade_signal(signal: np.ndarray = None,
                 fs: int = 22050,
-                fading_sec: float = 0.01) -> np.ndarray:
+                fading_duration: float = 0.01) -> np.ndarray:
+
     """Fade in / out audio signal
     Parameters
     ----------
@@ -26,17 +27,17 @@ def fade_signal(signal: np.ndarray = None,
         Signal to be faded
     fs: int, default = 22050
         sampling rate
-    fading_sec: float, default = 0
+    fading_duration: float, default = 0
     Returns
     -------
     normalized_signal: np.ndarray
         Normalized signal
     """
-    num_samples = int(fading_sec * fs)
+    num_samples = int(fading_duration * fs)
     assert len(signal) > 2 * num_samples, 'The signal to be faded must be longer than two times the fading duration!'
 
-    signal[:num_samples] *= np.sin(np.pi * np.arange(num_samples) / fading_sec / 2 / fs)
-    signal[-num_samples:] *= np.cos(np.pi * np.arange(num_samples) / fading_sec / 2 / fs)
+    signal[:num_samples] *= np.sin(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
+    signal[-num_samples:] *= np.cos(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
     return signal
 
 
@@ -112,6 +113,29 @@ def warp_sample(sample: np.ndarray,
     return warped_sample
 
 
+def pitch_to_frequency(pitch: int,
+                       reference_pitch: int = 69,
+                       tuning_frequency: float = 440.0) -> float:
+    """Calculates frequency for pitch.
+
+    Parameters
+    ----------
+    pitch: int
+        Pitch to calculate frequency for.
+    reference_pitch: int, default = 69
+        Reference pitch for calculation.
+    tuning_frequency: float, default = 440.0
+        Tuning frequency for calculation, in Hertz.
+
+    Returns
+    -------
+    frequency: float
+        Calculated frequency for given pitch, in Hertz.
+    """
+
+    frequency = tuning_frequency * 2 ** ((pitch - reference_pitch) / 12)
+
+    return frequency
 def get_preset(preset_name: str = None) -> Dict:
     """Get preset parameters from presets.json
 
