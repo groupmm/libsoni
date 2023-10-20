@@ -11,6 +11,7 @@ def sonify_spectrogram(spectrogram: np.ndarray,
                        sonification_duration: int = None,
                        normalize: bool = True,
                        fs: int = 22050) -> np.ndarray:
+
     """Sonifies a spectrogram using sinusoids.
 
     Parameters
@@ -37,7 +38,6 @@ def sonify_spectrogram(spectrogram: np.ndarray,
     """
 
     # Check if lengths of coefficient vectors match shape of spectrogram
-
     assert spectrogram.shape[0] == len(frequency_coefficients), f'The length of frequency_coefficients must match spectrogram.shape[0]'
 
     assert spectrogram.shape[1] == len(time_coefficients), f'The length of time_coefficients must match spectrogram.shape[1]'
