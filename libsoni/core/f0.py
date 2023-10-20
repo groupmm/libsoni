@@ -11,7 +11,7 @@ def sonify_f0(time_f0: np.ndarray,
               partials_amplitudes: np.ndarray = np.array([1]),
               partials_phase_offsets: np.ndarray = None,
               sonification_duration: int = None,
-              fade_duration: float = 0.05,
+              fading_duration: float = 0.05,
               normalize: bool = True,
               fs: int = 22050) -> np.ndarray:
     """Sonifies a F0 trajectory given as 2D Numpy array.
@@ -30,16 +30,18 @@ def sonify_f0(time_f0: np.ndarray,
         Array containing the desired partials of the fundamental frequencies for sonification.
         An array [1] leads to sonification with only the fundamental frequency,
         while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.
-    partials_amplitudes: np.ndarray, default = [1]
+    partials_amplitudes: np.ndarray, default = None
         Array containing the amplitudes for partials.
         An array [1,0.5] causes the first partial to have amplitude 1,
         while the second partial has amplitude 0.5.
-    partials_phase_offsets: np.ndarray, default = [0]
+        When not defined, the amplitudes for all partials are set to 1.
+    partials_phase_offsets: np.ndarray, default = None
         Array containing the phase offsets for partials.
+        When not defined, the phase offsets for all partials are set to 0.
     sonification_duration: int, default = None
-        Determines duration of sonification, given in samples.
-    fade_duration: float, default = 0.05
-        Determines duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.
+        Determines duration of sonification, in samples.
+    fading_duration: float, default = 0.05
+        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
     fs: int, default = 22050
@@ -80,9 +82,7 @@ def sonify_f0(time_f0: np.ndarray,
         num_samples = int(time_positions[-1] * fs)
 
     f0s_stretched = np.zeros(num_samples)
-    f0_sonification = np.zeros(num_samples)
 
-    #
     gains_stretched = np.zeros(num_samples)
 
     # Stretch f0s_stretched to match the given time positions.
@@ -102,10 +102,10 @@ def sonify_f0(time_f0: np.ndarray,
                                                         partials=partials,
                                                         partials_amplitudes=partials_amplitudes,
                                                         partials_phase_offsets=partials_phase_offsets,
-                                                        fs=fs,
-                                                        fading_sec=fade_duration)
+                                                        fading_duration=fading_duration,
+                                                        fs=fs)
 
-    f0_sonification = fade_signal(f0_sonification, fs=fs, fading_sec=fade_duration)
+    f0_sonification = fade_signal(f0_sonification, fs=fs, fading_duration=fading_duration)
 
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 
@@ -114,7 +114,7 @@ def sonify_f0(time_f0: np.ndarray,
 
 def sonify_f0_with_presets(preset_dict: Dict = None,
                            sonification_duration: int = None,
-                           fade_duration: float = 0.05,
+                           fading_duration: float = 0.05,
                            normalize: bool = True,
                            fs: int = 22050) -> np.ndarray:
     """Sonifies multiple f0 annotations using sound presets.
@@ -128,9 +128,9 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
         {str: np.ndarray}
         preset: time_f0s
     sonification_duration: int, default = None
-        Determines duration of sonification, given in samples.
-    fade_duration: float, default = 0.05
-        Determines duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.
+        Determines duration of sonification, in samples.
+    fading_duration: float, default = 0.05
+        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
     fs: int, default = 22050
@@ -141,23 +141,36 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
     f0_sonification: np.ndarray
         Sonified f0 dictionary.
     """
+
     if sonification_duration is None:
+
         max_duration = 0
+
         for label in preset_dict:
             sonification_duration = preset_dict[label]['time_f0'][-1, 0]
+
             max_duration = sonification_duration if sonification_duration > max_duration else max_duration
+
         sonification_duration = int(np.ceil(fs * max_duration))
 
     f0_sonification = np.zeros(sonification_duration)
 
     for label in preset_dict:
+
         gains = np.ones(preset_dict[label]['time_f0'].shape[0])
+
         preset_features_dict = get_preset(preset_dict[label]['preset'])
+
         if 'gain' in preset_dict[label]:
+
             gain = preset_dict[label]['gain']
+
             if isinstance(gain, float):
+
                 gains = np.ones(preset_dict[label]['time_f0'].shape[0]) * preset_dict[label]['gain']
+
             elif isinstance(gain, np.ndarray):
+
                 gains = gain
 
         f0_sonification += sonify_f0(time_f0=preset_dict[label]['time_f0'],
@@ -165,10 +178,11 @@ def sonify_f0_with_presets(preset_dict: Dict = None,
                                      partials=preset_features_dict['partials'],
                                      partials_amplitudes=preset_features_dict['amplitudes'],
                                      sonification_duration=sonification_duration,
-                                     fade_duration=fade_duration,
+                                     fading_duration=fading_duration,
                                      normalize=False,
                                      fs=fs)
-    f0_sonification = fade_signal(f0_sonification, fs=fs, fading_sec=fade_duration)
+
+    f0_sonification = fade_signal(f0_sonification, fs=fs, fading_duration=fading_duration)
 
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 

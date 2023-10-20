@@ -9,7 +9,6 @@ def generate_click(pitch: int = 69,
                    tuning_frequency: float = 440.0,
                    click_fading_duration: float = 0.2,
                    fs: int = 22050) -> np.ndarray:
-
     """Generates a click signal.
 
     Parameters
@@ -50,7 +49,6 @@ def generate_sinusoid(frequency: float = 440.0,
                       duration: float = 1.0,
                       fading_duration: float = 0.01,
                       fs: int = 22050) -> np.ndarray:
-
     """Generates sinusoid.
 
     Parameters
@@ -91,7 +89,6 @@ def generate_shepard_tone(pitch_class: int = 0,
                           tuning_frequency: float = 440,
                           fading_duration: float = 0.05,
                           fs: int = 22050) -> np.ndarray:
-
     """Generates shepard tone.
 
     The sound can be changed either by the filter option or by the specified pitch-range.
@@ -151,13 +148,11 @@ def generate_shepard_tone(pitch_class: int = 0,
         weights = np.exp(- (f_lin - f_center_lin) ** 2 / (1.4427 * ((octave_cutoff * 2) * 1000) ** 2))
 
         for shepard_frequency in shepard_frequencies:
-
             shepard_tone += weights[np.argmin(np.abs(f_log - shepard_frequency))] * np.sin(2 * np.pi * shepard_frequency * np.arange(int(duration * fs)) / fs)
 
     else:
 
         for shepard_frequency in shepard_frequencies:
-
             shepard_tone += np.sin(2 * np.pi * shepard_frequency * np.arange(int(duration * fs)) / fs)
 
     shepard_tone = fade_signal(signal=shepard_tone, fs=fs, fading_duration=fading_duration)
@@ -176,7 +171,6 @@ def generate_tone_additive_synthesis(pitch: int = 69,
                                      tuning_frequency: float = 440,
                                      fading_duration: float = 0.05,
                                      fs: int = 22050) -> np.ndarray:
-
     """Generates tone signal using additive synthesis.
 
     The sound can be customized using parameters partials, partials_amplitudes and partials_phase_offsets.
@@ -228,7 +222,6 @@ def generate_tone_additive_synthesis(pitch: int = 69,
     pitch_frequency = pitch_to_frequency(pitch=pitch, tuning_frequency=tuning_frequency)
 
     for partial, partial_amplitude, partials_phase_offset in zip(partials, partials_amplitudes, partials_phase_offsets):
-
         generated_tone += partial_amplitude * np.sin(2 * np.pi * pitch_frequency * partial * (np.arange(int(duration * fs)) / fs) + partials_phase_offset)
 
     generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_duration=fading_duration)
@@ -244,7 +237,6 @@ def generate_tone_fm_synthesis(pitch: int = 69,
                                tuning_frequency: float = 440.0,
                                fading_duration: float = 0.05,
                                fs: int = 22050) -> np.ndarray:
-
     """Generates tone signal using frequency modulation synthesis.
 
     The sound can be customized using parameters modulation_rate_relative and modulation_amplitude.
@@ -292,7 +284,6 @@ def generate_tone_wavetable(pitch: int = 69,
                             tuning_frequency: float = 440.0,
                             fading_duration: float = 0.05,
                             fs: int = 22050) -> np.ndarray:
-
     """Generates tone using wavetable synthesis.
 
     The sound depends on the given wavetable.
@@ -348,7 +339,6 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
                                       partials_phase_offsets: np.ndarray = None,
                                       fading_duration: float = 0.05,
                                       fs: int = 22050) -> np.ndarray:
-
     """Generates signal out of instantaneous frequency.
 
     The sound can be customized using parameters partials, partials_amplitudes and partials_phase_offsets.
@@ -400,7 +390,6 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
     phase_result = []
 
     for frequency, gain in zip(frequency_vector, gain_vector):
-
         phase_step = 2 * np.pi * frequency / fs
 
         phase += phase_step
@@ -410,7 +399,6 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
     phase_result = np.asarray(phase_result)
 
     for partial, partial_amplitude, partials_phase_offset in zip(partials, partials_amplitudes, partials_phase_offsets):
-
         generated_tone += np.sin((phase_result + partials_phase_offset) * partial) * partial_amplitude
 
     generated_tone = np.multiply(generated_tone, gain_vector)

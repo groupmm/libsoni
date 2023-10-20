@@ -17,9 +17,8 @@ except:
 
 
 def fade_signal(signal: np.ndarray = None,
-                fs: int = 22050,
-                fading_duration: float = 0.01) -> np.ndarray:
-
+                fading_duration: float = 0.01,
+                fs: int = 22050) -> np.ndarray:
     """Fade in / out audio signal
     Parameters
     ----------

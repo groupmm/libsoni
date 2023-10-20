@@ -11,7 +11,6 @@ def sonify_spectrogram(spectrogram: np.ndarray,
                        sonification_duration: int = None,
                        normalize: bool = True,
                        fs: int = 22050) -> np.ndarray:
-
     """Sonifies a spectrogram using sinusoids.
 
     Parameters
