@@ -50,6 +50,7 @@ def generate_sinusoid(frequency: float = 440.0,
                       duration: float = 1.0,
                       fading_duration: float = 0.01,
                       fs: int = 22050) -> np.ndarray:
+
     """Generates sinusoid.
 
     Parameters
