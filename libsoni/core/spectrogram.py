@@ -45,7 +45,7 @@ def sonify_spectrogram(spectrogram: np.ndarray,
     H = int((time_coefficients[1] - time_coefficients[0]) * fs)
 
     # Determine length of sonification
-    num_samples = sonification_duration if sonification_duration is not None else int((time_coefficients[-1] * fs) + H)
+    num_samples = sonification_duration if sonification_duration is not None else int(np.ceil(time_coefficients[-1] * fs) + H)
 
     # Initialize sonification
     spectrogram_sonification = np.zeros(num_samples)

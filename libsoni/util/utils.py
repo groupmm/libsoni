@@ -7,6 +7,9 @@ import json
 import libfmp.b
 import libfmp.c6
 from typing import Dict
+import libfmp.b
+from matplotlib import pyplot as plt
+from matplotlib import patches
 
 SAMPLES = ['bass-drum', 'click', 'hi-hat']
 try:
@@ -59,9 +62,9 @@ def warp_sample(sample: np.ndarray,
                 reference_pitch: int,
                 target_pitch: int,
                 target_duration_sec: float,
-                gain: float = 1,
+                gain: float = 1.0,
                 fs=22050,
-                fading_sec: float = 0.01):
+                fading_duration: float = 0.01):
     """This function warps a sample. Given the reference pitch of the sample provided as np.ndarray,
     the warped version of the sample gets pitch-shifted using librosa.effects.pitch_shift().
     For the temporal alignment, if the desired duration is shorter than the original sample, the sample gets cropped,
@@ -104,8 +107,7 @@ def warp_sample(sample: np.ndarray,
         warped_sample = np.zeros(int(target_duration_sec * fs))
         warped_sample[:len(sample)] = sample
 
-    if not fading_sec == 0:
-        warped_sample = fade_signal(signal=warped_sample, fs=fs, fading_sec=fading_sec)
+    warped_sample = fade_signal(signal=warped_sample, fs=fs, fading_duration=fading_duration)
 
     warped_sample *= gain
 
@@ -315,3 +317,62 @@ def envelope_signal(signal: np.ndarray, attack_time: float = 0, decay_time: floa
     enveloped_signal = signal * np.concatenate([attack_func, decay_func, sustain_func, release_func])
 
     return enveloped_signal
+
+def visualize_pianoroll(df, xlabel='Time (seconds)', ylabel='Pitch', title: str = None, colors='FMP_1',
+                        velocity_alpha=False,
+                        figsize=(12, 4), ax=None, dpi=72):
+    # TODO: dtypes
+    """Plot a pianoroll visualization, inspired from FMP Notebook C1/C1S2_CSV.ipynb
+
+    Args:
+        score: List of note events
+        xlabel: Label for x axis (Default value = 'Time (seconds)')
+        ylabel: Label for y axis (Default value = 'Pitch')
+        colors: Several options: 1. string of FMP_COLORMAPS, 2. string of matplotlib colormap,
+            3. list or np.ndarray of matplotlib color specifications,
+            4. dict that assigns labels  to colors (Default value = 'FMP_1')
+        velocity_alpha: Use the velocity value for the alpha value of the corresponding rectangle
+            (Default value = False)
+        figsize: Width, height in inches (Default value = (12)
+        ax: The Axes instance to plot on (Default value = None)
+        dpi: Dots per inch (Default value = 72)
+
+    Returns:
+        fig: The created matplotlib figure or None if ax was given.
+        ax: The used axes
+    """
+    df = format_df(df)
+    fig = None
+    if ax is None:
+        fig = plt.figure(figsize=figsize, dpi=dpi)
+        ax = plt.subplot(1, 1, 1)
+
+    labels_set = sorted(df['label'].unique())
+    colors = libfmp.b.color_argument_to_dict(colors, labels_set)
+
+    pitch_min = df['pitch'].min()
+    pitch_max = df['pitch'].max()
+    time_min = df['start'].min()
+    time_max = df['end'].max()
+
+    for i, r in df.iterrows():
+        if velocity_alpha is False:
+            velocity = None
+        rect = patches.Rectangle((r['start'], r['pitch'] - 0.5), r['duration'], 1, linewidth=1,
+                                 edgecolor='k', facecolor=colors[r['label']], alpha=r['velocity'])
+        ax.add_patch(rect)
+
+    ax.set_ylim([pitch_min - 1.5, pitch_max + 1.5])
+    ax.set_xlim([min(time_min, 0), time_max + 0.5])
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(label=title)
+    ax.grid()
+    ax.set_axisbelow(True)
+    ax.legend([patches.Patch(linewidth=1, edgecolor='k', facecolor=colors[key]) for key in labels_set],
+              labels_set, loc='upper right', framealpha=1)
+
+    if fig is not None:
+        plt.tight_layout()
+
+    return fig, ax
