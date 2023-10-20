@@ -7,7 +7,7 @@ from libsoni.util.utils import fade_signal, smooth_weights, normalize_signal, pi
 def generate_click(pitch: int = 69,
                    amplitude: float = 1.0,
                    tuning_frequency: float = 440.0,
-                   duration: float = 0.2,
+                   click_fading_duration: float = 0.2,
                    fs: int = 22050) -> np.ndarray:
 
     """Generates a click signal.
@@ -18,7 +18,7 @@ def generate_click(pitch: int = 69,
         Pitch for colored click.
     amplitude : float, default = 1.0
         Amplitude of click signal.
-    duration : float, default = 0.2
+    click_fading_duration : float, default = 0.2
         Fading duration of click signal, in seconds.
     tuning_frequency : float, default = 440.0
         Tuning frequency, in Hertz.
@@ -37,7 +37,7 @@ def generate_click(pitch: int = 69,
 
     angular_frequency = 2 * np.pi * click_frequency / fs
 
-    click = np.logspace(0, -10, num=int(fs * duration), base=2.0)
+    click = np.logspace(0, -10, num=int(fs * click_fading_duration), base=2.0)
 
     click *= amplitude * np.sin(angular_frequency * np.arange(len(click)))
 
@@ -310,7 +310,7 @@ def generate_tone_wavetable(pitch: int = 69,
     tuning_frequency: float, default: 440.0
         Tuning frequency, in Hertz.
     fading_duration: float, default: 0.01
-        Determines duration of fade-in and fade-out, given in seconds.
+        Determines duration of fade-in and fade-out, in seconds.
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
