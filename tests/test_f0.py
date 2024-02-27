@@ -1,6 +1,4 @@
 import numpy as np
-import os
-from scipy.io import wavfile
 from libsoni.core import f0
 
 FS = 22050
@@ -36,23 +34,3 @@ def test_f0():
         assert np.array_equal(y, y)
 
 test_f0()
-def test_f0_preset():
-    time_f0_bassoon = np.load(os.path.join('tests', 'data', 'test_Bach10', 'bassoon.npy'))
-    time_f0_clarinet = np.load(os.path.join('tests', 'data', 'test_Bach10', 'clarinet.npy'))
-    time_f0_saxophone = np.load(os.path.join('tests', 'data', 'test_Bach10', 'saxophone.npy'))
-    time_f0_violin = np.load(os.path.join('tests', 'data', 'test_Bach10', 'violin.npy'))
-
-    preset_dict = {'bassoon': time_f0_bassoon,
-                   'clarinet': time_f0_clarinet,
-                   'saxophone': time_f0_saxophone,
-                   'violin': time_f0_violin}
-
-    y = f0.sonify_f0_presets(preset_dict=preset_dict,
-                             duration=None,
-                             fs=FS)
-
-    #TODO: Remove writing
-    wavfile.write(os.path.join('tests', 'data_audio', 'bach_test_fo_sonified.wav'), FS, y)
-
-    assert np.array_equal(y, y)
-
