@@ -1,9 +1,6 @@
 import numpy as np
 import pandas as pd
 import librosa
-from matplotlib import pyplot as plt
-import os
-import json
 import libfmp.b
 import libfmp.c6
 from typing import Dict
@@ -12,11 +9,6 @@ from matplotlib import pyplot as plt
 from matplotlib import patches
 
 SAMPLES = ['bass-drum', 'click', 'hi-hat']
-try:
-    PRESETS = json.load(open(os.path.join('libsoni', 'util', 'presets.json')))
-except:
-    # TODO: Clean up this mess, this is a workaround for the Sphinx documentation
-    PRESETS = json.load(open(os.path.join('..', '..', 'libsoni', 'libsoni', 'util', 'presets.json')))
 
 
 def fade_signal(signal: np.ndarray = None,
@@ -137,21 +129,6 @@ def pitch_to_frequency(pitch: int,
     frequency = tuning_frequency * 2 ** ((pitch - reference_pitch) / 12)
 
     return frequency
-def get_preset(preset_name: str = None) -> Dict:
-    """Get preset parameters from presets.json
-
-    Parameters
-    ----------
-    preset_name: str, default: None
-        Name of preset, e.g., violin
-    Returns
-    -------
-    dictionary of partials, envelope, etc.
-    """
-    if preset_name not in PRESETS:
-        raise ValueError(f'Preset {preset_name} not valid! Choose among {PRESETS.keys()}')
-    return PRESETS[preset_name]
-
 
 # Taken from FMP Notebooks, https://www.audiolabs-erlangen.de/resources/MIR/FMP/C6/C6S2_TempoBeat.html
 def plot_sonify_novelty_beats(fn_wav, fn_ann, title=''):
