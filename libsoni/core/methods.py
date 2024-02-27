@@ -33,11 +33,8 @@ def generate_click(pitch: int = 69,
     assert 0 <= pitch <= 127, f'Pitch is out of range [0,127].'
 
     click_frequency = pitch_to_frequency(pitch=pitch, tuning_frequency=tuning_frequency)
-
     angular_frequency = 2 * np.pi * click_frequency / fs
-
     click = np.logspace(0, -10, num=int(fs * click_fading_duration), base=2.0)
-
     click *= amplitude * np.sin(angular_frequency * np.arange(len(click)))
 
     return click
@@ -73,7 +70,6 @@ def generate_sinusoid(frequency: float = 440.0,
     """
 
     sinusoid = amplitude * np.sin((2 * np.pi * frequency * (np.arange(int(duration * fs)) / fs)) + phase)
-
     sinusoid = fade_signal(signal=sinusoid, fs=fs, fading_duration=fading_duration)
 
     return sinusoid
@@ -126,37 +122,28 @@ def generate_shepard_tone(pitch_class: int = 0,
     """
 
     assert 0 <= pitch_class <= 11, f'Pitch class is out of range [0,11].'
-
     assert all(0 <= p <= 127 for p in pitch_range), f'Pitch range has to be defined within [0,127].'
 
     pitches = pitch_class + np.arange(11) * 12
-
     mask = (pitches >= pitch_range[0]) & (pitches <= pitch_range[1])
-
     shepard_frequencies = tuning_frequency * 2 ** ((pitches[mask] - 69) / 12)
-
     shepard_tone = np.zeros(int(duration * fs))
 
     if filter:
-
         f_log = 2 * np.logspace(1, 4, 20000)
-
         f_lin = np.linspace(20, 20000, 20000)
-
         f_center_lin = np.argmin(np.abs(f_log - f_center))
-
         weights = np.exp(- (f_lin - f_center_lin) ** 2 / (1.4427 * ((octave_cutoff * 2) * 1000) ** 2))
 
         for shepard_frequency in shepard_frequencies:
-            shepard_tone += weights[np.argmin(np.abs(f_log - shepard_frequency))] * np.sin(2 * np.pi * shepard_frequency * np.arange(int(duration * fs)) / fs)
+            shepard_tone += weights[np.argmin(np.abs(f_log - shepard_frequency))] * \
+                            np.sin(2 * np.pi * shepard_frequency * np.arange(int(duration * fs)) / fs)
 
     else:
-
         for shepard_frequency in shepard_frequencies:
             shepard_tone += np.sin(2 * np.pi * shepard_frequency * np.arange(int(duration * fs)) / fs)
 
     shepard_tone = fade_signal(signal=shepard_tone, fs=fs, fading_duration=fading_duration)
-
     shepard_tone = normalize_signal(shepard_tone) * gain
 
     return shepard_tone
@@ -211,14 +198,12 @@ def generate_tone_additive_synthesis(pitch: int = 69,
     assert 0 <= pitch <= 127, f'Pitch is out of range [0,127].'
 
     partials_amplitudes = np.ones(len(partials)) if partials_amplitudes is None else partials_amplitudes
-
     partials_phase_offsets = np.zeros(len(partials)) if partials_phase_offsets is None else partials_phase_offsets
 
     assert len(partials) == len(partials_amplitudes) == len(partials_phase_offsets), \
         f'Arrays partials, partials_amplitudes and partials_phase_offsets must be of equal length.'
 
     generated_tone = np.zeros(int(duration * fs))
-
     pitch_frequency = pitch_to_frequency(pitch=pitch, tuning_frequency=tuning_frequency)
 
     for partial, partial_amplitude, partials_phase_offset in zip(partials, partials_amplitudes, partials_phase_offsets):
@@ -269,9 +254,7 @@ def generate_tone_fm_synthesis(pitch: int = 69,
     assert 0 <= pitch <= 127, f'Pitch is out of range [0,127].'
 
     pitch_frequency = pitch_to_frequency(pitch=pitch, tuning_frequency=tuning_frequency)
-
     generated_tone = np.sin(2 * np.pi * pitch_frequency * (np.arange(int(duration * fs))) / fs + modulation_amplitude * np.sin(2 * np.pi * pitch_frequency * modulation_rate_relative * (np.arange(int(duration * fs)))))
-
     generated_tone = gain * fade_signal(signal=generated_tone, fs=fs, fading_duration=fading_duration)
 
     return generated_tone
@@ -314,9 +297,7 @@ def generate_tone_wavetable(pitch: int = 69,
     assert 0 <= pitch <= 127, f'Pitch is out of range [0,127].'
 
     generated_tone = []
-
     pitch_frequency = pitch_to_frequency(pitch=pitch, tuning_frequency=tuning_frequency)
-
     current_sample = 0
 
     while len(generated_tone) < int(duration * fs):
@@ -326,7 +307,6 @@ def generate_tone_wavetable(pitch: int = 69,
         current_sample += 1
 
     generated_tone = np.array(generated_tone)
-
     generated_tone = gain * fade_signal(signal=generated_tone, fs=fs, fading_duration=fading_duration)
 
     return generated_tone
@@ -370,7 +350,6 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
         Generated signal
     """
     partials_amplitudes = np.ones(len(partials)) if partials_amplitudes is None else partials_amplitudes
-
     partials_phase_offsets = np.zeros(len(partials)) if partials_phase_offsets is None else partials_phase_offsets
 
     assert len(partials) == len(partials_amplitudes) == len(partials_phase_offsets), \
@@ -379,21 +358,17 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
     generated_tone = np.zeros_like(frequency_vector)
 
     if gain_vector is None:
-
         gain_vector = np.ones_like(frequency_vector)
 
     else:
         gain_vector = smooth_weights(weights=gain_vector, fading_samples=60)
 
     phase = 0
-
     phase_result = []
 
     for frequency, gain in zip(frequency_vector, gain_vector):
         phase_step = 2 * np.pi * frequency / fs
-
         phase += phase_step
-
         phase_result.append(phase)
 
     phase_result = np.asarray(phase_result)
@@ -401,8 +376,7 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
     for partial, partial_amplitude, partials_phase_offset in zip(partials, partials_amplitudes, partials_phase_offsets):
         generated_tone += np.sin((phase_result + partials_phase_offset) * partial) * partial_amplitude
 
-    generated_tone = np.multiply(generated_tone, gain_vector)
-
+    generated_tone = generated_tone * gain_vector
     generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_duration=fading_duration)
 
     return generated_tone

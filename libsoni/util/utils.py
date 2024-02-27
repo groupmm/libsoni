@@ -36,7 +36,8 @@ def fade_signal(signal: np.ndarray = None,
 
 
 def normalize_signal(signal: np.ndarray) -> np.ndarray:
-    """Normalize audio signal
+    """Max-normalize audio signal
+
     Parameters
     ----------
     signal: np.ndarray
@@ -61,6 +62,7 @@ def warp_sample(sample: np.ndarray,
     the warped version of the sample gets pitch-shifted using librosa.effects.pitch_shift().
     For the temporal alignment, if the desired duration is shorter than the original sample, the sample gets cropped,
     else if the desired duration is longer of the provided sample, the returned signal gets zero-padded at the end.
+
     Parameters
     ----------
     sample: np.ndarray
@@ -75,6 +77,7 @@ def warp_sample(sample: np.ndarray,
         Sampling rate, in samples per seconds.
     fading_sec: float, default = 0.01
         Duration of fade in and fade out (to avoid clicks)
+
     Returns
     -------
     warped_sample: np.ndarray
@@ -295,11 +298,22 @@ def envelope_signal(signal: np.ndarray, attack_time: float = 0, decay_time: floa
 
     return enveloped_signal
 
-def visualize_pianoroll(df, xlabel='Time (seconds)', ylabel='Pitch', title: str = None, colors='FMP_1',
+
+def visualize_pianoroll(df: pd.DataFrame,
+                        xlabel: str = 'Time (seconds)',
+                        ylabel: str = 'Pitch',
+                        title: str = None,
+                        colors: str = 'FMP_1',
                         velocity_alpha=False,
-                        figsize=(12, 4), ax=None, dpi=72):
+                        figsize=(12, 4),
+                        ax=None,
+                        dpi=72):
     # TODO: dtypes
     """Plot a pianoroll visualization, inspired from FMP Notebook C1/C1S2_CSV.ipynb
+
+    Parameters
+    ----------
+        df:
 
     Args:
         score: List of note events
@@ -333,10 +347,9 @@ def visualize_pianoroll(df, xlabel='Time (seconds)', ylabel='Pitch', title: str 
     time_max = df['end'].max()
 
     for i, r in df.iterrows():
-        if velocity_alpha is False:
-            velocity = None
+        velocity = None if not velocity_alpha else r['velocity']
         rect = patches.Rectangle((r['start'], r['pitch'] - 0.5), r['duration'], 1, linewidth=1,
-                                 edgecolor='k', facecolor=colors[r['label']], alpha=r['velocity'])
+                                 edgecolor='k', facecolor=colors[r['label']], alpha=velocity)
         ax.add_patch(rect)
 
     ax.set_ylim([pitch_min - 1.5, pitch_max + 1.5])

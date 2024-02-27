@@ -24,7 +24,7 @@ def sonify_f0(time_f0: np.ndarray,
     time_f0: np.ndarray
         2D array of time positions and f0s.
     gains: np.ndarray, default = None
-        Array containing gain values for f0-values.
+        Array containing gain values for f0values.
     partials: np.ndarray, default = [1]
         Array containing the desired partials of the fundamental frequencies for sonification.
         An array [1] leads to sonification with only the fundamental frequency,
@@ -33,7 +33,7 @@ def sonify_f0(time_f0: np.ndarray,
         Array containing the amplitudes for partials.
         An array [1,0.5] causes the first partial to have amplitude 1,
         while the second partial has amplitude 0.5.
-        When not defined, the amplitudes for all partials are set to 1.
+        If None, the amplitudes for all partials are set to 1.
     partials_phase_offsets: np.ndarray, default = None
         Array containing the phase offsets for partials.
         When not defined, the phase offsets for all partials are set to 0.
@@ -81,7 +81,6 @@ def sonify_f0(time_f0: np.ndarray,
         num_samples = int(time_positions[-1] * fs)
 
     f0s_stretched = np.zeros(num_samples)
-
     gains_stretched = np.zeros(num_samples)
 
     # Stretch f0s_stretched to match the given time positions.
@@ -95,7 +94,7 @@ def sonify_f0(time_f0: np.ndarray,
             f0s_stretched[int(time * fs):int(next_time * fs)] = f0
             gains_stretched[int(time * fs):int(next_time * fs)] = gain
 
-    # This loop can be made better
+    # TODO: This loop can be made better
     f0_sonification = generate_tone_instantaneous_phase(frequency_vector=f0s_stretched,
                                                         gain_vector=gains_stretched,
                                                         partials=partials,

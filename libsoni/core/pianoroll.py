@@ -228,15 +228,11 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
     if sonification_duration is not None:
 
         if sonification_duration == num_samples:
-
             pass
 
         elif sonification_duration < num_samples:
-
             pianoroll_df = pianoroll_df[pianoroll_df['start'] < sonification_duration]
-
             pianoroll_df['end'] = pianoroll_df[pianoroll_df['end'] > sonification_duration] = sonification_duration
-
             pianoroll_df['duration'] = pianoroll_df['end'] - pianoroll_df['start']
 
         num_samples = sonification_duration
@@ -355,7 +351,6 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
                                        fs=fs)
 
     pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=fading_duration)
-
     pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
 
     return pianoroll_sonification
