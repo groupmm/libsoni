@@ -60,7 +60,6 @@ def sonify_chroma_vector(chroma_vector: np.ndarray,
     chroma_sonification = np.zeros(num_samples)
 
     for pitch_class in range(12):
-
         if chroma_vector[pitch_class] > 0:
             shepard_tone = generate_shepard_tone(pitch_class=pitch_class,
                                                  pitch_range=pitch_range,
@@ -71,12 +70,10 @@ def sonify_chroma_vector(chroma_vector: np.ndarray,
                                                  duration=num_samples / fs,
                                                  tuning_frequency=tuning_frequency,
                                                  fading_duration=fading_duration,
-                                                 fs=fs, )
-
+                                                 fs=fs)
             chroma_sonification += shepard_tone
 
     chroma_sonification = fade_signal(chroma_sonification, fading_duration=fading_duration, fs=fs)
-
     chroma_sonification = normalize_signal(chroma_sonification) if normalize else chroma_sonification
 
     return chroma_sonification
@@ -148,7 +145,6 @@ def sonify_chromagram(chromagram: np.ndarray,
         if np.sum(np.abs(chromagram[pitch_class, :])) > 0:
             weighting_vector = np.repeat(chromagram[pitch_class, :], H)
             weighting_vector_smoothed = smooth_weights(weights=weighting_vector, fading_samples=int(H / 8))
-
             shepard_tone = generate_shepard_tone(pitch_class=pitch_class,
                                                  pitch_range=pitch_range,
                                                  filter=filter,
@@ -158,12 +154,10 @@ def sonify_chromagram(chromagram: np.ndarray,
                                                  duration=num_samples / fs,
                                                  tuning_frequency=tuning_frequency,
                                                  fading_duration=fading_duration,
-                                                 fs=fs, )
-
+                                                 fs=fs)
             chroma_sonification += (shepard_tone * weighting_vector_smoothed)
 
     chroma_sonification = fade_signal(chroma_sonification, fading_duration=fading_duration, fs=fs)
-
     chroma_sonification = normalize_signal(chroma_sonification) if normalize else chroma_sonification
 
     return chroma_sonification

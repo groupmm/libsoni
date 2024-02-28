@@ -104,7 +104,6 @@ def sonify_f0(time_f0: np.ndarray,
                                                         fs=fs)
 
     f0_sonification = fade_signal(f0_sonification, fs=fs, fading_duration=fading_duration)
-
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 
     return f0_sonification
