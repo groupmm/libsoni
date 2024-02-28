@@ -36,7 +36,7 @@ def sonify_tse_clicks(time_positions: np.ndarray = None,
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
     normalize: bool, default = True
-        Determines if output signal is normalized to [-1,1].
+        Determines if output signal is max-normalized to [-1,1].
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -60,25 +60,17 @@ def sonify_tse_clicks(time_positions: np.ndarray = None,
             time_positions = time_positions[time_positions < duration_in_sec]
         num_samples = int(sonification_duration * fs)
 
-    tse_sonification = np.zeros(num_samples)
-    click = generate_click(pitch=click_pitch, click_fading_duration=click_fading_duration, amplitude=click_amplitude)
-    num_click_samples = len(click)
-    offset_samples = int(offset_relative * num_click_samples)
+    click = generate_click(pitch=click_pitch,
+                           click_fading_duration=click_fading_duration,
+                           amplitude=click_amplitude)
 
-    for idx, time_position in enumerate(time_positions):
-        start_samples = int(time_position * fs) - offset_samples
-        end_samples = start_samples + num_click_samples
-
-        if start_samples < 0:
-            if end_samples <= 0:
-                continue
-            tse_sonification[:end_samples] += click[-end_samples:]
-
-        else:
-            tse_sonification[start_samples:end_samples] += click
-
-    tse_sonification = fade_signal(tse_sonification, fs=fs, fading_duration=fading_duration)
-    tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
+    tse_sonification = __sonify_tse_with_sound_event(click,
+                                                     offset_relative,
+                                                     time_positions,
+                                                     num_samples,
+                                                     fs,
+                                                     fading_duration,
+                                                     normalize)
 
     return tse_sonification[:sonification_duration]
 
@@ -108,7 +100,7 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
     normalize: bool, default = True
-        Determines if output signal is normalized to [-1,1].
+        Determines if output signal is max-normalized to [-1,1].
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -135,23 +127,13 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
 
         num_samples = sonification_duration
 
-    tse_sonification = np.zeros(num_samples)
-    offset_samples = int(offset_relative * sample_len)
-
-    for idx, time_position in enumerate(time_positions):
-        start_samples = int(time_position * fs) - offset_samples
-        end_samples = start_samples + sample_len
-
-        if start_samples < 0:
-            if end_samples <= 0:
-                continue
-            tse_sonification[:end_samples] += sample[-end_samples:]
-
-        else:
-            tse_sonification[start_samples:end_samples] += sample
-
-    tse_sonification = fade_signal(tse_sonification, fs=fs, fading_duration=fading_duration)
-    tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
+    tse_sonification = __sonify_tse_with_sound_event(sample,
+                                                     offset_relative,
+                                                     time_positions,
+                                                     num_samples,
+                                                     fs,
+                                                     fading_duration,
+                                                     normalize)
 
     return tse_sonification[:sonification_duration]
 
@@ -186,7 +168,7 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
     normalize: bool, default = True
-        Determines if output signal is normalized to [-1,1].
+        Determines if output signal is max-normalized to [-1,1].
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -244,7 +226,7 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
     normalize: bool, default = True
-        Determines if output signal is normalized to [-1,1].
+        Determines if output signal is max-normalized to [-1,1].
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -277,6 +259,61 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
                                               offset_relative=offset_relative,
                                               sonification_duration=sonification_duration,
                                               fs=fs)
+
+    tse_sonification = fade_signal(tse_sonification, fs=fs, fading_duration=fading_duration)
+    tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
+
+    return tse_sonification
+
+
+def __sonify_tse_with_sound_event(sound_event,
+                                  offset_relative,
+                                  time_positions,
+                                  num_samples,
+                                  fs,
+                                  fading_duration,
+                                  normalize):
+    """
+    Parameters
+    ----------
+    sound_event: np.ndarray
+        A click signal or sample loaded from the disk
+    offset_relative: float, default = 0.0
+        Relative offset for the beginning of a sound event.
+        0 indicates that the beginning of the sound event is at the time position,
+        1 indicates the ending of the sound event corresponds to the time position.:
+    time_positions: np.ndarray
+        Array with time positions of the annotations.
+    num_samples: int
+        Number of samples of the output signals
+    fs: int
+        Sampling rate
+    fading_duration: float
+        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+    normalize: bool, default = True
+        Determines if output signal is max-normalized to [-1,1].
+
+    Returns
+    -------
+    tse_sonification: np.ndarray
+        Sonified signal with multiple sound events, given the time positions
+    """
+
+    tse_sonification = np.zeros(num_samples)
+    num_click_samples = len(sound_event)
+    offset_samples = int(offset_relative * num_click_samples)
+
+    for idx, time_position in enumerate(time_positions):
+        start_samples = int(time_position * fs) - offset_samples
+        end_samples = start_samples + num_click_samples
+
+        if start_samples < 0:
+            if end_samples <= 0:
+                continue
+            tse_sonification[:end_samples] += sound_event[-end_samples:]
+
+        else:
+            tse_sonification[start_samples:end_samples] += sound_event
 
     tse_sonification = fade_signal(tse_sonification, fs=fs, fading_duration=fading_duration)
     tse_sonification = normalize_signal(tse_sonification) if normalize else tse_sonification
