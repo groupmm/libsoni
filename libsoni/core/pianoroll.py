@@ -178,11 +178,10 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
                            click_fading_duration=r['duration'],
                            fs=fs)
 
-        pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=fading_duration)
+    pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=fading_duration)
+    pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
 
-        pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
-
-        return pianoroll_sonification
+    return pianoroll_sonification
 
 
 def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
