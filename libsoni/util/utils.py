@@ -3,7 +3,6 @@ import pandas as pd
 import librosa
 import libfmp.b
 import libfmp.c6
-from typing import Dict
 import libfmp.b
 from matplotlib import pyplot as plt
 from matplotlib import patches
@@ -28,7 +27,10 @@ def fade_signal(signal: np.ndarray = None,
         Normalized signal
     """
     num_samples = int(fading_duration * fs)
-    assert len(signal) > 2 * num_samples, 'The signal to be faded must be longer than two times the fading duration!'
+
+    # if the signal is shorter than twice of the length of the fading duration, take 10% of the samples for fading
+    if len(signal) < 2 * num_samples:
+        num_samples = int(len(signal) * 0.01)
 
     signal[:num_samples] *= np.sin(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
     signal[-num_samples:] *= np.cos(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
