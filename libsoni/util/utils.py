@@ -28,12 +28,13 @@ def fade_signal(signal: np.ndarray = None,
     """
     num_samples = int(fading_duration * fs)
 
-    # if the signal is shorter than twice of the length of the fading duration, take 10% of the samples for fading
+    # if the signal is shorter than twice of the length of the fading duration, multiply signal with sinus half-wave
     if len(signal) < 2 * num_samples:
-        num_samples = int(len(signal) * 0.01)
+        signal *= np.sin(np.pi * np.arange(len(signal)) / len(signal))
+    else:
+        signal[:num_samples] *= np.sin(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
+        signal[-num_samples:] *= np.cos(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
 
-    signal[:num_samples] *= np.sin(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
-    signal[-num_samples:] *= np.cos(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
     return signal
 
 
