@@ -314,30 +314,7 @@ def visualize_pianoroll(df: pd.DataFrame,
                         figsize=(12, 4),
                         ax=None,
                         dpi=72):
-    # TODO: dtypes
-    """Plot a pianoroll visualization, inspired from FMP Notebook C1/C1S2_CSV.ipynb
 
-    Parameters
-    ----------
-        df:
-
-    Args:
-        score: List of note events
-        xlabel: Label for x axis (Default value = 'Time (seconds)')
-        ylabel: Label for y axis (Default value = 'Pitch')
-        colors: Several options: 1. string of FMP_COLORMAPS, 2. string of matplotlib colormap,
-            3. list or np.ndarray of matplotlib color specifications,
-            4. dict that assigns labels  to colors (Default value = 'FMP_1')
-        velocity_alpha: Use the velocity value for the alpha value of the corresponding rectangle
-            (Default value = False)
-        figsize: Width, height in inches (Default value = (12)
-        ax: The Axes instance to plot on (Default value = None)
-        dpi: Dots per inch (Default value = 72)
-
-    Returns:
-        fig: The created matplotlib figure or None if ax was given.
-        ax: The used axes
-    """
     df = format_df(df)
     fig = None
     if ax is None:
