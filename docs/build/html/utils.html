@@ -50,11 +50,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.envelope_signal"><code class="docutils literal notranslate"><span class="pre">envelope_signal()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.fade_signal"><code class="docutils literal notranslate"><span class="pre">fade_signal()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.format_df"><code class="docutils literal notranslate"><span class="pre">format_df()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.get_preset"><code class="docutils literal notranslate"><span class="pre">get_preset()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.mix_sonification_and_original"><code class="docutils literal notranslate"><span class="pre">mix_sonification_and_original()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.normalize_signal"><code class="docutils literal notranslate"><span class="pre">normalize_signal()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.pitch_to_frequency"><code class="docutils literal notranslate"><span class="pre">pitch_to_frequency()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.plot_sonify_novelty_beats"><code class="docutils literal notranslate"><span class="pre">plot_sonify_novelty_beats()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.smooth_weights"><code class="docutils literal notranslate"><span class="pre">smooth_weights()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.visualize_pianoroll"><code class="docutils literal notranslate"><span class="pre">visualize_pianoroll()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#libsoni.util.utils.warp_sample"><code class="docutils literal notranslate"><span class="pre">warp_sample()</span></code></a></li>
 </ul>
 </li>
@@ -105,18 +106,18 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="libsoni.util.utils.fade_signal">
-<span class="sig-prename descclassname"><span class="pre">libsoni.util.utils.</span></span><span class="sig-name descname"><span class="pre">fade_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fading_sec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/libsoni/util/utils.html#fade_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.util.utils.fade_signal" title="Permalink to this definition"></a></dt>
-<dd><p>Fade in / out audio signal
-:Parameters: * <strong>signal</strong> (<em>np.ndarray, default = None</em>) – Signal to be faded</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – sampling rate</p></li>
-<li><p><strong>fading_sec</strong> (<em>float, default = 0</em>)</p></li>
-</ul>
-</div></blockquote>
+<span class="sig-prename descclassname"><span class="pre">libsoni.util.utils.</span></span><span class="sig-name descname"><span class="pre">fade_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/libsoni/util/utils.html#fade_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.util.utils.fade_signal" title="Permalink to this definition"></a></dt>
+<dd><p>Fade in / out audio signal</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>normalized_signal</strong> (<em>np.ndarray</em>) – Normalized signal</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>signal</strong> (<em>np.ndarray, default = None</em>) – Signal to be faded</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – sampling rate</p></li>
+<li><p><strong>fading_duration</strong> (<em>float, default = 0</em>) – duration of fade-in and fade-out, in seconds</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>normalized_signal</strong> (<em>np.ndarray</em>) – Normalized signal</p>
 </dd>
 </dl>
 </dd></dl>
@@ -125,20 +126,6 @@
 <dt class="sig sig-object py" id="libsoni.util.utils.format_df">
 <span class="sig-prename descclassname"><span class="pre">libsoni.util.utils.</span></span><span class="sig-name descname"><span class="pre">format_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="_modules/libsoni/util/utils.html#format_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.util.utils.format_df" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="libsoni.util.utils.get_preset">
-<span class="sig-prename descclassname"><span class="pre">libsoni.util.utils.</span></span><span class="sig-name descname"><span class="pre">get_preset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preset_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/libsoni/util/utils.html#get_preset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.util.utils.get_preset" title="Permalink to this definition"></a></dt>
-<dd><p>Get preset parameters from presets.json</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>preset_name</strong> (<em>str, default: None</em>) – Name of preset, e.g., violin</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>dictionary of partials, envelope, etc.</strong></p>
-</dd>
-</dl>
-</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="libsoni.util.utils.mix_sonification_and_original">
@@ -171,11 +158,31 @@ panning = 0.0 means sonification on left and original audio on right channel</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="libsoni.util.utils.normalize_signal">
 <span class="sig-prename descclassname"><span class="pre">libsoni.util.utils.</span></span><span class="sig-name descname"><span class="pre">normalize_signal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/libsoni/util/utils.html#normalize_signal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.util.utils.normalize_signal" title="Permalink to this definition"></a></dt>
-<dd><p>Normalize audio signal
-:Parameters: <strong>signal</strong> (<em>np.ndarray</em>) – Signal to be normalized</p>
+<dd><p>Max-normalize audio signal</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>normalized_signal</strong> (<em>np.ndarray</em>) – Normalized signal</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>signal</strong> (<em>np.ndarray</em>) – Signal to be normalized</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>normalized_signal</strong> (<em>np.ndarray</em>) – Normalized signal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="libsoni.util.utils.pitch_to_frequency">
+<span class="sig-prename descclassname"><span class="pre">libsoni.util.utils.</span></span><span class="sig-name descname"><span class="pre">pitch_to_frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pitch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_pitch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">69</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">440.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/libsoni/util/utils.html#pitch_to_frequency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.util.utils.pitch_to_frequency" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates frequency for pitch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pitch</strong> (<em>int</em>) – Pitch to calculate frequency for.</p></li>
+<li><p><strong>reference_pitch</strong> (<em>int, default = 69</em>) – Reference pitch for calculation.</p></li>
+<li><p><strong>tuning_frequency</strong> (<em>float, default = 440.0</em>) – Tuning frequency for calculation, in Hertz.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>frequency</strong> (<em>float</em>) – Calculated frequency for given pitch, in Hertz.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -191,25 +198,57 @@ panning = 0.0 means sonification on left and original audio on right channel</p>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="libsoni.util.utils.visualize_pianoroll">
+<span class="sig-prename descclassname"><span class="pre">libsoni.util.utils.</span></span><span class="sig-name descname"><span class="pre">visualize_pianoroll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Time</span> <span class="pre">(seconds)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Pitch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'FMP_1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(12,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">72</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/libsoni/util/utils.html#visualize_pianoroll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.util.utils.visualize_pianoroll" title="Permalink to this definition"></a></dt>
+<dd><p>Plot a pianoroll visualization, inspired from FMP Notebook C1/C1S2_CSV.ipynb</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong></p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>score</strong> – List of note events</p></li>
+<li><p><strong>xlabel</strong> – Label for x axis (Default value = ‘Time (seconds)’)</p></li>
+<li><p><strong>ylabel</strong> – Label for y axis (Default value = ‘Pitch’)</p></li>
+<li><p><strong>colors</strong> – Several options: 1. string of FMP_COLORMAPS, 2. string of matplotlib colormap,
+3. list or np.ndarray of matplotlib color specifications,
+4. dict that assigns labels  to colors (Default value = ‘FMP_1’)</p></li>
+<li><p><strong>velocity_alpha</strong> – Use the velocity value for the alpha value of the corresponding rectangle
+(Default value = False)</p></li>
+<li><p><strong>figsize</strong> – Width, height in inches (Default value = (12)</p></li>
+<li><p><strong>ax</strong> – The Axes instance to plot on (Default value = None)</p></li>
+<li><p><strong>dpi</strong> – Dots per inch (Default value = 72)</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fig</strong> – The created matplotlib figure or None if ax was given.</p></li>
+<li><p><strong>ax</strong> – The used axes</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="libsoni.util.utils.warp_sample">
-<span class="sig-prename descclassname"><span class="pre">libsoni.util.utils.</span></span><span class="sig-name descname"><span class="pre">warp_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_pitch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_pitch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_duration_sec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">22050</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fading_sec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/libsoni/util/utils.html#warp_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.util.utils.warp_sample" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">libsoni.util.utils.</span></span><span class="sig-name descname"><span class="pre">warp_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_pitch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_pitch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_duration_sec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">22050</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/libsoni/util/utils.html#warp_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.util.utils.warp_sample" title="Permalink to this definition"></a></dt>
 <dd><p>This function warps a sample. Given the reference pitch of the sample provided as np.ndarray,
 the warped version of the sample gets pitch-shifted using librosa.effects.pitch_shift().
 For the temporal alignment, if the desired duration is shorter than the original sample, the sample gets cropped,
-else if the desired duration is longer of the provided sample, the returned signal gets zero-padded at the end.
-:Parameters: * <strong>sample</strong> (<em>np.ndarray</em>) – Sample to be warped.</p>
-<blockquote>
-<div><ul class="simple">
+else if the desired duration is longer of the provided sample, the returned signal gets zero-padded at the end.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample</strong> (<em>np.ndarray</em>) – Sample to be warped.</p></li>
 <li><p><strong>reference_pitch</strong> (<em>int</em>) – Reference pitch for the given sample.</p></li>
 <li><p><strong>target_pitch</strong> (<em>int</em>) – Target pitch for the warped sample.</p></li>
 <li><p><strong>target_duration_sec</strong> (<em>float</em>) – Duration, given in seconds, for the returned signal.</p></li>
 <li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate, in samples per seconds.</p></li>
 <li><p><strong>fading_sec</strong> (<em>float, default = 0.01</em>) – Duration of fade in and fade out (to avoid clicks)</p></li>
 </ul>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>warped_sample</strong> (<em>np.ndarray</em>) – Warped sample.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>warped_sample</strong> (<em>np.ndarray</em>) – Warped sample.</p>
 </dd>
 </dl>
 </dd></dl>

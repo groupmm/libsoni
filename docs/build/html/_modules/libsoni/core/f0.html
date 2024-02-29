@@ -77,10 +77,9 @@
              
   <h1>Source code for libsoni.core.f0</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
 
 <span class="kn">from</span> <span class="nn">libsoni.core.methods</span> <span class="kn">import</span> <span class="n">generate_tone_instantaneous_phase</span>
-<span class="kn">from</span> <span class="nn">libsoni.util.utils</span> <span class="kn">import</span> <span class="n">get_preset</span><span class="p">,</span> <span class="n">normalize_signal</span><span class="p">,</span> <span class="n">fade_signal</span>
+<span class="kn">from</span> <span class="nn">libsoni.util.utils</span> <span class="kn">import</span> <span class="n">normalize_signal</span><span class="p">,</span> <span class="n">fade_signal</span>
 
 
 <div class="viewcode-block" id="sonify_f0"><a class="viewcode-back" href="../../../core/f0.html#libsoni.core.f0.sonify_f0">[docs]</a><span class="k">def</span> <span class="nf">sonify_f0</span><span class="p">(</span><span class="n">time_f0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
@@ -89,7 +88,7 @@
               <span class="n">partials_amplitudes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
               <span class="n">partials_phase_offsets</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="n">fade_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+              <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
               <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
               <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies a F0 trajectory given as 2D Numpy array.</span>
@@ -103,21 +102,23 @@
 <span class="sd">    time_f0: np.ndarray</span>
 <span class="sd">        2D array of time positions and f0s.</span>
 <span class="sd">    gains: np.ndarray, default = None</span>
-<span class="sd">        Array containing gain values for f0-values.</span>
+<span class="sd">        Array containing gain values for f0values.</span>
 <span class="sd">    partials: np.ndarray, default = [1]</span>
 <span class="sd">        Array containing the desired partials of the fundamental frequencies for sonification.</span>
 <span class="sd">        An array [1] leads to sonification with only the fundamental frequency,</span>
 <span class="sd">        while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</span>
-<span class="sd">    partials_amplitudes: np.ndarray, default = [1]</span>
+<span class="sd">    partials_amplitudes: np.ndarray, default = None</span>
 <span class="sd">        Array containing the amplitudes for partials.</span>
 <span class="sd">        An array [1,0.5] causes the first partial to have amplitude 1,</span>
 <span class="sd">        while the second partial has amplitude 0.5.</span>
-<span class="sd">    partials_phase_offsets: np.ndarray, default = [0]</span>
+<span class="sd">        If None, the amplitudes for all partials are set to 1.</span>
+<span class="sd">    partials_phase_offsets: np.ndarray, default = None</span>
 <span class="sd">        Array containing the phase offsets for partials.</span>
+<span class="sd">        When not defined, the phase offsets for all partials are set to 0.</span>
 <span class="sd">    sonification_duration: int, default = None</span>
-<span class="sd">        Determines duration of sonification, given in samples.</span>
-<span class="sd">    fade_duration: float, default = 0.05</span>
-<span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.</span>
+<span class="sd">        Determines duration of sonification, in samples.</span>
+<span class="sd">    fading_duration: float, default = 0.05</span>
+<span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is normalized to [-1,1].</span>
 <span class="sd">    fs: int, default = 22050</span>
@@ -158,9 +159,6 @@
         <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
 
     <span class="n">f0s_stretched</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
-    <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
-
-    <span class="c1">#</span>
     <span class="n">gains_stretched</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
 
     <span class="c1"># Stretch f0s_stretched to match the given time positions.</span>
@@ -174,80 +172,16 @@
             <span class="n">f0s_stretched</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">next_time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)]</span> <span class="o">=</span> <span class="n">f0</span>
             <span class="n">gains_stretched</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">next_time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)]</span> <span class="o">=</span> <span class="n">gain</span>
 
-    <span class="c1"># This loop can be made better</span>
+    <span class="c1"># TODO: This loop can be made better</span>
     <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">generate_tone_instantaneous_phase</span><span class="p">(</span><span class="n">frequency_vector</span><span class="o">=</span><span class="n">f0s_stretched</span><span class="p">,</span>
                                                         <span class="n">gain_vector</span><span class="o">=</span><span class="n">gains_stretched</span><span class="p">,</span>
                                                         <span class="n">partials</span><span class="o">=</span><span class="n">partials</span><span class="p">,</span>
                                                         <span class="n">partials_amplitudes</span><span class="o">=</span><span class="n">partials_amplitudes</span><span class="p">,</span>
                                                         <span class="n">partials_phase_offsets</span><span class="o">=</span><span class="n">partials_phase_offsets</span><span class="p">,</span>
-                                                        <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
-                                                        <span class="n">fading_sec</span><span class="o">=</span><span class="n">fade_duration</span><span class="p">)</span>
+                                                        <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">,</span>
+                                                        <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
 
-    <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">f0_sonification</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_sec</span><span class="o">=</span><span class="n">fade_duration</span><span class="p">)</span>
-
-    <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">f0_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">f0_sonification</span>
-
-    <span class="k">return</span> <span class="n">f0_sonification</span></div>
-
-
-<div class="viewcode-block" id="sonify_f0_with_presets"><a class="viewcode-back" href="../../../core/f0.html#libsoni.core.f0.sonify_f0_with_presets">[docs]</a><span class="k">def</span> <span class="nf">sonify_f0_with_presets</span><span class="p">(</span><span class="n">preset_dict</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                           <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                           <span class="n">fade_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
-                           <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-                           <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies multiple f0 annotations using sound presets.</span>
-
-<span class="sd">    The preset dict determines for which array, containing time and frequency information, which preset is used.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    preset_dict: dict, default = None</span>
-<span class="sd">        Dictionary of presets in the following key-value pair format:</span>
-<span class="sd">        {str: np.ndarray}</span>
-<span class="sd">        preset: time_f0s</span>
-<span class="sd">    sonification_duration: int, default = None</span>
-<span class="sd">        Determines duration of sonification, given in samples.</span>
-<span class="sd">    fade_duration: float, default = 0.05</span>
-<span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.</span>
-<span class="sd">    normalize: bool, default = True</span>
-<span class="sd">        Determines if output signal is normalized to [-1,1].</span>
-<span class="sd">    fs: int, default = 22050</span>
-<span class="sd">        Sampling rate, in samples per seconds.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    f0_sonification: np.ndarray</span>
-<span class="sd">        Sonified f0 dictionary.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">max_duration</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">preset_dict</span><span class="p">:</span>
-            <span class="n">sonification_duration</span> <span class="o">=</span> <span class="n">preset_dict</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s1">&#39;time_f0&#39;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-            <span class="n">max_duration</span> <span class="o">=</span> <span class="n">sonification_duration</span> <span class="k">if</span> <span class="n">sonification_duration</span> <span class="o">&gt;</span> <span class="n">max_duration</span> <span class="k">else</span> <span class="n">max_duration</span>
-        <span class="n">sonification_duration</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">fs</span> <span class="o">*</span> <span class="n">max_duration</span><span class="p">))</span>
-
-    <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sonification_duration</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">preset_dict</span><span class="p">:</span>
-        <span class="n">gains</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">preset_dict</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s1">&#39;time_f0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">preset_features_dict</span> <span class="o">=</span> <span class="n">get_preset</span><span class="p">(</span><span class="n">preset_dict</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s1">&#39;preset&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;gain&#39;</span> <span class="ow">in</span> <span class="n">preset_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]:</span>
-            <span class="n">gain</span> <span class="o">=</span> <span class="n">preset_dict</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s1">&#39;gain&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gain</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-                <span class="n">gains</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">preset_dict</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s1">&#39;time_f0&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">preset_dict</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s1">&#39;gain&#39;</span><span class="p">]</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gain</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-                <span class="n">gains</span> <span class="o">=</span> <span class="n">gain</span>
-
-        <span class="n">f0_sonification</span> <span class="o">+=</span> <span class="n">sonify_f0</span><span class="p">(</span><span class="n">time_f0</span><span class="o">=</span><span class="n">preset_dict</span><span class="p">[</span><span class="n">label</span><span class="p">][</span><span class="s1">&#39;time_f0&#39;</span><span class="p">],</span>
-                                     <span class="n">gains</span><span class="o">=</span><span class="n">gains</span><span class="p">,</span>
-                                     <span class="n">partials</span><span class="o">=</span><span class="n">preset_features_dict</span><span class="p">[</span><span class="s1">&#39;partials&#39;</span><span class="p">],</span>
-                                     <span class="n">partials_amplitudes</span><span class="o">=</span><span class="n">preset_features_dict</span><span class="p">[</span><span class="s1">&#39;amplitudes&#39;</span><span class="p">],</span>
-                                     <span class="n">sonification_duration</span><span class="o">=</span><span class="n">sonification_duration</span><span class="p">,</span>
-                                     <span class="n">fade_duration</span><span class="o">=</span><span class="n">fade_duration</span><span class="p">,</span>
-                                     <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                     <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
-    <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">f0_sonification</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_sec</span><span class="o">=</span><span class="n">fade_duration</span><span class="p">)</span>
-
+    <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">f0_sonification</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">)</span>
     <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">f0_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">f0_sonification</span>
 
     <span class="k">return</span> <span class="n">f0_sonification</span></div>
