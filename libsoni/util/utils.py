@@ -14,6 +14,7 @@ def fade_signal(signal: np.ndarray = None,
                 fading_duration: float = 0.01,
                 fs: int = 22050) -> np.ndarray:
     """Fade in / out audio signal
+
     Parameters
     ----------
     signal: np.ndarray, default = None
@@ -21,6 +22,8 @@ def fade_signal(signal: np.ndarray = None,
     fs: int, default = 22050
         sampling rate
     fading_duration: float, default = 0
+        duration of fade-in and fade-out, in seconds
+
     Returns
     -------
     normalized_signal: np.ndarray
