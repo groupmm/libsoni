@@ -10,7 +10,8 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
                                         partials_amplitudes: np.ndarray = None,
                                         partials_phase_offsets: np.ndarray = None,
                                         tuning_frequency: float = 440.0,
-                                        fading_duration: float = 0.05,
+                                        signal_fading_duration: float = 0.05,
+                                        note_fading_duration: float = 0.01,
                                         sonification_duration: int = None,
                                         normalize: bool = True,
                                         fs: int = 22050) -> np.ndarray:
@@ -42,8 +43,10 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
         Tuning frequency, in Hertz.
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
-    fading_duration: float, default = 0.05
-        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+    signal_fading_duration: float, default = 0.05
+        Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.
+    note_fading_duration: float, default = 0.01
+        Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
     fs: int, default = 22050
@@ -89,9 +92,10 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
                                              gain=amplitude,
                                              duration=r['duration'],
                                              tuning_frequency=tuning_frequency,
+                                             fading_duration=note_fading_duration,
                                              fs=fs)
 
-    pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=fading_duration)
+    pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=signal_fading_duration)
     pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
 
     return pianoroll_sonification
@@ -100,7 +104,7 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
 def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
                             tuning_frequency: float = 440.0,
                             sonification_duration: int = None,
-                            fading_duration: float = 0.05,
+                            signal_fading_duration: float = 0.05,
                             normalize: bool = True,
                             fs: int = 22050) -> np.ndarray:
     """Sonifies a pianoroll.
@@ -117,8 +121,8 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
         Tuning Frequency, in Hertz
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
-    fading_duration: float, default = 0.05
-        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+    signal_fading_duration: float, default = 0.05
+        Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
     fs: int, default = 22050
@@ -163,7 +167,7 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
                            click_fading_duration=r['duration'],
                            fs=fs)
 
-    pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=fading_duration)
+    pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=signal_fading_duration)
     pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
 
     return pianoroll_sonification
@@ -173,7 +177,8 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
                             sample: np.ndarray = None,
                             reference_pitch: int = 69,
                             sonification_duration: int = None,
-                            fading_duration: float = 0.05,
+                            signal_fading_duration: float = 0.05,
+                            note_fading_duration: float = 0.01,
                             normalize: bool = True,
                             fs: int = 22050) -> np.ndarray:
     """Sonifies a pianoroll.
@@ -192,8 +197,10 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
         Original pitch of the sample.
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
-    fading_duration: float, default = 0.05
-        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+    signal_fading_duration: float, default = 0.05
+        Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.
+    note_fading_duration: float, default = 0.01
+        Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
     fs: int, default = 22050
@@ -235,10 +242,11 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
                                     target_pitch=r['pitch'],
                                     target_duration_sec=r['duration'],
                                     gain=r['velocity'],
+                                    fading_duration=note_fading_duration,
                                     fs=fs)
         pianoroll_sonification[start_samples:start_samples + len(warped_sample)] += warped_sample
 
-    pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=fading_duration)
+    pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=signal_fading_duration)
     pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
 
     return pianoroll_sonification
@@ -249,7 +257,8 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
                                   mod_amp: float = 0.0,
                                   tuning_frequency: float = 440.0,
                                   sonification_duration: int = None,
-                                  fading_duration: float = 0.05,
+                                  signal_fading_duration: float = 0.05,
+                                  note_fading_duration: float = 0.01,
                                   normalize: bool = True,
                                   fs: int = 22050) -> np.ndarray:
     """Sonifies a pianoroll.
@@ -271,8 +280,10 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
         Tuning frequency in Hertz.
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
-    fading_duration: float, default = 0.05
-        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+    signal_fading_duration: float, default = 0.05
+        Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.
+    note_fading_duration: float, default = 0.01
+        Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
     fs: int, default = 22050
@@ -315,9 +326,10 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
                                        gain=amplitude,
                                        duration=r['duration'],
                                        tuning_frequency=tuning_frequency,
+                                       fading_duration=note_fading_duration,
                                        fs=fs)
 
-    pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=fading_duration)
+    pianoroll_sonification = fade_signal(pianoroll_sonification, fs=fs, fading_duration=signal_fading_duration)
     pianoroll_sonification = normalize_signal(pianoroll_sonification) if normalize else pianoroll_sonification
 
     return pianoroll_sonification
