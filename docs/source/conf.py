@@ -16,8 +16,8 @@ sys.path.insert(0, os.path.join(LIBSONI_DIR, 'util'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'libsoni'
-copyright = '2023, Leo Brütting, Yigitcan Özer, Meinard Müller'
-author = 'Leo Brütting, Yigitcan Özer, Meinard Müller'
+copyright = '2024, Yigitcan Özer, Leo Brütting, Simon Schwär, Meinard Müller'
+author = 'Yigitcan Özer, Leo Brütting, Simon Schwär, Meinard Müller'
 release = '0.0.0'
 
 # -- General configuration ---------------------------------------------------
