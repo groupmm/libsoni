@@ -28,5 +28,4 @@ link-citations: yes
 
 # Acknowledgements
 
-
 # References
