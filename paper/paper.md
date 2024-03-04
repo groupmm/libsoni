@@ -25,4 +25,3 @@ bibliography: references.bib
 link-citations: yes
 
 # Summary
-Music can be described and represented in many different ways, including as sheet music, symbolic representations, and audio recordings [@Mueller15_FMP_SPRINGER]. For each of these representations, different versions (e.g., recordings performed by different orchestras and conductors) that correspond to the same musical work may exist. 
