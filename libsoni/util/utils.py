@@ -6,12 +6,13 @@ import libfmp.c6
 import libfmp.b
 from matplotlib import pyplot as plt
 from matplotlib import patches
+from numba import jit
 
 SAMPLES = ['bass-drum', 'click', 'hi-hat']
 
 
 def fade_signal(signal: np.ndarray = None,
-                fading_duration: float = 0.01,
+                fading_duration: float = 0,
                 fs: int = 22050) -> np.ndarray:
     """Fade in / out audio signal
 
@@ -139,6 +140,7 @@ def pitch_to_frequency(pitch: int,
 
     return frequency
 
+
 # Taken from FMP Notebooks, https://www.audiolabs-erlangen.de/resources/MIR/FMP/C6/C6S2_TempoBeat.html
 def plot_sonify_novelty_beats(fn_wav, fn_ann, title=''):
     ann, label_keys = libfmp.c6.read_annotation_pos(fn_ann, label='onset', header=0)
@@ -241,8 +243,9 @@ def mix_sonification_and_original(sonification: np.ndarray,
     return stereo_audio
 
 
-def smooth_weights(weights: np.ndarray, fading_samples: int = 0):
-    weights_smoothed = np.copy(weights)
+@jit(nopython=True)
+def smooth_weights(weights, fading_samples=0):
+    weights_smoothed = weights.copy()
 
     for i in range(1, len(weights) - 1):
         if weights[i] != weights[i - 1]:
@@ -252,57 +255,14 @@ def smooth_weights(weights: np.ndarray, fading_samples: int = 0):
                 weights[i - 1] - weights[i])
 
             y = amplitude * np.sin(x) + (weights[i - 1] + weights[i]) / 2
-            # print(len(weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] ))
 
-            weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] = y
+            start_idx = i - int(fading_samples / 2)
+            end_idx = start_idx + len(y)
+
+            if start_idx >= 0 and end_idx < len(weights_smoothed):
+                weights_smoothed[start_idx:end_idx] = y
+
     return weights_smoothed
-
-
-def envelope_signal(signal: np.ndarray, attack_time: float = 0, decay_time: float = 0, sustain_level: float = 0,
-                    release_time: float = 0, fs=44100):
-    """
-    Envelopes a given signal. If the length of the signal is too short regarding the specified ADSR parameters, the returned signal is zero.
-    Parameters
-    ----------
-    signal : array-like
-        signal to envelope
-    Returns
-    ----------
-    enveloped_signal: array-like
-        enveloped signal
-    """
-    if attack_time <= 0 or decay_time <= 0 or release_time <= 0:
-        return np.zeros(len(signal))
-
-    # compute lengths of attack, decay, sustain and release section
-    attack_samples = int(np.floor(attack_time * fs))
-    decay_samples = int(np.floor(decay_time * fs))
-    release_samples = int(np.floor(release_time * fs))
-    sustain_samples = int(len(signal) - (attack_samples + decay_samples + release_samples))
-
-    # check if signal is at least as long as attack, decay and release section
-    if len(signal) < (attack_samples + decay_samples + release_samples):
-        return np.zeros(len(signal))
-
-    # compute attack section of envelope
-    attack_func = np.exp(np.linspace(0, 1, int(np.floor(attack_time * fs)))) - 1
-    attack_func = attack_func / np.max(np.flip(attack_func))
-
-    # compute decay section of envelope
-    decay_func = np.exp(np.linspace(0, 1, decay_samples)) - 1
-    decay_func = np.flip(sustain_level + (1 - sustain_level) * (decay_func / np.max(decay_func)))
-
-    # compute sustain section of envelope
-    sustain_func = sustain_level * np.ones(sustain_samples)
-
-    # compute release section of envelope
-    release_func = np.exp(np.linspace(0, 1, release_samples)) - 1
-    release_func = np.flip(sustain_level * (release_func / np.max(release_func)))
-
-    # concatenate sections and envelope signal
-    enveloped_signal = signal * np.concatenate([attack_func, decay_func, sustain_func, release_func])
-
-    return enveloped_signal
 
 
 def visualize_pianoroll(df: pd.DataFrame,
@@ -314,7 +274,6 @@ def visualize_pianoroll(df: pd.DataFrame,
                         figsize=(12, 4),
                         ax=None,
                         dpi=72):
-
     df = format_df(df)
     fig = None
     if ax is None:
