@@ -146,7 +146,7 @@ two-dimensional piano-roll representations (see also Figure c). In these represe
 encoded on the horizontal axis, pitch on the vertical axis, and each note is represented by an axis-parallel rectangle 
 indicating onset, pitch, and duration. This representation is widely used in several MIR tasks, including automatic
 music transcription [@BenetosDDE19_MusicTranscription_SPM] und music score--audio music synchronization 
-[@Mueller15_FMP_SPRINGER}]. The simplest method in libsoni to sonify piano-roll representations is based on 
+[@Mueller15_FMP_SPRINGER]. The simplest method in libsoni to sonify piano-roll representations is based on 
 straightforward sinusoidal models (potentially enriched by harmonics). When the score information is synchronized 
 with a music recording (e.g., using alignment methods provided by the Sync Toolbox [@MuellerOKPD21_SyncToolbox_JOSS],
 libsoni enables the creation of a stereo signal with the sonification in one channel and the original recording in the 
