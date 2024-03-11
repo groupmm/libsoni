@@ -26,22 +26,31 @@ def sonify_chroma_vector(chroma_vector: np.ndarray,
     ----------
     chroma_vector: np.ndarray
         Chroma vector to sonify.
+
     pitch_range: Tuple[int, int], default = [20,108]
         Determines the pitches to encounter for shepard tones.
+
     filter: bool, default: False
         Enables filtering of shepard tones.
+
     f_center : float, default: 440.0
         Determines filter center frequency, in Hertz.
+
     octave_cutoff: int, default: 1
         Determines the width of the filter.
+
     tuning_frequency: float, default: 440.0
         Tuning frequency, in Hertz.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -101,25 +110,35 @@ def sonify_chromagram(chromagram: np.ndarray,
     ----------
     chromagram: np.ndarray
         Chromagram to sonify.
+
     H: int, default = 0
         Hop size of STFT used to calculate chromagram.
+
     pitch_range: Tuple[int, int], default = [20,108]
         Determines the pitch range to encounter for shepard tones.
+
     filter: bool, default: False
         Enables filtering of shepard tones.
+
     f_center : float, default: 440.0
         Determines filter center frequency, in Hertz.
+
     octave_cutoff: int, default: 1
         Determines the width of the filter.
         For octave_cutoff of 1, the magnitude of the filter reaches 0.5 at half the center_frequency and twice the center_frequency.
+
     tuning_frequency: float, default: 440.0
         Tuning frequency, in Hertz.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 

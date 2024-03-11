@@ -15,47 +15,55 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
                                         sonification_duration: int = None,
                                         normalize: bool = True,
                                         fs: int = 22050) -> np.ndarray:
-    """Sonifies a pianoroll.
+    """Sonifies a piano-roll with additive synthesis.
 
     The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end
     and the corresponding pitch.
-    The sonification is based on additive synthesis,
-    where parameters partials, partials_amplitudes and partials_phase_offsets
-    can be used to shape the sound.
+    The sonification is based on additive synthesis, where parameters partials, partials_amplitudes and
+    partials_phase_offsets can be used to shape the sound.
 
     Parameters
     ----------
     pianoroll_df: pd.DataFrame
         Dataframe containing pitch-event information.
+
     partials: np.ndarray, default = [1]
         Array containing the desired partials of the fundamental frequencies for sonification.
         An array [1] leads to sonification with only the fundamental frequency,
         while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.
+
     partials_amplitudes: np.ndarray, default = None
         Array containing the amplitudes for partials.
         An array [1,0.5] causes the first partial to have amplitude 1,
         while the second partial has amplitude 0.5.
         When not defined, the amplitudes for all partials are set to 1.
+
     partials_phase_offsets: np.ndarray, default = None
         Array containing the phase offsets for partials.
         When not defined, the phase offsets for all partials are set to 0.
+
     tuning_frequency: float, default = 440.0
         Tuning frequency, in Hertz.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     signal_fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.
+
     note_fading_duration: float, default = 0.01
         Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
     Returns
     -------
     pianoroll_sonification: np.ndarray
-        Sonified pianoroll.
+        Sonified piano-roll.
     """
 
     pianoroll_df, pianoroll_sonification = __init_pianoroll_sonification(pianoroll_df, fs, sonification_duration)
@@ -90,7 +98,7 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
                             signal_fading_duration: float = 0.05,
                             normalize: bool = True,
                             fs: int = 22050) -> np.ndarray:
-    """Sonifies a pianoroll.
+    """Sonifies a piano-roll with clicks.
 
     The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end
     and the corresponding pitch.
@@ -100,14 +108,19 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
     ----------
     pianoroll_df: pd.DataFrame
         Dataframe containing pitch-event information.
+
     tuning_frequency: float, default = 440.0
         Tuning Frequency, in Hertz
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     signal_fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -147,35 +160,41 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
                             note_fading_duration: float = 0.01,
                             normalize: bool = True,
                             fs: int = 22050) -> np.ndarray:
-    """Sonifies a pianoroll.
+    """Sonifies a piano-roll based on custom audio samples.
 
     The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end
-    and the corresponding pitch.
-    For sonification, warped versions of the given sample are used.
+    and the corresponding pitch. For sonification, warped versions of the given sample are used.
 
     Parameters
     ----------
     pianoroll_df: pd.DataFrame
         Dataframe containing pitch-event information.
+
     sample: np.ndarray
         Sample to use for sonification.
+
     reference_pitch: int, default = 69
         Original pitch of the sample.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     signal_fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.
+
     note_fading_duration: float, default = 0.01
         Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
     Returns
     -------
     pianoroll_sonification: np.ndarray
-        Sonified pianoroll.
+        Sonified piano-roll.
     """
 
     pianoroll_df, pianoroll_sonification = __init_pianoroll_sonification(pianoroll_df, fs, sonification_duration)
@@ -212,38 +231,45 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
                                   note_fading_duration: float = 0.01,
                                   normalize: bool = True,
                                   fs: int = 22050) -> np.ndarray:
-    """Sonifies a pianoroll.
+    """Sonifies a piano-roll with frequency modulation (FM) synthesis.
 
     The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end
-    and the corresponding pitch.
-    The sonification is based on frequency modulation synthesis,
-    where parameters mod_rate_relative and mod_amp can be used to shape the sound.
+    and the corresponding pitch. The sonification is based on FM synthesis, where parameters mod_rate_relative and
+    mod_amp can be used to shape the sound.
 
     Parameters
     ----------
     pianoroll_df: pd.DataFrame
         Dataframe containing pitch-event information.
+
     mod_rate_relative: float, default = 0.0
         Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.
+
     mod_amp: float, default = 0.0
         Determines the amount of modulation in the generated signal.
+
     tuning_frequency: float, default = 440.0
         Tuning frequency in Hertz.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     signal_fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.
+
     note_fading_duration: float, default = 0.01
         Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
     Returns
     -------
     pianoroll_sonification: np.ndarray
-        Sonified pianoroll.
+        Sonified piano-roll.
     """
     pianoroll_df, pianoroll_sonification = __init_pianoroll_sonification(pianoroll_df, fs, sonification_duration)
 

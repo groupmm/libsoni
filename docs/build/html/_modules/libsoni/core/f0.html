@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>libsoni.core.f0 &mdash; libsoni 0.0.0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -101,26 +103,34 @@
 <span class="sd">    ----------</span>
 <span class="sd">    time_f0: np.ndarray</span>
 <span class="sd">        2D array of time positions and f0s.</span>
+
 <span class="sd">    gains: np.ndarray, default = None</span>
-<span class="sd">        Array containing gain values for f0values.</span>
+<span class="sd">        Array containing gain values for f0 values.</span>
+
 <span class="sd">    partials: np.ndarray, default = [1]</span>
 <span class="sd">        Array containing the desired partials of the fundamental frequencies for sonification.</span>
 <span class="sd">        An array [1] leads to sonification with only the fundamental frequency,</span>
 <span class="sd">        while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</span>
+
 <span class="sd">    partials_amplitudes: np.ndarray, default = None</span>
 <span class="sd">        Array containing the amplitudes for partials.</span>
 <span class="sd">        An array [1,0.5] causes the first partial to have amplitude 1,</span>
 <span class="sd">        while the second partial has amplitude 0.5.</span>
 <span class="sd">        If None, the amplitudes for all partials are set to 1.</span>
+
 <span class="sd">    partials_phase_offsets: np.ndarray, default = None</span>
 <span class="sd">        Array containing the phase offsets for partials.</span>
 <span class="sd">        When not defined, the phase offsets for all partials are set to 0.</span>
+
 <span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Determines duration of sonification, in samples.</span>
+
 <span class="sd">    fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is normalized to [-1,1].</span>
+
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate, in samples per seconds.</span>
 
@@ -172,7 +182,6 @@
             <span class="n">f0s_stretched</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">next_time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)]</span> <span class="o">=</span> <span class="n">f0</span>
             <span class="n">gains_stretched</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">next_time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)]</span> <span class="o">=</span> <span class="n">gain</span>
 
-    <span class="c1"># TODO: This loop can be made better</span>
     <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">generate_tone_instantaneous_phase</span><span class="p">(</span><span class="n">frequency_vector</span><span class="o">=</span><span class="n">f0s_stretched</span><span class="p">,</span>
                                                         <span class="n">gain_vector</span><span class="o">=</span><span class="n">gains_stretched</span><span class="p">,</span>
                                                         <span class="n">partials</span><span class="o">=</span><span class="n">partials</span><span class="p">,</span>

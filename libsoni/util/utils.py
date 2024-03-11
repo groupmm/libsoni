@@ -1,28 +1,31 @@
-import numpy as np
-import pandas as pd
 import librosa
 import libfmp.b
 import libfmp.c6
 import libfmp.b
+import matplotlib
 from matplotlib import pyplot as plt
 from matplotlib import patches
 from numba import jit
-from numba import jit
+import numpy as np
+import pandas as pd
+from typing import Tuple
 
 SAMPLES = ['bass-drum', 'click', 'hi-hat']
 
 
-def fade_signal(signal: np.ndarray = None,
+def fade_signal(signal: np.ndarray,
                 fading_duration: float = 0,
                 fs: int = 22050) -> np.ndarray:
     """Fade in / out audio signal
 
     Parameters
     ----------
-    signal: np.ndarray, default = None
+    signal: np.ndarray
         Signal to be faded
+
     fs: int, default = 22050
         sampling rate
+
     fading_duration: float, default = 0
         duration of fade-in and fade-out, in seconds
 
@@ -50,6 +53,7 @@ def normalize_signal(signal: np.ndarray) -> np.ndarray:
     ----------
     signal: np.ndarray
         Signal to be normalized
+
     Returns
     -------
     normalized_signal: np.ndarray
@@ -66,25 +70,31 @@ def warp_sample(sample: np.ndarray,
                 gain: float = 1.0,
                 fs: int = 22050,
                 fading_duration: float = 0.01):
-    """This function warps a sample. Given the reference pitch of the sample provided as np.ndarray,
-    the warped version of the sample gets pitch-shifted using librosa.effects.pitch_shift().
-    For the temporal alignment, if the desired duration is shorter than the original sample, the sample gets cropped,
-    else if the desired duration is longer of the provided sample, the returned signal gets zero-padded at the end.
+    """This function warps a sample. Given the reference pitch of the sample provided as np.ndarray, the warped version
+    of the sample gets pitch-shifted using librosa.effects.pitch_shift(). For the temporal alignment, if the desired
+    duration is shorter than the original sample, the sample gets cropped, else if the desired duration is longer of
+    the provided sample, the returned signal gets zero-padded at the end.
 
     Parameters
     ----------
     sample: np.ndarray
         Sample to be warped.
+
     reference_pitch: int
         Reference pitch for the given sample.
+
     target_pitch: int
         Target pitch for the warped sample.
+
     target_duration_sec: float
         Duration, given in seconds, for the returned signal.
-    gain: float
-        Gain
+
+    gain: float, default = 1.0
+        Gain of the generated tone
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
+
     fading_duration: float, default = 0.01
         Duration of fade in and fade out (to avoid clicks)
 
@@ -122,14 +132,16 @@ def warp_sample(sample: np.ndarray,
 def pitch_to_frequency(pitch: int,
                        reference_pitch: int = 69,
                        tuning_frequency: float = 440.0) -> float:
-    """Calculates frequency for pitch.
+    """Calculates the corresponding frequency for a given pitch.
 
     Parameters
     ----------
     pitch: int
         Pitch to calculate frequency for.
+
     reference_pitch: int, default = 69
         Reference pitch for calculation.
+
     tuning_frequency: float, default = 440.0
         Tuning frequency for calculation, in Hertz.
 
@@ -190,20 +202,26 @@ def mix_sonification_and_original(sonification: np.ndarray,
     Parameters
     ----------
     sonification: np.ndarray
-        sonification
+        Sonification
+
     original_audio: np.ndarray
-        original_audio
+        Original audio
+
     gain_lin_sonification: float, default = 1.0
         linear gain for sonification
+
     gain_lin_original_audio: float, default = 1.0
         linear gain for original audio
+
     panning: float, default = 1.0
         Controls the panning of the mixed output
             panning = 1.0 means original audio on left and sonification on right channel
             panning = 0.5 means same amount of both signals on both channels.
             panning = 0.0 means sonification on left and original audio on right channel
+
     duration: int, default = None
         Duration of the output waveform, given in samples.
+
     Returns
     -------
     mixed_audio : np.ndarray
@@ -247,7 +265,24 @@ def mix_sonification_and_original(sonification: np.ndarray,
 
 
 @jit(nopython=True)
-def smooth_weights(weights, fading_samples=0):
+def smooth_weights(weights: np.ndarray,
+                   fading_samples: int = 0) -> np.ndarray:
+    """Weight smoothing
+
+    Parameters
+    ----------
+    weights: np.ndarray
+        Input weights
+
+    fading_samples: int
+        Number of samples for fade-in/out.
+
+    Returns
+    -------
+    weights_smoothed: np.ndarray
+        Smoothed weights
+    """
+
     weights_smoothed = weights.copy()
 
     for i in range(1, len(weights) - 1):
@@ -266,30 +301,70 @@ def smooth_weights(weights, fading_samples=0):
     return weights_smoothed
 
 
-def visualize_pianoroll(df: pd.DataFrame,
+def visualize_pianoroll(pianoroll_df: pd.DataFrame,
                         xlabel: str = 'Time (seconds)',
                         ylabel: str = 'Pitch',
                         title: str = None,
                         colors: str = 'FMP_1',
-                        velocity_alpha=False,
-                        figsize=(12, 4),
-                        ax=None,
-                        dpi=72):
-    df = format_df(df)
+                        velocity_alpha: bool = False,
+                        figsize : Tuple[float, float] = (12, 4),
+                        ax: matplotlib.axes = None,
+                        dpi: int = 72) -> Tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
+    """Visualization function for piano-roll representations, given in a pd.DataFrame format
+
+    Parameters
+    ----------
+    pianoroll_df: pd.DataFrame
+        Dataframe containing pitch-event information.
+
+    xlabel: str, default = 'Time (seconds)'
+        Label text for the x-axis.
+
+    ylabel: str, default = 'Pitch'
+        Label text for the y-axis.
+
+    title: str, default = None
+        Title of the figure.
+
+    colors: str, default = 'FMP_1'
+        Colormap, for the default colormap see https://github.com/meinardmueller/libfmp.
+
+    velocity_alpha: bool = False
+        Set True to weight the visualized rectangular regions for each pitch based on their velocity value.
+
+    figsize: Tuple[float, float], default: [12, 4])
+
+    ax: matplotlib.axes.Axes
+         Axes object
+
+    dpi: int
+        Resolution of the figure.
+
+
+    Returns
+    -------
+    fig: matplotlib.figure.Figure
+        Figure instance
+
+    ax: matplotlib.axes.Axes
+         Axes object
+    """
+
+    pianoroll_df = format_df(pianoroll_df)
     fig = None
     if ax is None:
         fig = plt.figure(figsize=figsize, dpi=dpi)
         ax = plt.subplot(1, 1, 1)
 
-    labels_set = sorted(df['label'].unique())
+    labels_set = sorted(pianoroll_df['label'].unique())
     colors = libfmp.b.color_argument_to_dict(colors, labels_set)
 
-    pitch_min = df['pitch'].min()
-    pitch_max = df['pitch'].max()
-    time_min = df['start'].min()
-    time_max = df['end'].max()
+    pitch_min = pianoroll_df['pitch'].min()
+    pitch_max = pianoroll_df['pitch'].max()
+    time_min = pianoroll_df['start'].min()
+    time_max = pianoroll_df['end'].max()
 
-    for i, r in df.iterrows():
+    for i, r in pianoroll_df.iterrows():
         velocity = None if not velocity_alpha else r['velocity']
         rect = patches.Rectangle((r['start'], r['pitch'] - 0.5), r['duration'], 1, linewidth=1,
                                  edgecolor='k', facecolor=colors[r['label']], alpha=velocity)

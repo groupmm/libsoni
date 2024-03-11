@@ -15,12 +15,16 @@ def generate_click(pitch: int = 69,
     ----------
     pitch : int, default = 69
         Pitch for colored click.
+
     amplitude : float, default = 1.0
         Amplitude of click signal.
+
     click_fading_duration : float, default = 0.2
         Fading duration of click signal, in seconds.
+
     tuning_frequency : float, default = 440.0
         Tuning frequency, in Hertz.
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -52,14 +56,19 @@ def generate_sinusoid(frequency: float = 440.0,
     ----------
     frequency: float, default: 440.0
         Frequency of sinusoid, in Hertz.
+
     phase: float, default: 0.0
         Phase of sinusoid.
+
     amplitude: float, default: 1.0
         Amplitude of sinusoid.
+
     duration: float, default: 1.0
         Duration of generated signal, in seconds.
+
     fading_duration: float, default: 0.01
         Determines duration of fade-in and fade-out, in seconds.
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -95,22 +104,31 @@ def generate_shepard_tone(pitch_class: int = 0,
     ----------
     pitch_class: int, default: 0
         Pitch class for shepard tone.
+
     pitch_range: Tuple[int, int], default = [20,108]
         Determines the pitch range to encounter for shepard tones.
+
     filter: bool, default: False
         Enables filtering of shepard tones.
+
     f_center : float, default: 440.0
         Determines filter center frequency, in Hertz.
+
     octave_cutoff: int, default: 1
         Determines the width of the filter.
+
     gain: float, default: 1.0
         Gain of shepard tone.
+
     duration: float, default: 1.0
         Determines duration of shepard tone, in seconds.
+
     tuning_frequency: float, default: 440.0
         Tuning frequency, in Hertz.
+
     fading_duration: float, default: 0.01
         Determines duration of fade-in and fade-out, in seconds.
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -165,26 +183,34 @@ def generate_tone_additive_synthesis(pitch: int = 69,
     ----------
     pitch: int, default = 69
         Pitch of the generated tone.
+
     partials: np.ndarray, default = [1]
         Array containing the desired partials of the fundamental frequencies for sonification.
         An array [1] leads to sonification with only the fundamental frequency,
         while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.
+
     partials_amplitudes: np.ndarray, default = None
         Array containing the amplitudes for partials.
         An array [1,0.5] causes the first partial to have amplitude 1,
         while the second partial has amplitude 0.5.
         When not defined, the amplitudes for all partials are set to 1.
+
     partials_phase_offsets: np.ndarray, default = None
         Array containing the phase offsets for partials.
         When not defined, the phase offsets for all partials are set to 0.
+
     gain: float, default = 1.0
         Gain of generated tone.
+
     duration: float, default: 1.0
         Determines duration of shepard tone, given in seconds.
+
     tuning_frequency: float, default: 440.0
         Tuning frequency, in Hertz.
+
     fading_duration: float, default: 0.01
         Determines duration of fade-in and fade-out, given in seconds.
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -229,18 +255,25 @@ def generate_tone_fm_synthesis(pitch: int = 69,
     ----------
     pitch: int, default = 69
         Pitch of the synthesized tone.
+
     modulation_rate_relative: float, default = 0.0
         Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.
+
     modulation_amplitude: float, default = 0.0
         Determines the amount of modulation in the generated signal.
+
     gain: float, default = 1.0
         Gain for generated signal
+
     duration: float, default: 1.0
         Determines duration of shepard tone, given in seconds.
+
     tuning_frequency: float, default: 440.0
         Tuning frequency, in Hertz.
+
     fading_duration: float, default: 0.01
         Determines duration of fade-in and fade-out, given in seconds.
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -274,16 +307,22 @@ def generate_tone_wavetable(pitch: int = 69,
     ----------
     pitch: int, default = 69
         Pitch of the synthesized tone.
+
     wavetable: np.ndarray, default = None
         Wavetable to be resampled.
+
     gain: float, default = 1.0
         Gain for generated signal
+
     duration: float, default: 1.0
         Determines duration of tone, given in seconds.
+
     tuning_frequency: float, default: 440.0
         Tuning frequency, in Hertz.
+
     fading_duration: float, default: 0.01
         Determines duration of fade-in and fade-out, in seconds.
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -326,20 +365,26 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
     ----------
     frequency_vector: np.ndarray
         Array containing sample-wise instantaneous frequencies.
+
     gain_vector: np.ndarray, default = None
         Array containing sample-wise gains.
+
     partials: np.ndarray, default = [1]
         An array containing the desired partials of the fundamental frequencies for sonification.
             An array [1] leads to sonification with only the fundamental frequency core,
             while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.
+
     partials_amplitudes: np.ndarray, default = [1]
         Array containing the amplitudes for partials.
             An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
             while the sinusoid with frequency 2*core has amplitude 0.5.
+
     partials_phase_offsets: np.ndarray, default = [0]
         Array containing the phase offsets for partials.
+
     fading_duration: float, default: 0.01
         Determines duration of fade-in and fade-out, given in seconds.
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 

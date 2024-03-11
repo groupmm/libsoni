@@ -95,47 +95,55 @@
                                         <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                         <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                                         <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies a pianoroll.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies a piano-roll with additive synthesis.</span>
 
 <span class="sd">    The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end</span>
 <span class="sd">    and the corresponding pitch.</span>
-<span class="sd">    The sonification is based on additive synthesis,</span>
-<span class="sd">    where parameters partials, partials_amplitudes and partials_phase_offsets</span>
-<span class="sd">    can be used to shape the sound.</span>
+<span class="sd">    The sonification is based on additive synthesis, where parameters partials, partials_amplitudes and</span>
+<span class="sd">    partials_phase_offsets can be used to shape the sound.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
 <span class="sd">        Dataframe containing pitch-event information.</span>
+
 <span class="sd">    partials: np.ndarray, default = [1]</span>
 <span class="sd">        Array containing the desired partials of the fundamental frequencies for sonification.</span>
 <span class="sd">        An array [1] leads to sonification with only the fundamental frequency,</span>
 <span class="sd">        while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</span>
+
 <span class="sd">    partials_amplitudes: np.ndarray, default = None</span>
 <span class="sd">        Array containing the amplitudes for partials.</span>
 <span class="sd">        An array [1,0.5] causes the first partial to have amplitude 1,</span>
 <span class="sd">        while the second partial has amplitude 0.5.</span>
 <span class="sd">        When not defined, the amplitudes for all partials are set to 1.</span>
+
 <span class="sd">    partials_phase_offsets: np.ndarray, default = None</span>
 <span class="sd">        Array containing the phase offsets for partials.</span>
 <span class="sd">        When not defined, the phase offsets for all partials are set to 0.</span>
+
 <span class="sd">    tuning_frequency: float, default = 440.0</span>
 <span class="sd">        Tuning frequency, in Hertz.</span>
+
 <span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Determines duration of sonification, in samples.</span>
+
 <span class="sd">    signal_fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</span>
+
 <span class="sd">    note_fading_duration: float, default = 0.01</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is normalized to [-1,1].</span>
+
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate, in samples per seconds.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pianoroll_sonification: np.ndarray</span>
-<span class="sd">        Sonified pianoroll.</span>
+<span class="sd">        Sonified piano-roll.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">pianoroll_df</span><span class="p">,</span> <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">__init_pianoroll_sonification</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">sonification_duration</span><span class="p">)</span>
@@ -170,7 +178,7 @@
                             <span class="n">signal_fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
                             <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                             <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies a pianoroll.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies a piano-roll with clicks.</span>
 
 <span class="sd">    The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end</span>
 <span class="sd">    and the corresponding pitch.</span>
@@ -180,14 +188,19 @@
 <span class="sd">    ----------</span>
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
 <span class="sd">        Dataframe containing pitch-event information.</span>
+
 <span class="sd">    tuning_frequency: float, default = 440.0</span>
 <span class="sd">        Tuning Frequency, in Hertz</span>
+
 <span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Determines duration of sonification, in samples.</span>
+
 <span class="sd">    signal_fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is normalized to [-1,1].</span>
+
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate, in samples per seconds.</span>
 
@@ -227,35 +240,41 @@
                             <span class="n">note_fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
                             <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                             <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies a pianoroll.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies a piano-roll based on custom audio samples.</span>
 
 <span class="sd">    The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end</span>
-<span class="sd">    and the corresponding pitch.</span>
-<span class="sd">    For sonification, warped versions of the given sample are used.</span>
+<span class="sd">    and the corresponding pitch. For sonification, warped versions of the given sample are used.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
 <span class="sd">        Dataframe containing pitch-event information.</span>
+
 <span class="sd">    sample: np.ndarray</span>
 <span class="sd">        Sample to use for sonification.</span>
+
 <span class="sd">    reference_pitch: int, default = 69</span>
 <span class="sd">        Original pitch of the sample.</span>
+
 <span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Determines duration of sonification, in samples.</span>
+
 <span class="sd">    signal_fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</span>
+
 <span class="sd">    note_fading_duration: float, default = 0.01</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is normalized to [-1,1].</span>
+
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate, in samples per seconds.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pianoroll_sonification: np.ndarray</span>
-<span class="sd">        Sonified pianoroll.</span>
+<span class="sd">        Sonified piano-roll.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">pianoroll_df</span><span class="p">,</span> <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">__init_pianoroll_sonification</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">sonification_duration</span><span class="p">)</span>
@@ -292,38 +311,45 @@
                                   <span class="n">note_fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
                                   <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                                   <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies a pianoroll.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies a piano-roll with frequency modulation (FM) synthesis.</span>
 
 <span class="sd">    The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end</span>
-<span class="sd">    and the corresponding pitch.</span>
-<span class="sd">    The sonification is based on frequency modulation synthesis,</span>
-<span class="sd">    where parameters mod_rate_relative and mod_amp can be used to shape the sound.</span>
+<span class="sd">    and the corresponding pitch. The sonification is based on FM synthesis, where parameters mod_rate_relative and</span>
+<span class="sd">    mod_amp can be used to shape the sound.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
 <span class="sd">        Dataframe containing pitch-event information.</span>
+
 <span class="sd">    mod_rate_relative: float, default = 0.0</span>
 <span class="sd">        Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.</span>
+
 <span class="sd">    mod_amp: float, default = 0.0</span>
 <span class="sd">        Determines the amount of modulation in the generated signal.</span>
+
 <span class="sd">    tuning_frequency: float, default = 440.0</span>
 <span class="sd">        Tuning frequency in Hertz.</span>
+
 <span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Determines duration of sonification, in samples.</span>
+
 <span class="sd">    signal_fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</span>
+
 <span class="sd">    note_fading_duration: float, default = 0.01</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is normalized to [-1,1].</span>
+
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate, in samples per seconds.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pianoroll_sonification: np.ndarray</span>
-<span class="sd">        Sonified pianoroll.</span>
+<span class="sd">        Sonified piano-roll.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pianoroll_df</span><span class="p">,</span> <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">__init_pianoroll_sonification</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">sonification_duration</span><span class="p">)</span>
 

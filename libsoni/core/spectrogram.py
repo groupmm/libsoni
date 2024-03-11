@@ -18,16 +18,22 @@ def sonify_spectrogram(spectrogram: np.ndarray,
     ----------
     spectrogram: np.ndarray
         Spectrogram to be sonified.
+
     frequency_coefficients: np.ndarray, default = None
         Array containing frequency coefficients, in Hertz.
+
     time_coefficients: np.ndarray, default = None
         Array containing time coefficients, in seconds.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -38,9 +44,11 @@ def sonify_spectrogram(spectrogram: np.ndarray,
     """
 
     # Check if lengths of coefficient vectors match shape of spectrogram
-    assert spectrogram.shape[0] == len(frequency_coefficients), f'The length of frequency_coefficients must match spectrogram.shape[0]'
+    assert spectrogram.shape[0] == len(frequency_coefficients),\
+        f'The length of frequency_coefficients must match spectrogram.shape[0]'
 
-    assert spectrogram.shape[1] == len(time_coefficients), f'The length of time_coefficients must match spectrogram.shape[1]'
+    assert spectrogram.shape[1] == len(time_coefficients), \
+        f'The length of time_coefficients must match spectrogram.shape[1]'
 
     # Calculate Hop size from time_coefficients if not explicitly given
     H = int((time_coefficients[1] - time_coefficients[0]) * fs)
@@ -73,31 +81,39 @@ def sonify_spectrogram(spectrogram: np.ndarray,
 def sonify_spectrogram_multi(spectrogram: np.ndarray,
                              frequency_coefficients: np.ndarray = None,
                              time_coefficients: np.ndarray = None,
-                             fading_duration: float = 0.05,
                              sonification_duration: int = None,
+                             fading_duration: float = 0.05,
                              fs: int = 22050,
                              num_processes: int = None) -> np.ndarray:
     """Sonifies a spectrogram using sinusoids, using multiprocessing for efficiency.
 
-        Parameters
-        ----------
-        spectrogram: np.ndarray
-            Spectrogram to be sonified.
-        frequency_coefficients: np.ndarray, default = None
-            Array containing frequency coefficients, in Hertz.
-        time_coefficients: np.ndarray, default = None
-            Array containing time coefficients, in seconds.
-        fading_duration: float, default = 0.05
-            Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
-        fs: int, default = 22050
-            Sampling rate, in samples per seconds.
-        num_processes: int, default = None
-            Number of processes
-        Returns
-        -------
-        spectrogram_sonification: np.ndarray
-            Sonified spectrogram.
-        """
+    Parameters
+    ----------
+    spectrogram: np.ndarray
+        Spectrogram to be sonified.
+
+    frequency_coefficients: np.ndarray, default = None
+        Array containing frequency coefficients, in Hertz.
+
+    time_coefficients: np.ndarray, default = None
+        Array containing time coefficients, in seconds.
+
+    sonification_duration: int, default = None
+        Determines duration of sonification, in samples.
+
+    fading_duration: float, default = 0.05
+        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+
+    fs: int, default = 22050
+        Sampling rate, in samples per seconds.
+
+    num_processes: int, default = None
+        Number of processes
+    Returns
+    -------
+    spectrogram_sonification: np.ndarray
+        Sonified spectrogram.
+    """
 
     assert spectrogram.shape[0] == len(frequency_coefficients), \
         f'The length of frequency_coefficients must match spectrogram.shape[0]'

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>libsoni.core.tse &mdash; libsoni 0.0.0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -99,22 +101,30 @@
 <span class="sd">    ----------</span>
 <span class="sd">    time_positions: np.ndarray</span>
 <span class="sd">        Array with time positions for clicks.</span>
+
 <span class="sd">    click_pitch: int, default = 69</span>
 <span class="sd">        Pitch for click signal.</span>
+
 <span class="sd">    click_fading_duration: float, default = 0.25</span>
 <span class="sd">        Fading duration for click signal, in seconds</span>
+
 <span class="sd">    click_amplitude: float, default = 1.0</span>
 <span class="sd">        Amplitude for click signal.</span>
+
 <span class="sd">    offset_relative: float, default = 0.0</span>
 <span class="sd">        Relative offset for the beginning of a click.</span>
 <span class="sd">        0 indicates that the beginning of the click event is at the time position,</span>
 <span class="sd">        1 indicates the ending of the click event corresponds to the time position.</span>
+
 <span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Determines duration of sonification, in samples.</span>
+
 <span class="sd">    fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is max-normalized to [-1,1].</span>
+
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate, in samples per seconds.</span>
 
@@ -160,25 +170,30 @@
                       <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
                       <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                       <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies time positions with warped versions of a sample.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies time positions with warped versions of a custom sample (e.g., metronome sounds).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    time_positions: np.ndarray</span>
 <span class="sd">        Array with time positions for clicks.</span>
+
 <span class="sd">    sample: np.ndarray</span>
 <span class="sd">        Sample to be used.</span>
+
 <span class="sd">    offset_relative: float, default = 0.0</span>
 <span class="sd">        Relative offset coefficient for the beginning of a click.</span>
 <span class="sd">        0 indicates that the beginning of the click event is at the time position. 1 indicates the ending of the click</span>
 <span class="sd">        event corresponds to the time position.</span>
+
 <span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Determines duration of sonification, in samples.</span>
+
 <span class="sd">    fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is max-normalized to [-1,1].</span>
+
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate, in samples per seconds.</span>
 
@@ -224,29 +239,36 @@
                                <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
                                <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                                <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Given multiple arrays in form of a list, this function creates the sonification of different sources.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    times_pitches: List[Tuple[np.ndarray, int]]</span>
 <span class="sd">        List of tuples comprising the time positions and pitches of the clicks</span>
+
 <span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Duration of the output waveform, given in samples.</span>
+
 <span class="sd">    click_fading_duration: float, default = 0.25</span>
 <span class="sd">        Duration for click signal.</span>
+
 <span class="sd">    click_amplitude: float, default = 1.0</span>
 <span class="sd">        Amplitude for click signal.</span>
+
 <span class="sd">    offset_relative: float, default = 0.0</span>
 <span class="sd">        Relative offset coefficient for the beginning of the given audio sample.</span>
 <span class="sd">        0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample</span>
 <span class="sd">        corresponding to the time position.</span>
+
 <span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Determines duration of sonification, in samples.</span>
+
 <span class="sd">    fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is max-normalized to [-1,1].</span>
+
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate, in samples per seconds.</span>
 
@@ -288,23 +310,27 @@
                                 <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
                                 <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                                 <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Given multiple arrays in form of a list, this function creates the sonification of different sources.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    times_samples: List[Tuple[np.ndarray, np.ndarray]]</span>
 <span class="sd">        List of tuples comprising the time positions and samples</span>
+
 <span class="sd">    offset_relative: float, default = 0.0</span>
 <span class="sd">        Relative offset coefficient for the beginning of the given audio sample.</span>
 <span class="sd">        0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample</span>
 <span class="sd">        corresponding to the time position.</span>
+
 <span class="sd">    sonification_duration: int, default = None</span>
 <span class="sd">        Determines duration of sonification, in samples.</span>
+
 <span class="sd">    fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is max-normalized to [-1,1].</span>
+
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate, in samples per seconds.</span>
 
@@ -344,30 +370,37 @@
     <span class="k">return</span> <span class="n">tse_sonification</span></div>
 
 
-<span class="k">def</span> <span class="nf">__sonify_tse_with_sound_event</span><span class="p">(</span><span class="n">sound_event</span><span class="p">,</span>
-                                  <span class="n">offset_relative</span><span class="p">,</span>
-                                  <span class="n">time_positions</span><span class="p">,</span>
-                                  <span class="n">num_samples</span><span class="p">,</span>
-                                  <span class="n">fs</span><span class="p">,</span>
-                                  <span class="n">fading_duration</span><span class="p">,</span>
-                                  <span class="n">normalize</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">__sonify_tse_with_sound_event</span><span class="p">(</span><span class="n">sound_event</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                  <span class="n">offset_relative</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                  <span class="n">time_positions</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                  <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                                  <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                                  <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                                  <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonify with sound events (e.g., beats, downbeats, etc.)</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    sound_event: np.ndarray</span>
 <span class="sd">        A click signal or sample loaded from the disk</span>
+
 <span class="sd">    offset_relative: float, default = 0.0</span>
 <span class="sd">        Relative offset for the beginning of a sound event.</span>
 <span class="sd">        0 indicates that the beginning of the sound event is at the time position,</span>
 <span class="sd">        1 indicates the ending of the sound event corresponds to the time position.:</span>
+
 <span class="sd">    time_positions: np.ndarray</span>
 <span class="sd">        Array with time positions of the annotations.</span>
+
 <span class="sd">    num_samples: int</span>
 <span class="sd">        Number of samples of the output signals</span>
+
 <span class="sd">    fs: int</span>
 <span class="sd">        Sampling rate</span>
+
 <span class="sd">    fading_duration: float</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is max-normalized to [-1,1].</span>
 
