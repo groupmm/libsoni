@@ -23,26 +23,34 @@ def sonify_f0(time_f0: np.ndarray,
     ----------
     time_f0: np.ndarray
         2D array of time positions and f0s.
+
     gains: np.ndarray, default = None
-        Array containing gain values for f0values.
+        Array containing gain values for f0 values.
+
     partials: np.ndarray, default = [1]
         Array containing the desired partials of the fundamental frequencies for sonification.
         An array [1] leads to sonification with only the fundamental frequency,
         while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.
+
     partials_amplitudes: np.ndarray, default = None
         Array containing the amplitudes for partials.
         An array [1,0.5] causes the first partial to have amplitude 1,
         while the second partial has amplitude 0.5.
         If None, the amplitudes for all partials are set to 1.
+
     partials_phase_offsets: np.ndarray, default = None
         Array containing the phase offsets for partials.
         When not defined, the phase offsets for all partials are set to 0.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -94,7 +102,6 @@ def sonify_f0(time_f0: np.ndarray,
             f0s_stretched[int(time * fs):int(next_time * fs)] = f0
             gains_stretched[int(time * fs):int(next_time * fs)] = gain
 
-    # TODO: This loop can be made better
     f0_sonification = generate_tone_instantaneous_phase(frequency_vector=f0s_stretched,
                                                         gain_vector=gains_stretched,
                                                         partials=partials,

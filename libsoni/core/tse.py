@@ -21,22 +21,30 @@ def sonify_tse_clicks(time_positions: np.ndarray = None,
     ----------
     time_positions: np.ndarray
         Array with time positions for clicks.
+
     click_pitch: int, default = 69
         Pitch for click signal.
+
     click_fading_duration: float, default = 0.25
         Fading duration for click signal, in seconds
+
     click_amplitude: float, default = 1.0
         Amplitude for click signal.
+
     offset_relative: float, default = 0.0
         Relative offset for the beginning of a click.
         0 indicates that the beginning of the click event is at the time position,
         1 indicates the ending of the click event corresponds to the time position.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is max-normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -82,25 +90,30 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
                       fading_duration: float = 0.05,
                       normalize: bool = True,
                       fs: int = 22050) -> np.ndarray:
-
-    """Sonifies time positions with warped versions of a sample.
+    """Sonifies time positions with warped versions of a custom sample (e.g., metronome sounds).
 
     Parameters
     ----------
     time_positions: np.ndarray
         Array with time positions for clicks.
+
     sample: np.ndarray
         Sample to be used.
+
     offset_relative: float, default = 0.0
         Relative offset coefficient for the beginning of a click.
         0 indicates that the beginning of the click event is at the time position. 1 indicates the ending of the click
         event corresponds to the time position.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is max-normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -146,29 +159,36 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
                                fading_duration: float = 0.05,
                                normalize: bool = True,
                                fs: int = 22050) -> np.ndarray:
-
     """Given multiple arrays in form of a list, this function creates the sonification of different sources.
 
     Parameters
     ----------
     times_pitches: List[Tuple[np.ndarray, int]]
         List of tuples comprising the time positions and pitches of the clicks
+
     sonification_duration: int, default = None
         Duration of the output waveform, given in samples.
+
     click_fading_duration: float, default = 0.25
         Duration for click signal.
+
     click_amplitude: float, default = 1.0
         Amplitude for click signal.
+
     offset_relative: float, default = 0.0
         Relative offset coefficient for the beginning of the given audio sample.
         0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
         corresponding to the time position.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is max-normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -210,23 +230,27 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
                                 fading_duration: float = 0.05,
                                 normalize: bool = True,
                                 fs: int = 22050) -> np.ndarray:
-
     """Given multiple arrays in form of a list, this function creates the sonification of different sources.
 
     Parameters
     ----------
     times_samples: List[Tuple[np.ndarray, np.ndarray]]
         List of tuples comprising the time positions and samples
+
     offset_relative: float, default = 0.0
         Relative offset coefficient for the beginning of the given audio sample.
         0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample
         corresponding to the time position.
+
     sonification_duration: int, default = None
         Determines duration of sonification, in samples.
+
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is max-normalized to [-1,1].
+
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
 
@@ -266,30 +290,37 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
     return tse_sonification
 
 
-def __sonify_tse_with_sound_event(sound_event,
-                                  offset_relative,
-                                  time_positions,
-                                  num_samples,
-                                  fs,
-                                  fading_duration,
-                                  normalize):
-    """
+def __sonify_tse_with_sound_event(sound_event: np.ndarray,
+                                  offset_relative: float,
+                                  time_positions: np.ndarray,
+                                  num_samples: int,
+                                  fs: int,
+                                  fading_duration: float,
+                                  normalize: bool) -> np.ndarray:
+    """Sonify with sound events (e.g., beats, downbeats, etc.)
+
     Parameters
     ----------
     sound_event: np.ndarray
         A click signal or sample loaded from the disk
+
     offset_relative: float, default = 0.0
         Relative offset for the beginning of a sound event.
         0 indicates that the beginning of the sound event is at the time position,
         1 indicates the ending of the sound event corresponds to the time position.:
+
     time_positions: np.ndarray
         Array with time positions of the annotations.
+
     num_samples: int
         Number of samples of the output signals
+
     fs: int
         Sampling rate
+
     fading_duration: float
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+
     normalize: bool, default = True
         Determines if output signal is max-normalized to [-1,1].
 
