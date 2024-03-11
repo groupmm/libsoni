@@ -89,7 +89,7 @@ and feature representations. For instance, the Python package librosa [@McFeeRLE
 \texttt{librosa.clicks} that generates an audio signal with click sounds positioned at specified times, with options 
 to adjust the frequency and duration of the clicks. Additionally, the Python toolbox libf0 [@RosenzweigSM22_libf0_ISMIR-LBD] 
 provides a function (\texttt{libf0.utils.sonify\_trajectory\_with\_sinusoid}) for sonifying F0 trajectories using sinusoids.
-Moreover, the Python package libfmp~\citep{MuellerZ21_libfmp_JOSS} includes a function 
+Moreover, the Python package libfmp [@MuellerZ21_libfmp_JOSS] includes a function 
 (\texttt{libfmp.b.sonify\_chromagram\_with\_signal}) for sonifying time--chroma representations.
 Testing these methods, our experiments have revealed that current implementations frequently rely on inefficient
 event-based looping, resulting in excessively long runtimes. For instance, generating a click soundtrack for beat 
@@ -110,20 +110,20 @@ educators, students, composers, sound designers, and individuals exploring new m
 Humans perceive pitch in a periodic manner, meaning that pitches separated by an octave are perceived as having a 
 similar quality or acoustic color, known as chroma. This concept motivates the use of time--chroma representations 
 or chromagrams, where pitch bands that differ spectrally by one or several octaves are combined to form a single chroma
-band~\citep{MuellerEwert11_ChromaToolbox_ISMIR}. These representations capture tonal information related to harmony and 
+band [@MuellerEwert11_ChromaToolbox_ISMIR]. These representations capture tonal information related to harmony and 
 melody while exhibiting a high degree of invariance with respect to timbre and instrumentation. 
 Chromagrams are widely used in MIR research for various tasks, including chord recognition and structure analysis.
-The libsoni.chroma module provides sonification methods for chromagrams based on Shepard tones. 
+The \texttt{libsoni.chroma} module provides sonification methods for chromagrams based on Shepard tones. 
 These tones are weighted combinations of sinusoids separated by octaves and serve as acoustic counterparts to 
 chroma values. The functions offered by libsoni enable the generation of various Shepard tone variants and can be 
-applied to symbolic representations (such as piano roll representations or chord annotations) or to chroma features 
+applied to symbolic representations (such as piano-roll representations or chord annotations) or to chroma features 
 extracted from music recordings. This facilitates deeper insights for listeners into chord recognition results or the 
 harmony-related tonal information contained within an audio signal.
 
 
 ## Spectrogram Representations (libsoni.spectrogram)
 Similar to chromagrams, pitch-based feature representations can be derived directly from music recordings using 
-transforms such as the constant-Q-transform (CQT), see\citep{SchoerkhuberK10_ConstantQTransform_SMC}. 
+transforms such as the constant-Q-transform (CQT), see [@SchoerkhuberK10_ConstantQTransform_SMC]. 
 These representations are a special type of log-frequency spectrograms, where the frequency axis is logarithmically 
 spaced to form a pitch-based axis. More generally, in audio signal processing, there exists a multitude of different
 time--frequency representations. For example, classic spectrograms have a linear frequency axis, usually computed via
