@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pianoroll (libsoni.core.pianoroll) &mdash; libsoni 0.0.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>Piano-Roll (libsoni.core.pianoroll) &mdash; libsoni 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -48,7 +50,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Core Features (libsoni.core)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="f0.html">F0 (libsoni.core.f0)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tse.html">TSE (libsoni.core.tse)</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Pianoroll (libsoni.core.pianoroll)</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Piano-Roll (libsoni.core.pianoroll)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.pianoroll.sonify_pianoroll_additive_synthesis"><code class="docutils literal notranslate"><span class="pre">sonify_pianoroll_additive_synthesis()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.pianoroll.sonify_pianoroll_clicks"><code class="docutils literal notranslate"><span class="pre">sonify_pianoroll_clicks()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.pianoroll.sonify_pianoroll_fm_synthesis"><code class="docutils literal notranslate"><span class="pre">sonify_pianoroll_fm_synthesis()</span></code></a></li>
@@ -56,7 +58,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="chroma.html">Chroma (libsoni.core.chroma)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spectrogram.html">Spectrum (libsoni.core.spectrogram)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectrogram.html">Spectrogram (libsoni.core.spectrogram)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="methods.html">Methods (libsoni.core.methods)</a></li>
 </ul>
 </li>
@@ -83,7 +85,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Core Features (libsoni.core)</a></li>
-      <li class="breadcrumb-item active">Pianoroll (libsoni.core.pianoroll)</li>
+      <li class="breadcrumb-item active">Piano-Roll (libsoni.core.pianoroll)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/core/pianoroll.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -94,7 +96,7 @@
            <div itemprop="articleBody">
              
   <section id="module-libsoni.core.pianoroll">
-<span id="pianoroll-libsoni-core-pianoroll"></span><h1>Pianoroll (libsoni.core.pianoroll)<a class="headerlink" href="#module-libsoni.core.pianoroll" title="Permalink to this heading"></a></h1>
+<span id="piano-roll-libsoni-core-pianoroll"></span><h1>Piano-Roll (libsoni.core.pianoroll)<a class="headerlink" href="#module-libsoni.core.pianoroll" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="libsoni.core.pianoroll.sonify_pianoroll_additive_synthesis">
 <span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">sonify_pianoroll_additive_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pianoroll_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([1])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials_amplitudes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials_phase_offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">440.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">note_fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#sonify_pianoroll_additive_synthesis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.sonify_pianoroll_additive_synthesis" title="Permalink to this definition"></a></dt>

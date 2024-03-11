@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>libsoni.util.utils &mdash; libsoni 0.0.0 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -84,12 +86,13 @@
 <span class="kn">import</span> <span class="nn">libfmp.b</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">patches</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">jit</span>
 
 <span class="n">SAMPLES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bass-drum&#39;</span><span class="p">,</span> <span class="s1">&#39;click&#39;</span><span class="p">,</span> <span class="s1">&#39;hi-hat&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="fade_signal"><a class="viewcode-back" href="../../../utils.html#libsoni.util.utils.fade_signal">[docs]</a><span class="k">def</span> <span class="nf">fade_signal</span><span class="p">(</span><span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+                <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                 <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fade in / out audio signal</span>
 
@@ -140,7 +143,7 @@
                 <span class="n">target_pitch</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                 <span class="n">target_duration_sec</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                 <span class="n">gain</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
-                <span class="n">fs</span><span class="o">=</span><span class="mi">22050</span><span class="p">,</span>
+                <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">,</span>
                 <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function warps a sample. Given the reference pitch of the sample provided as np.ndarray,</span>
 <span class="sd">    the warped version of the sample gets pitch-shifted using librosa.effects.pitch_shift().</span>
@@ -157,9 +160,11 @@
 <span class="sd">        Target pitch for the warped sample.</span>
 <span class="sd">    target_duration_sec: float</span>
 <span class="sd">        Duration, given in seconds, for the returned signal.</span>
+<span class="sd">    gain: float</span>
+<span class="sd">        Gain</span>
 <span class="sd">    fs: int, default = 22050</span>
 <span class="sd">        Sampling rate, in samples per seconds.</span>
-<span class="sd">    fading_sec: float, default = 0.01</span>
+<span class="sd">    fading_duration: float, default = 0.01</span>
 <span class="sd">        Duration of fade in and fade out (to avoid clicks)</span>
 
 <span class="sd">    Returns</span>
@@ -216,6 +221,7 @@
     <span class="n">frequency</span> <span class="o">=</span> <span class="n">tuning_frequency</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">**</span> <span class="p">((</span><span class="n">pitch</span> <span class="o">-</span> <span class="n">reference_pitch</span><span class="p">)</span> <span class="o">/</span> <span class="mi">12</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">frequency</span></div>
+
 
 <span class="c1"># Taken from FMP Notebooks, https://www.audiolabs-erlangen.de/resources/MIR/FMP/C6/C6S2_TempoBeat.html</span>
 <span class="k">def</span> <span class="nf">plot_sonify_novelty_beats</span><span class="p">(</span><span class="n">fn_wav</span><span class="p">,</span> <span class="n">fn_ann</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -319,8 +325,9 @@
     <span class="k">return</span> <span class="n">stereo_audio</span></div>
 
 
-<span class="k">def</span> <span class="nf">smooth_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">fading_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-    <span class="n">weights_smoothed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+<span class="nd">@jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">smooth_weights</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">fading_samples</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">weights_smoothed</span> <span class="o">=</span> <span class="n">weights</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
@@ -330,60 +337,17 @@
                 <span class="n">weights</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
             <span class="n">y</span> <span class="o">=</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
-            <span class="c1"># print(len(weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] ))</span>
 
-            <span class="n">weights_smoothed</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">fading_samples</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span><span class="n">i</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">fading_samples</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
+            <span class="n">start_idx</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">fading_samples</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">end_idx</span> <span class="o">=</span> <span class="n">start_idx</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">start_idx</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">end_idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights_smoothed</span><span class="p">):</span>
+                <span class="n">weights_smoothed</span><span class="p">[</span><span class="n">start_idx</span><span class="p">:</span><span class="n">end_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+
     <span class="k">return</span> <span class="n">weights_smoothed</span>
 
 
-<div class="viewcode-block" id="envelope_signal"><a class="viewcode-back" href="../../../utils.html#libsoni.util.utils.envelope_signal">[docs]</a><span class="k">def</span> <span class="nf">envelope_signal</span><span class="p">(</span><span class="n">signal</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">attack_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">decay_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">sustain_level</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="n">release_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="mi">44100</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Envelopes a given signal. If the length of the signal is too short regarding the specified ADSR parameters, the returned signal is zero.</span>
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    signal : array-like</span>
-<span class="sd">        signal to envelope</span>
-<span class="sd">    Returns</span>
-<span class="sd">    ----------</span>
-<span class="sd">    enveloped_signal: array-like</span>
-<span class="sd">        enveloped signal</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">attack_time</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">decay_time</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">release_time</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
-
-    <span class="c1"># compute lengths of attack, decay, sustain and release section</span>
-    <span class="n">attack_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">attack_time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">))</span>
-    <span class="n">decay_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">decay_time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">))</span>
-    <span class="n">release_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">release_time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">))</span>
-    <span class="n">sustain_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">attack_samples</span> <span class="o">+</span> <span class="n">decay_samples</span> <span class="o">+</span> <span class="n">release_samples</span><span class="p">))</span>
-
-    <span class="c1"># check if signal is at least as long as attack, decay and release section</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">attack_samples</span> <span class="o">+</span> <span class="n">decay_samples</span> <span class="o">+</span> <span class="n">release_samples</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
-
-    <span class="c1"># compute attack section of envelope</span>
-    <span class="n">attack_func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">attack_time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">))))</span> <span class="o">-</span> <span class="mi">1</span>
-    <span class="n">attack_func</span> <span class="o">=</span> <span class="n">attack_func</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">attack_func</span><span class="p">))</span>
-
-    <span class="c1"># compute decay section of envelope</span>
-    <span class="n">decay_func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">decay_samples</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
-    <span class="n">decay_func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">sustain_level</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sustain_level</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">decay_func</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">decay_func</span><span class="p">)))</span>
-
-    <span class="c1"># compute sustain section of envelope</span>
-    <span class="n">sustain_func</span> <span class="o">=</span> <span class="n">sustain_level</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">sustain_samples</span><span class="p">)</span>
-
-    <span class="c1"># compute release section of envelope</span>
-    <span class="n">release_func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">release_samples</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
-    <span class="n">release_func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">sustain_level</span> <span class="o">*</span> <span class="p">(</span><span class="n">release_func</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">release_func</span><span class="p">)))</span>
-
-    <span class="c1"># concatenate sections and envelope signal</span>
-    <span class="n">enveloped_signal</span> <span class="o">=</span> <span class="n">signal</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">attack_func</span><span class="p">,</span> <span class="n">decay_func</span><span class="p">,</span> <span class="n">sustain_func</span><span class="p">,</span> <span class="n">release_func</span><span class="p">])</span>
-
-    <span class="k">return</span> <span class="n">enveloped_signal</span></div>
-
-
-<div class="viewcode-block" id="visualize_pianoroll"><a class="viewcode-back" href="../../../utils.html#libsoni.util.utils.visualize_pianoroll">[docs]</a><span class="k">def</span> <span class="nf">visualize_pianoroll</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">visualize_pianoroll</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
                         <span class="n">xlabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Time (seconds)&#39;</span><span class="p">,</span>
                         <span class="n">ylabel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Pitch&#39;</span><span class="p">,</span>
                         <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -392,30 +356,6 @@
                         <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
                         <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                         <span class="n">dpi</span><span class="o">=</span><span class="mi">72</span><span class="p">):</span>
-    <span class="c1"># TODO: dtypes</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot a pianoroll visualization, inspired from FMP Notebook C1/C1S2_CSV.ipynb</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">        df:</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        score: List of note events</span>
-<span class="sd">        xlabel: Label for x axis (Default value = &#39;Time (seconds)&#39;)</span>
-<span class="sd">        ylabel: Label for y axis (Default value = &#39;Pitch&#39;)</span>
-<span class="sd">        colors: Several options: 1. string of FMP_COLORMAPS, 2. string of matplotlib colormap,</span>
-<span class="sd">            3. list or np.ndarray of matplotlib color specifications,</span>
-<span class="sd">            4. dict that assigns labels  to colors (Default value = &#39;FMP_1&#39;)</span>
-<span class="sd">        velocity_alpha: Use the velocity value for the alpha value of the corresponding rectangle</span>
-<span class="sd">            (Default value = False)</span>
-<span class="sd">        figsize: Width, height in inches (Default value = (12)</span>
-<span class="sd">        ax: The Axes instance to plot on (Default value = None)</span>
-<span class="sd">        dpi: Dots per inch (Default value = 72)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        fig: The created matplotlib figure or None if ax was given.</span>
-<span class="sd">        ax: The used axes</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">format_df</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -449,7 +389,7 @@
     <span class="k">if</span> <span class="n">fig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span>
 </pre></div>
 
            </div>
