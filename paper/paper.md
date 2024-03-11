@@ -1,5 +1,5 @@
 ---
-title: 'libsoni: A Python Package for Music Sonification'
+title: 'libsoni: A Python Toolbox for Sonifying Music Annotations and Feature Representations'
 tags:
   - Python
   - Music information retrieval
@@ -124,7 +124,7 @@ music recording. Often, the time positions are further classified into different
 upbeat positions). To facilitate this classification, similar to librosa [@McFeeRLEMBN15_librosa_Python], the TSE module 
 allows for generating distinguishable stimuli with different ``colorations'' that can be easily associated with the
 different categories. Additionally, the TSE module enables the playback of pre-recorded stimuli at different relative
-time positions and, if specified by suitable parameter settings, with time-scale modifications and pitch shifting.
+time positions and, if specified by suitable parameter settings, with time--scale modifications and pitch shifting.
 
 ## Fundamental Frequency (\texttt{libsoni.f0})
 When describing a specific song, we often have the ability to sing or hum the main melody, which can be loosely 
@@ -194,14 +194,13 @@ libfmp [@MuellerZ21_libfmp_JOSS]. Secondly, we re-implemented and included all n
 (e.g., sound generators based on sinusoidal models and click sounds), even though similar basic functionality is 
 available in other Python packages such as librosa and libfmp. By doing so, libsoni offers a coherent API along with 
 convenient but easily modifiable parameter presets. Additionally, the implementations are more efficient than previous 
-software. Thirdly, we adopted many design principles suggested by librosa [@McFeeRLEMBN15_librosa_Python]  
-and detailed in [@McFeeKCSBB19_OpenSourcePractices_IEEE-SPM] to lower the entry barrier for students and 
-researchers who may not be coding experts. This includes maintaining an explicit and straightforward programming 
+software. Thirdly, we adopted many design principles suggested by librosa [@McFeeRLEMBN15_librosa_Python] and detailed 
+in [@McFeeKCSBB19_OpenSourcePractices_IEEE-SPM] to lower the entry barrier for students and researchers who may not be coding experts. This includes maintaining an explicit and straightforward programming 
 style with a flat, functional hierarchy to facilitate ease of use and comprehension. The source code for
-libsoni, along with comprehensive API documentation [^1], is publicly accessible through a dedicated GitHub
-repository [^2]. We showcase all components, including introductions to MIR scenarios, illustrations, and sound examples
+libsoni, along with comprehensive API documentation[^1], is publicly accessible through a dedicated GitHub
+repository[^2]. We showcase all components, including introductions to MIR scenarios, illustrations, and sound examples
 via Jupyter notebooks.  Finally, we have included the toolbox in the Python Package Index (PyPI), enabling
-installation with the standard Python package manager, pip [^3].
+installation with the standard Python package manager, pip[^3].
 
 [^1]: <https://groupmm.github.io/libsoni>
 [^2]: <https://github.com/groupmm/libsoni>
