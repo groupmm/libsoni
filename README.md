@@ -72,7 +72,7 @@ an issue in our GitHub repository. Please do not submit a pull request without p
 with us.
 
 ## Licence
-The code for this toolbox is published under an MIT licence.
+The code for this toolbox is published under an [MIT licence](LICENCE).
 This does not apply to the data files:
 * Schubert songs are taken from the [Schubert Winterreise Dataset](https://zenodo.org/record/4122060). 
 * The cantata *Ach Gott und Herr* by Bach is taken fom [Bach10 Dataset](https://labsites.rochester.edu/air/datasets/Bach10%20Dataset_v1.0.pdf).
