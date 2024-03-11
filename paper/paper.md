@@ -213,7 +213,7 @@ to former and current students, collaborators, and colleagues, including Jonatha
 Tim Zunner, for their support and influence in creating this Python package. This work was funded by the Deutsche 
 Forschungsgemeinschaft (DFG, German Research Foundation) under Grant No. 500643750 (DFG-MU 2686/15-1) and Grant No. 
 328416299 (MU 2686/10-2). The International Audio Laboratories Erlangen are a joint institution of the 
-Friedrich-Alexander-Universit\"at Erlangen-N\"urnberg (FAU) and Fraunhofer Institute for Integrated Circuits IIS.
+Friedrich-Alexander-Universität Erlangen-Nürnberg (FAU) and Fraunhofer Institute for Integrated Circuits IIS.
 
 
 # References
