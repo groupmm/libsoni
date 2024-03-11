@@ -56,6 +56,3 @@ application of sonification and visualization methods to deepen understanding wi
 # Acknowledgements
 
 # References
-=======
-
-# Summary
