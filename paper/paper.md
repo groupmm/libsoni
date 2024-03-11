@@ -93,7 +93,7 @@ Moreover, the Python package libfmp [@MuellerZ21_libfmp_JOSS] includes a functio
 (\texttt{libfmp.b.sonify\_chromagram\_with\_signal}) for sonifying time--chroma representations.
 Testing these methods, our experiments have revealed that current implementations frequently rely on inefficient
 event-based looping, resulting in excessively long runtimes. For instance, generating a click soundtrack for beat 
-annotations of 10-minute recordings can require \meinard{impractically long processing times}.
+annotations of 10-minute recordings can require impractically long processing times.
 
 In our Python toolbox, libsoni, we offer implementations of various sonification methods, including those 
 mentioned above. These implementations feature a coherent API and are based on straightforward methods that are 
@@ -106,7 +106,56 @@ this could be a potential future extension. Hence, libsoni may not only be benef
 educators, students, composers, sound designers, and individuals exploring new musical concepts.
 
 
-## Chromagram Representations (libsoni.chroma)
+# Core Functionalities
+In the following, we briefly describe some of the main modules included in the Python toolbox libsoni. 
+For an illustration of some core functionalities, we also refer to Figure. A comprehensive API
+documentation of libsoni is publicly accessible through GitHub[^1]. Furthermore, the applications of core
+functionalities are illustrated by educational Jupyter notebooks as an integral part of libsoni, providing 
+illustrative code examples within concrete MIR scenarios.
+
+## Triggered Sound Events (\texttt{libsoni.tse})
+The Triggered Sound Events (TSE) module of libsoni contains various functions for the sonification of temporal events.
+In this scenario, one typically has a music recording and a list of time positions that indicate the presence of
+certain musical events. These events could include onset positions of specific notes, beat positions, or structural 
+boundaries between musical parts.
+The TSE module allows for generating succinct acoustic stimuli at each of the time positions, providing the listener 
+with precise temporal feedback. Ideally, these stimuli should be perceivable even when overlaid with the original
+music recording. Often, the time positions are further classified into different categories  (e.g., downbeat and 
+upbeat positions). To facilitate this classification, similar to librosa [@McFeeRLEMBN15_librosa_Python], the TSE module 
+allows for generating distinguishable stimuli with different ``colorations'' that can be easily associated with the
+different categories. Additionally, the TSE module enables the playback of pre-recorded stimuli at different relative
+time positions and, if specified by suitable parameter settings, with time-scale modifications and pitch shifting.
+
+## Fundamental Frequency (\texttt{libsoni.f0})
+When describing a specific song, we often have the ability to sing or hum the main melody, which can be loosely 
+defined as a linear succession of musical tones expressing a particular musical idea. In the context of a music
+recording (rather than a musical score), the melody corresponds to a sequence of fundamental frequency values 
+(also called F0 values) representing the pitches of the tones. In real performances, these sequences often form 
+complex time--frequency patterns known as frequency trajectories, which may include continuous frequency glides 
+(glissando) or frequency modulations (vibrato). In libsoni, the F0 module allows for sonifying a sequence of frame-wise 
+frequency values that correspond to manually annotated or estimated F0 values (see also Figure b). This module offers a
+variety of adjustable parameters, allowing for the inclusion of additional partials to tonally enrich the sonification, 
+thereby generating sounds of different timbre. Moreover, users have the option to adjust the amplitude of each predicted
+F0 value based on its confidence level, as provided by an F0 estimator. This allows for insights into the reliability 
+of the predictions.
+
+## Piano-Roll Representations (\texttt{libsoni.pianoroll})
+A symbolic score-based representation describes each note by parameters such as start time, duration, pitch, and other 
+attributes. This representation is closely related to MIDI encodings and is often visualized in the form of 
+two-dimensional piano-roll representations (see also Figure c). In these representations, time is 
+encoded on the horizontal axis, pitch on the vertical axis, and each note is represented by an axis-parallel rectangle 
+indicating onset, pitch, and duration. This representation is widely used in several MIR tasks, including automatic
+music transcription [@BenetosDDE19_MusicTranscription_SPM] und music score--audio music synchronization 
+[@Mueller15_FMP_SPRINGER}]. The simplest method in libsoni to sonify piano-roll representations is based on 
+straightforward sinusoidal models (potentially enriched by harmonics). When the score information is synchronized 
+with a music recording (e.g., using alignment methods provided by the Sync Toolbox [@MuellerOKPD21_SyncToolbox_JOSS],
+libsoni enables the creation of a stereo signal with the sonification in one channel and the original recording in the 
+other channel. This setup provides an intuitive way to understand the accuracy for a range of musical analysis and
+transcription tasks. Furthermore, these sonifications may be superimposed with further onset-based stimuli provided by
+the TSE module.
+
+
+## Chromagram Representations (\texttt{libsoni.chroma})
 Humans perceive pitch in a periodic manner, meaning that pitches separated by an octave are perceived as having a 
 similar quality or acoustic color, known as chroma. This concept motivates the use of time--chroma representations 
 or chromagrams, where pitch bands that differ spectrally by one or several octaves are combined to form a single chroma
@@ -121,7 +170,7 @@ extracted from music recordings. This facilitates deeper insights for listeners 
 harmony-related tonal information contained within an audio signal.
 
 
-## Spectrogram Representations (libsoni.spectrogram)
+## Spectrogram Representations (\texttt{libsoni.spectrogram})
 Similar to chromagrams, pitch-based feature representations can be derived directly from music recordings using 
 transforms such as the constant-Q-transform (CQT), see [@SchoerkhuberK10_ConstantQTransform_SMC]. 
 These representations are a special type of log-frequency spectrograms, where the frequency axis is logarithmically 
