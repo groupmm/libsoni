@@ -1,4 +1,4 @@
-tse (libsoni.core.tse)
+TSE (libsoni.core.tse)
 ======================
 
 .. automodule:: libsoni.core.tse

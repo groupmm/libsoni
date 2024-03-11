@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pianoroll (libsoni.core.pianoroll) &mdash; libsoni 0.0.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>Piano-Roll (libsoni.core.pianoroll) &mdash; libsoni 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -20,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Chroma (libsoni.core.chroma)" href="chroma.html" />
-    <link rel="prev" title="tse (libsoni.core.tse)" href="tse.html" /> 
+    <link rel="prev" title="TSE (libsoni.core.tse)" href="tse.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,18 +49,17 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Core Features (libsoni.core)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="f0.html">F0 (libsoni.core.f0)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tse.html">tse (libsoni.core.tse)</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Pianoroll (libsoni.core.pianoroll)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tse.html">TSE (libsoni.core.tse)</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Piano-Roll (libsoni.core.pianoroll)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.pianoroll.sonify_pianoroll_additive_synthesis"><code class="docutils literal notranslate"><span class="pre">sonify_pianoroll_additive_synthesis()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.pianoroll.sonify_pianoroll_clicks"><code class="docutils literal notranslate"><span class="pre">sonify_pianoroll_clicks()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#libsoni.core.pianoroll.sonify_pianoroll_etc"><code class="docutils literal notranslate"><span class="pre">sonify_pianoroll_etc()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.pianoroll.sonify_pianoroll_fm_synthesis"><code class="docutils literal notranslate"><span class="pre">sonify_pianoroll_fm_synthesis()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.pianoroll.sonify_pianoroll_sample"><code class="docutils literal notranslate"><span class="pre">sonify_pianoroll_sample()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#libsoni.core.pianoroll.visualize_pianoroll"><code class="docutils literal notranslate"><span class="pre">visualize_pianoroll()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="chroma.html">Chroma (libsoni.core.chroma)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spectrum.html">Spectrum (libsoni.core.spectrum)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectrogram.html">Spectrogram (libsoni.core.spectrogram)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="methods.html">Methods (libsoni.core.methods)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils (libsoni.util.utils)</a></li>
@@ -84,7 +85,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Core Features (libsoni.core)</a></li>
-      <li class="breadcrumb-item active">Pianoroll (libsoni.core.pianoroll)</li>
+      <li class="breadcrumb-item active">Piano-Roll (libsoni.core.pianoroll)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/core/pianoroll.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -95,152 +96,117 @@
            <div itemprop="articleBody">
              
   <section id="module-libsoni.core.pianoroll">
-<span id="pianoroll-libsoni-core-pianoroll"></span><h1>Pianoroll (libsoni.core.pianoroll)<a class="headerlink" href="#module-libsoni.core.pianoroll" title="Permalink to this heading"></a></h1>
+<span id="piano-roll-libsoni-core-pianoroll"></span><h1>Piano-Roll (libsoni.core.pianoroll)<a class="headerlink" href="#module-libsoni.core.pianoroll" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="libsoni.core.pianoroll.sonify_pianoroll_additive_synthesis">
-<span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">sonify_pianoroll_additive_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pianoroll_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([1])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials_amplitudes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials_phase_offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">440.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#sonify_pianoroll_additive_synthesis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.sonify_pianoroll_additive_synthesis" title="Permalink to this definition"></a></dt>
-<dd><p>This function sonifies a pianoroll representation containing pitch events described by start, duration or end
-and the corresponding pitch with additive synthesis.</p>
+<span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">sonify_pianoroll_additive_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pianoroll_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([1])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials_amplitudes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials_phase_offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">440.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">note_fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#sonify_pianoroll_additive_synthesis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.sonify_pianoroll_additive_synthesis" title="Permalink to this definition"></a></dt>
+<dd><p>Sonifies a pianoroll.</p>
+<p>The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end
+and the corresponding pitch.
+The sonification is based on additive synthesis,
+where parameters partials, partials_amplitudes and partials_phase_offsets
+can be used to shape the sound.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe</p></li>
-<li><p><strong>partials</strong> (<em>np.ndarray</em><em>, </em><em>default =</em><em> [</em><em>1</em><em>]</em>) – <dl class="simple">
-<dt>An array containing the desired partials of the fundamental frequencies for sonification.</dt><dd><p>An array [1] leads to sonification with only the fundamental frequency core,
-while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.</p>
-</dd>
-</dl>
-</p></li>
-<li><p><strong>partials_amplitudes</strong> (<em>np.ndarray</em><em>, </em><em>default =</em><em> [</em><em>1</em><em>]</em>) – <dl class="simple">
-<dt>Array containing the amplitudes for partials.</dt><dd><p>An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
-while the sinusoid with frequency 2*core has amplitude 0.5.</p>
-</dd>
-</dl>
-</p></li>
-<li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray</em><em>, </em><em>default =</em><em> [</em><em>0</em><em>]</em>) – Array containing the phase offsets for partials.</p></li>
-<li><p><strong>tuning_frequency</strong> (<em>float</em><em>, </em><em>default = 440.0</em>) – Tuning frequency in Her</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of the output waveform, given in samples.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em><em>, </em><em>default = 22050</em>) – Sampling rate</p></li>
+<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information.</p></li>
+<li><p><strong>partials</strong> (<em>np.ndarray, default = [1]</em>) – Array containing the desired partials of the fundamental frequencies for sonification.
+An array [1] leads to sonification with only the fundamental frequency,
+while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</p></li>
+<li><p><strong>partials_amplitudes</strong> (<em>np.ndarray, default = None</em>) – Array containing the amplitudes for partials.
+An array [1,0.5] causes the first partial to have amplitude 1,
+while the second partial has amplitude 0.5.
+When not defined, the amplitudes for all partials are set to 1.</p></li>
+<li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray, default = None</em>) – Array containing the phase offsets for partials.
+When not defined, the phase offsets for all partials are set to 0.</p></li>
+<li><p><strong>tuning_frequency</strong> (<em>float, default = 440.0</em>) – Tuning frequency, in Hertz.</p></li>
+<li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Determines duration of sonification, in samples.</p></li>
+<li><p><strong>signal_fading_duration</strong> (<em>float, default = 0.05</em>) – Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</p></li>
+<li><p><strong>note_fading_duration</strong> (<em>float, default = 0.01</em>) – Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.</p></li>
+<li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Determines if output signal is normalized to [-1,1].</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate, in samples per seconds.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>pianoroll_sonification</strong> – Sonified waveform in form of a 1D Numpy array</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-even"><p><strong>pianoroll_sonification</strong> (<em>np.ndarray</em>) – Sonified pianoroll.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="libsoni.core.pianoroll.sonify_pianoroll_clicks">
-<span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">sonify_pianoroll_clicks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pianoroll_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">440.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#sonify_pianoroll_clicks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.sonify_pianoroll_clicks" title="Permalink to this definition"></a></dt>
-<dd><p>This function sonifies a pianoroll representation containing pitch events described by start, duration or end
-and the corresponding pitch with coloured clicks.</p>
+<span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">sonify_pianoroll_clicks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pianoroll_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">440.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#sonify_pianoroll_clicks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.sonify_pianoroll_clicks" title="Permalink to this definition"></a></dt>
+<dd><p>Sonifies a pianoroll.</p>
+<p>The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end
+and the corresponding pitch.
+For sonification, coloured clicks are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Data Frame containing pitch events.</p></li>
-<li><p><strong>tuning_frequency</strong> (<em>float</em><em>, </em><em>default = 440.0</em>) – Tuning Frequency, given in Hertz</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of the output waveform, given in samples.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em><em>, </em><em>default = 22050</em>) – Sampling rate</p></li>
+<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information.</p></li>
+<li><p><strong>tuning_frequency</strong> (<em>float, default = 440.0</em>) – Tuning Frequency, in Hertz</p></li>
+<li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Determines duration of sonification, in samples.</p></li>
+<li><p><strong>signal_fading_duration</strong> (<em>float, default = 0.05</em>) – Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</p></li>
+<li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Determines if output signal is normalized to [-1,1].</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate, in samples per seconds.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>pianoroll_sonification</strong> – Sonified waveform in form of a 1D Numpy array.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-even"><p><strong>pianoroll_sonification</strong> (<em>np.ndarray</em>) – Sonified waveform in form of a 1D Numpy array.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="libsoni.core.pianoroll.sonify_pianoroll_etc">
-<span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">sonify_pianoroll_etc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#sonify_pianoroll_etc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.sonify_pianoroll_etc" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="libsoni.core.pianoroll.sonify_pianoroll_fm_synthesis">
-<span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">sonify_pianoroll_fm_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pianoroll_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mod_rate_relative</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mod_amp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">440.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#sonify_pianoroll_fm_synthesis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.sonify_pianoroll_fm_synthesis" title="Permalink to this definition"></a></dt>
-<dd><p>This function sonifies a pianoroll representation containing pitch events described by start, duration or end
-and the corresponding pitch with frequency major synthesis.</p>
+<span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">sonify_pianoroll_fm_synthesis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pianoroll_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mod_rate_relative</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mod_amp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_frequency</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">440.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">note_fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#sonify_pianoroll_fm_synthesis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.sonify_pianoroll_fm_synthesis" title="Permalink to this definition"></a></dt>
+<dd><p>Sonifies a pianoroll.</p>
+<p>The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end
+and the corresponding pitch.
+The sonification is based on frequency modulation synthesis,
+where parameters mod_rate_relative and mod_amp can be used to shape the sound.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe</p></li>
-<li><p><strong>mod_rate_relative</strong> (<em>float</em><em>, </em><em>default = 0.0</em>) – Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.</p></li>
-<li><p><strong>mod_amp</strong> (<em>float</em><em>, </em><em>default = 0.0</em>) – Determines the amount of modulation in the generated signal.</p></li>
-<li><p><strong>tuning_frequency</strong> (<em>float</em><em>, </em><em>default = 440.0</em>) – Tuning frequency in Her</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of the output waveform, given in samples.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em><em>, </em><em>default = 22050</em>) – Sampling rate</p></li>
+<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information.</p></li>
+<li><p><strong>mod_rate_relative</strong> (<em>float, default = 0.0</em>) – Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.</p></li>
+<li><p><strong>mod_amp</strong> (<em>float, default = 0.0</em>) – Determines the amount of modulation in the generated signal.</p></li>
+<li><p><strong>tuning_frequency</strong> (<em>float, default = 440.0</em>) – Tuning frequency in Hertz.</p></li>
+<li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Determines duration of sonification, in samples.</p></li>
+<li><p><strong>signal_fading_duration</strong> (<em>float, default = 0.05</em>) – Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</p></li>
+<li><p><strong>note_fading_duration</strong> (<em>float, default = 0.01</em>) – Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.</p></li>
+<li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Determines if output signal is normalized to [-1,1].</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate, in samples per seconds.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>pianoroll_sonification</strong> – Sonified waveform in form of a 1D Numpy array.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-even"><p><strong>pianoroll_sonification</strong> (<em>np.ndarray</em>) – Sonified pianoroll.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="libsoni.core.pianoroll.sonify_pianoroll_sample">
-<span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">sonify_pianoroll_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pianoroll_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_pitch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">69</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#sonify_pianoroll_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.sonify_pianoroll_sample" title="Permalink to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>This function sonifies a pianoroll representation containing pitch events described by start, sonification_duration or end</dt><dd><p>and the corresponding pitch with pitch-shifted and time-warped versions of a sample.</p>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">sonify_pianoroll_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pianoroll_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_pitch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">69</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">note_fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#sonify_pianoroll_sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.sonify_pianoroll_sample" title="Permalink to this definition"></a></dt>
+<dd><p>Sonifies a pianoroll.</p>
+<p>The DataFrame representation is assumed to contain row-wise pitch events described by start, duration or end
+and the corresponding pitch.
+For sonification, warped versions of the given sample are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Data Frame containing pitch events.</p></li>
-<li><p><strong>sample</strong> (<em>np.ndarray</em>) – Sample</p></li>
-<li><p><strong>reference_pitch</strong> (<em>int</em><em>, </em><em>default = 69</em>) – Pitch of the Sample</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of the output waveform, given in samples.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em><em>, </em><em>default = 22050</em>) – Sampling rate</p></li>
+<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information.</p></li>
+<li><p><strong>sample</strong> (<em>np.ndarray</em>) – Sample to use for sonification.</p></li>
+<li><p><strong>reference_pitch</strong> (<em>int, default = 69</em>) – Original pitch of the sample.</p></li>
+<li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Determines duration of sonification, in samples.</p></li>
+<li><p><strong>signal_fading_duration</strong> (<em>float, default = 0.05</em>) – Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</p></li>
+<li><p><strong>note_fading_duration</strong> (<em>float, default = 0.01</em>) – Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.</p></li>
+<li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Determines if output signal is normalized to [-1,1].</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate, in samples per seconds.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>pianoroll_sonification</strong> – Sonified waveform in form of a 1D Numpy array.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="libsoni.core.pianoroll.visualize_pianoroll">
-<span class="sig-prename descclassname"><span class="pre">libsoni.core.pianoroll.</span></span><span class="sig-name descname"><span class="pre">visualize_pianoroll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Time</span> <span class="pre">(seconds)'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Pitch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'FMP_1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">velocity_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(12,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">72</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/libsoni/core/pianoroll.html#visualize_pianoroll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.pianoroll.visualize_pianoroll" title="Permalink to this definition"></a></dt>
-<dd><p>Plot a pianoroll visualization, inspired from FMP Notebook C1/C1S2_CSV.ipynb</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>score</strong> – List of note events</p></li>
-<li><p><strong>xlabel</strong> – Label for x axis (Default value = ‘Time (seconds)’)</p></li>
-<li><p><strong>ylabel</strong> – Label for y axis (Default value = ‘Pitch’)</p></li>
-<li><p><strong>colors</strong> – Several options: 1. string of FMP_COLORMAPS, 2. string of matplotlib colormap,
-3. list or np.ndarray of matplotlib color specifications,
-4. dict that assigns labels  to colors (Default value = ‘FMP_1’)</p></li>
-<li><p><strong>velocity_alpha</strong> – Use the velocity value for the alpha value of the corresponding rectangle
-(Default value = False)</p></li>
-<li><p><strong>figsize</strong> – Width, height in inches (Default value = (12)</p></li>
-<li><p><strong>ax</strong> – The Axes instance to plot on (Default value = None)</p></li>
-<li><p><strong>dpi</strong> – Dots per inch (Default value = 72)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The created matplotlib figure or None if ax was given.
-ax: The used axes</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>fig</p>
+<dd class="field-even"><p><strong>pianoroll_sonification</strong> (<em>np.ndarray</em>) – Sonified pianoroll.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -251,14 +217,14 @@ ax: The used axes</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tse.html" class="btn btn-neutral float-left" title="tse (libsoni.core.tse)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tse.html" class="btn btn-neutral float-left" title="TSE (libsoni.core.tse)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="chroma.html" class="btn btn-neutral float-right" title="Chroma (libsoni.core.chroma)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Leo Brütting, Yigitcan Özer, Meinard Müller.</p>
+    <p>&#169; Copyright 2024, Yigitcan Özer, Leo Brütting, Simon Schwär, Meinard Müller.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

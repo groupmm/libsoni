@@ -10,4 +10,5 @@ Core Features (libsoni.core)
 	tse
 	pianoroll
 	chroma
-	spectrum
+	spectrogram
+	methods

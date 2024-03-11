@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>F0 (libsoni.core.f0) &mdash; libsoni 0.0.0 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b76e3c8a" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -19,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="tse (libsoni.core.tse)" href="tse.html" />
+    <link rel="next" title="TSE (libsoni.core.tse)" href="tse.html" />
     <link rel="prev" title="Core Features (libsoni.core)" href="index.html" /> 
 </head>
 
@@ -33,7 +35,7 @@
           
           <a href="../index.html" class="icon icon-home">
             libsoni
-              <img src="../_static/logo.png" class="logo" alt="Logo"/>
+              <img src="../_static/libsoni_logo.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -48,14 +50,13 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Core Features (libsoni.core)</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">F0 (libsoni.core.f0)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#libsoni.core.f0.sonify_f0"><code class="docutils literal notranslate"><span class="pre">sonify_f0()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#libsoni.core.f0.sonify_f0_with_presets"><code class="docutils literal notranslate"><span class="pre">sonify_f0_with_presets()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#libsoni.core.f0.sonify_f0_with_presets_old"><code class="docutils literal notranslate"><span class="pre">sonify_f0_with_presets_old()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="tse.html">tse (libsoni.core.tse)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pianoroll.html">Pianoroll (libsoni.core.pianoroll)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tse.html">TSE (libsoni.core.tse)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pianoroll.html">Piano-Roll (libsoni.core.pianoroll)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="chroma.html">Chroma (libsoni.core.chroma)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="spectrum.html">Spectrum (libsoni.core.spectrum)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="spectrogram.html">Spectrogram (libsoni.core.spectrogram)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="methods.html">Methods (libsoni.core.methods)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils (libsoni.util.utils)</a></li>
@@ -95,96 +96,33 @@
 <span id="f0-libsoni-core-f0"></span><h1>F0 (libsoni.core.f0)<a class="headerlink" href="#module-libsoni.core.f0" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="libsoni.core.f0.sonify_f0">
-<span class="sig-prename descclassname"><span class="pre">libsoni.core.f0.</span></span><span class="sig-name descname"><span class="pre">sonify_f0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_f0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([1])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials_amplitudes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([1])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials_phase_offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fade_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/f0.html#sonify_f0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.f0.sonify_f0" title="Permalink to this definition"></a></dt>
-<dd><p>This function sonifies a F0 trajectory from a 2D Numpy array.
-The sonification is related to the principle of a so-called numerical oscillator.
-The parameters partials and partials_amplitudes can be used to generate a desired sound through a specific
-overtone behavior.</p>
+<span class="sig-prename descclassname"><span class="pre">libsoni.core.f0.</span></span><span class="sig-name descname"><span class="pre">sonify_f0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_f0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([1])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials_amplitudes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">array([1])</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partials_phase_offsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fading_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/f0.html#sonify_f0"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.f0.sonify_f0" title="Permalink to this definition"></a></dt>
+<dd><p>Sonifies a F0 trajectory given as 2D Numpy array.</p>
+<p>The 2D array must contain time positions and the associated instantaneous frequencies.
+The sonification is based on the phase information by summation of the instantaneous frequencies.
+The parameters partials, partials_amplitudes and partials_phase_offsets can be used to shape the sound.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_f0</strong> (<em>np.ndarray</em>) – 2D array of time positions and f0s.</p></li>
-<li><p><strong>gains</strong> (<em>np.ndarray</em><em>, </em><em>default = None</em>) – An array containing gain values for f0-values.</p></li>
-<li><p><strong>partials</strong> (<em>np.ndarray</em><em>, </em><em>default =</em><em> [</em><em>1</em><em>]</em>) – <dl class="simple">
-<dt>An array containing the desired partials of the fundamental frequencies for sonification.</dt><dd><p>An array [1] leads to sonification with only the fundamental frequency core,
-while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.</p>
-</dd>
-</dl>
-</p></li>
-<li><p><strong>partials_amplitudes</strong> (<em>np.ndarray</em><em>, </em><em>default =</em><em> [</em><em>1</em><em>]</em>) – <dl class="simple">
-<dt>Array containing the amplitudes for partials.</dt><dd><p>An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
-while the sinusoid with frequency 2*core has amplitude 0.5.</p>
-</dd>
-</dl>
-</p></li>
-<li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray</em><em>, </em><em>default =</em><em> [</em><em>0</em><em>]</em>) – Array containing the phase offsets for partials.</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of audio, given in samples</p></li>
-<li><p><strong>fade_duration</strong> (<em>float</em><em>, </em><em>default = 0.05</em>) – Duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em><em>, </em><em>default = 22050</em>) – Sampling rate, in samples per seconds.</p></li>
+<li><p><strong>gains</strong> (<em>np.ndarray, default = None</em>) – Array containing gain values for f0values.</p></li>
+<li><p><strong>partials</strong> (<em>np.ndarray, default = [1]</em>) – Array containing the desired partials of the fundamental frequencies for sonification.
+An array [1] leads to sonification with only the fundamental frequency,
+while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</p></li>
+<li><p><strong>partials_amplitudes</strong> (<em>np.ndarray, default = None</em>) – Array containing the amplitudes for partials.
+An array [1,0.5] causes the first partial to have amplitude 1,
+while the second partial has amplitude 0.5.
+If None, the amplitudes for all partials are set to 1.</p></li>
+<li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray, default = None</em>) – Array containing the phase offsets for partials.
+When not defined, the phase offsets for all partials are set to 0.</p></li>
+<li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Determines duration of sonification, in samples.</p></li>
+<li><p><strong>fading_duration</strong> (<em>float, default = 0.05</em>) – Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</p></li>
+<li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Determines if output signal is normalized to [-1,1].</p></li>
+<li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate, in samples per seconds.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>y</strong> – Sonified f0-trajectory.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="libsoni.core.f0.sonify_f0_with_presets">
-<span class="sig-prename descclassname"><span class="pre">libsoni.core.f0.</span></span><span class="sig-name descname"><span class="pre">sonify_f0_with_presets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preset_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fade_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/f0.html#sonify_f0_with_presets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.f0.sonify_f0_with_presets" title="Permalink to this definition"></a></dt>
-<dd><p>This function sonifies multiple f0 annotations with a certain preset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>preset_dict</strong> (<em>dict</em>) – <dl class="simple">
-<dt>Dictionary of presets in the following key-value pair format:</dt><dd><p>{str: np.ndarray}
-preset: time_f0s</p>
-</dd>
-</dl>
-</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of the output waveform, given in samples</p></li>
-<li><p><strong>fade_duration</strong> (<em>float</em><em>, </em><em>default = 0.05</em>) – Duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em>) – Sampling rate</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>f0_sonification</strong> – Sonified waveform</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="libsoni.core.f0.sonify_f0_with_presets_old">
-<span class="sig-prename descclassname"><span class="pre">libsoni.core.f0.</span></span><span class="sig-name descname"><span class="pre">sonify_f0_with_presets_old</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preset_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sonification_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fade_duration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">22050</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="../_modules/libsoni/core/f0.html#sonify_f0_with_presets_old"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#libsoni.core.f0.sonify_f0_with_presets_old" title="Permalink to this definition"></a></dt>
-<dd><p>This function sonifies multiple f0 annotations with a certain preset.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>preset_dict</strong> (<em>dict</em>) – <dl class="simple">
-<dt>Dictionary of presets in the following key-value pair format:</dt><dd><p>{str: np.ndarray}
-preset: time_f0s</p>
-</dd>
-</dl>
-</p></li>
-<li><p><strong>sonification_duration</strong> (<em>int</em><em>, </em><em>default = None</em>) – Duration of the output waveform, given in samples</p></li>
-<li><p><strong>fade_duration</strong> (<em>float</em><em>, </em><em>default = 0.05</em>) – Duration of fade-in and fade-out at beginning and end of the sonification, given in seconds.</p></li>
-<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>default = True</em>) – Decides, if output signal is normalized to [-1,1].</p></li>
-<li><p><strong>fs</strong> (<em>int</em>) – Sampling rate</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>f0_sonification</strong> – Sonified waveform</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-even"><p><strong>f0_sonification</strong> (<em>np.ndarray</em>) – Sonified f0-trajectory.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -196,13 +134,13 @@ preset: time_f0s</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Core Features (libsoni.core)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="tse.html" class="btn btn-neutral float-right" title="tse (libsoni.core.tse)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tse.html" class="btn btn-neutral float-right" title="TSE (libsoni.core.tse)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Leo Brütting, Yigitcan Özer, Meinard Müller.</p>
+    <p>&#169; Copyright 2024, Yigitcan Özer, Leo Brütting, Simon Schwär, Meinard Müller.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

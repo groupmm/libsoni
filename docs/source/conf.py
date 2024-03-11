@@ -16,8 +16,8 @@ sys.path.insert(0, os.path.join(LIBSONI_DIR, 'util'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'libsoni'
-copyright = '2023, Leo Brütting, Yigitcan Özer, Meinard Müller'
-author = 'Leo Brütting, Yigitcan Özer, Meinard Müller'
+copyright = '2024, Yigitcan Özer, Leo Brütting, Simon Schwär, Meinard Müller'
+author = 'Yigitcan Özer, Leo Brütting, Simon Schwär, Meinard Müller'
 release = '0.0.0'
 
 # -- General configuration ---------------------------------------------------
@@ -33,6 +33,8 @@ extensions = ['sphinx_rtd_theme',
 
 templates_path = ['_templates']
 exclude_patterns = []
+# The name of the Pygments (syntax highlighting) style to use.
+pygments_style = 'sphinx'
 
 
 
@@ -43,4 +45,5 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 html_use_index = True
 html_use_modindex = True
-html_logo = os.path.join(html_static_path[0], 'logo.png')
+html_logo = os.path.join(html_static_path[0], 'libsoni_logo.png')
+napoleon_custom_sections = [('Returns', 'params_style'), ('Parameters', 'params_style')]

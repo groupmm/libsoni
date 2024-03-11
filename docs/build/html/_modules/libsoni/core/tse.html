@@ -79,7 +79,7 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">libsoni.util.utils</span> <span class="kn">import</span> <span class="n">normalize_signal</span>
+<span class="kn">from</span> <span class="nn">libsoni.util.utils</span> <span class="kn">import</span> <span class="n">normalize_signal</span><span class="p">,</span> <span class="n">fade_signal</span>
 <span class="kn">from</span> <span class="nn">libsoni.core.methods</span> <span class="kn">import</span> <span class="n">generate_click</span>
 
 
@@ -89,9 +89,11 @@
                       <span class="n">click_amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
                       <span class="n">offset_relative</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
                       <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
                       <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                       <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function sonifies an array containing time positions with clicks.</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies array of time positions with clicks.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -100,55 +102,53 @@
 <span class="sd">    click_pitch: int, default = 69</span>
 <span class="sd">        Pitch for click signal.</span>
 <span class="sd">    click_fading_duration: float, default = 0.25</span>
-<span class="sd">        Fading duration for click signal.</span>
+<span class="sd">        Fading duration for click signal, in seconds</span>
 <span class="sd">    click_amplitude: float, default = 1.0</span>
 <span class="sd">        Amplitude for click signal.</span>
 <span class="sd">    offset_relative: float, default = 0.0</span>
-<span class="sd">        Relative offset coefficient for the beginning of a click. </span>
-<span class="sd">        0 indicates that the beginning of the click event is at the time position. 1 indicates the ending of the click</span>
-<span class="sd">        event corresponds to the time position. </span>
+<span class="sd">        Relative offset for the beginning of a click.</span>
+<span class="sd">        0 indicates that the beginning of the click event is at the time position,</span>
+<span class="sd">        1 indicates the ending of the click event corresponds to the time position.</span>
 <span class="sd">    sonification_duration: int, default = None</span>
-<span class="sd">        Duration of the output waveform, given in samples.</span>
+<span class="sd">        Determines duration of sonification, in samples.</span>
+<span class="sd">    fading_duration: float, default = 0.05</span>
+<span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
 <span class="sd">    normalize: bool, default = True</span>
-<span class="sd">        Decides, if output signal is normalized to [-1,1].</span>
+<span class="sd">        Determines if output signal is max-normalized to [-1,1].</span>
 <span class="sd">    fs: int, default = 22050</span>
-<span class="sd">        Sampling rate</span>
+<span class="sd">        Sampling rate, in samples per seconds.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    tse_sonification: np.ndarray</span>
-<span class="sd">        Sonified waveform in form of a 1D Numpy array.</span>
-
+<span class="sd">        Sonified time positions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">click_pitch</span> <span class="o">&lt;=</span> <span class="mi">127</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Pitch is out of range [0,127].&#39;</span>
+    <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">offset_relative</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Relative offset is out of range [0,1].&#39;</span>
+
     <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">time_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">click_fading_duration</span><span class="p">)</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sonification_duration</span> <span class="o">=</span> <span class="n">num_samples</span>
-    <span class="k">else</span><span class="p">:</span>
 
+    <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sonification_duration</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
             <span class="n">duration_in_sec</span> <span class="o">=</span> <span class="n">sonification_duration</span> <span class="o">/</span> <span class="n">fs</span>
             <span class="n">time_positions</span> <span class="o">=</span> <span class="n">time_positions</span><span class="p">[</span><span class="n">time_positions</span> <span class="o">&lt;</span> <span class="n">duration_in_sec</span><span class="p">]</span>
-
         <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sonification_duration</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
 
-    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
+    <span class="n">click</span> <span class="o">=</span> <span class="n">generate_click</span><span class="p">(</span><span class="n">pitch</span><span class="o">=</span><span class="n">click_pitch</span><span class="p">,</span>
+                           <span class="n">click_fading_duration</span><span class="o">=</span><span class="n">click_fading_duration</span><span class="p">,</span>
+                           <span class="n">amplitude</span><span class="o">=</span><span class="n">click_amplitude</span><span class="p">)</span>
 
-    <span class="n">click</span> <span class="o">=</span> <span class="n">generate_click</span><span class="p">(</span><span class="n">pitch</span><span class="o">=</span><span class="n">click_pitch</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">click_fading_duration</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="n">click_amplitude</span><span class="p">)</span>
-
-    <span class="n">num_click_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">click</span><span class="p">)</span>
-    <span class="n">offset_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset_relative</span> <span class="o">*</span> <span class="n">num_click_samples</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">time_position</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time_positions</span><span class="p">):</span>
-
-        <span class="n">start_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_position</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span> <span class="o">-</span> <span class="n">offset_samples</span>
-        <span class="n">end_samples</span> <span class="o">=</span> <span class="n">start_samples</span> <span class="o">+</span> <span class="n">num_click_samples</span>
-        <span class="k">if</span> <span class="n">start_samples</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">end_samples</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="n">tse_sonification</span><span class="p">[:</span><span class="n">end_samples</span><span class="p">]</span> <span class="o">+=</span> <span class="n">click</span><span class="p">[</span><span class="o">-</span><span class="n">end_samples</span><span class="p">:]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">tse_sonification</span><span class="p">[</span><span class="n">start_samples</span><span class="p">:</span><span class="n">end_samples</span><span class="p">]</span> <span class="o">+=</span> <span class="n">click</span>
-
-    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">tse_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">tse_sonification</span>
+    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">__sonify_tse_with_sound_event</span><span class="p">(</span><span class="n">click</span><span class="p">,</span>
+                                                     <span class="n">offset_relative</span><span class="p">,</span>
+                                                     <span class="n">time_positions</span><span class="p">,</span>
+                                                     <span class="n">num_samples</span><span class="p">,</span>
+                                                     <span class="n">fs</span><span class="p">,</span>
+                                                     <span class="n">fading_duration</span><span class="p">,</span>
+                                                     <span class="n">normalize</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">tse_sonification</span><span class="p">[:</span><span class="n">sonification_duration</span><span class="p">]</span></div>
 
@@ -157,42 +157,47 @@
                       <span class="n">sample</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                       <span class="n">offset_relative</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
                       <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                      <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
                       <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                       <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function sonifies an array containing time positions with clicks.</span>
+
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies time positions with warped versions of a sample.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    sample: np.ndarray</span>
-<span class="sd">        Sample (e.g., recording of a kick drum)</span>
 <span class="sd">    time_positions: np.ndarray</span>
 <span class="sd">        Array with time positions for clicks.</span>
+<span class="sd">    sample: np.ndarray</span>
+<span class="sd">        Sample to be used.</span>
 <span class="sd">    offset_relative: float, default = 0.0</span>
-<span class="sd">        Relative offset coefficient for the beginning of the given audio sample.</span>
-<span class="sd">        0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample</span>
-<span class="sd">        corresponding to the time position.</span>
+<span class="sd">        Relative offset coefficient for the beginning of a click.</span>
+<span class="sd">        0 indicates that the beginning of the click event is at the time position. 1 indicates the ending of the click</span>
+<span class="sd">        event corresponds to the time position.</span>
 <span class="sd">    sonification_duration: int, default = None</span>
-<span class="sd">        Duration of the output waveform, given in samples.</span>
+<span class="sd">        Determines duration of sonification, in samples.</span>
+<span class="sd">    fading_duration: float, default = 0.05</span>
+<span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
 <span class="sd">    normalize: bool, default = True</span>
-<span class="sd">        Decides, if output signal is normalized to [-1,1].</span>
+<span class="sd">        Determines if output signal is max-normalized to [-1,1].</span>
 <span class="sd">    fs: int, default = 22050</span>
-<span class="sd">        Sampling rate</span>
+<span class="sd">        Sampling rate, in samples per seconds.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    tse_sonification: np.ndarray</span>
-<span class="sd">        Sonified waveform in form of a 1D Numpy array.</span>
-
+<span class="sd">        Sonified time positions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sample_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
     <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">time_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span> <span class="o">+</span> <span class="n">sample_len</span>
 
     <span class="k">assert</span> <span class="n">sample_len</span> <span class="o">&lt;</span> <span class="n">time_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;The custom sample cannot be longer than the annotations.&#39;</span>
+
     <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">sample_len</span> <span class="o">&lt;</span> <span class="n">sonification_duration</span><span class="p">,</span> <span class="s1">&#39;The custom sample cannot be longer than the sonification_duration.&#39;</span>
 
     <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sonification_duration</span> <span class="o">=</span> <span class="n">num_samples</span>
+
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">sonification_duration</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
             <span class="n">duration_in_sec</span> <span class="o">=</span> <span class="n">sonification_duration</span> <span class="o">/</span> <span class="n">fs</span>
@@ -200,31 +205,26 @@
 
         <span class="n">num_samples</span> <span class="o">=</span> <span class="n">sonification_duration</span>
 
-    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
-    <span class="n">offset_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset_relative</span> <span class="o">*</span> <span class="n">sample_len</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">time_position</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time_positions</span><span class="p">):</span>
-        <span class="n">start_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_position</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span> <span class="o">-</span> <span class="n">offset_samples</span>
-        <span class="n">end_samples</span> <span class="o">=</span> <span class="n">start_samples</span> <span class="o">+</span> <span class="n">sample_len</span>
-
-        <span class="k">if</span> <span class="n">start_samples</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">end_samples</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="n">tse_sonification</span><span class="p">[:</span><span class="n">end_samples</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sample</span><span class="p">[</span><span class="o">-</span><span class="n">end_samples</span><span class="p">:]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">tse_sonification</span><span class="p">[</span><span class="n">start_samples</span><span class="p">:</span><span class="n">end_samples</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sample</span>
-
-    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">tse_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">tse_sonification</span>
+    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">__sonify_tse_with_sound_event</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span>
+                                                     <span class="n">offset_relative</span><span class="p">,</span>
+                                                     <span class="n">time_positions</span><span class="p">,</span>
+                                                     <span class="n">num_samples</span><span class="p">,</span>
+                                                     <span class="n">fs</span><span class="p">,</span>
+                                                     <span class="n">fading_duration</span><span class="p">,</span>
+                                                     <span class="n">normalize</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">tse_sonification</span><span class="p">[:</span><span class="n">sonification_duration</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="sonify_tse_multiple_clicks"><a class="viewcode-back" href="../../../core/tse.html#libsoni.core.tse.sonify_tse_multiple_clicks">[docs]</a><span class="k">def</span> <span class="nf">sonify_tse_multiple_clicks</span><span class="p">(</span><span class="n">times_pitches</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                               <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                <span class="n">click_fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
                                <span class="n">click_amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
                                <span class="n">offset_relative</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+                               <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
                                <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                                <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Given multiple arrays in form of a list, this function creates the sonification of different sources.</span>
 
 <span class="sd">    Parameters</span>
@@ -241,15 +241,21 @@
 <span class="sd">        Relative offset coefficient for the beginning of the given audio sample.</span>
 <span class="sd">        0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample</span>
 <span class="sd">        corresponding to the time position.</span>
+<span class="sd">    sonification_duration: int, default = None</span>
+<span class="sd">        Determines duration of sonification, in samples.</span>
+<span class="sd">    fading_duration: float, default = 0.05</span>
+<span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
 <span class="sd">    normalize: bool, default = True</span>
-<span class="sd">        Decides, if output signal is normalized to [-1,1].</span>
+<span class="sd">        Determines if output signal is max-normalized to [-1,1].</span>
 <span class="sd">    fs: int, default = 22050</span>
-<span class="sd">        Sampling rate</span>
+<span class="sd">        Sampling rate, in samples per seconds.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    tse_sonification: np.ndarray</span>
-<span class="sd">        Sonified waveform in form of a 1D Numpy array.</span>
+<span class="sd">        Sonified time positions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">max_duration</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">times_pitch</span> <span class="ow">in</span> <span class="n">times_pitches</span><span class="p">:</span>
@@ -257,12 +263,10 @@
             <span class="n">max_duration</span> <span class="o">=</span> <span class="n">sonification_duration</span> <span class="k">if</span> <span class="n">sonification_duration</span> <span class="o">&gt;</span> <span class="n">max_duration</span> <span class="k">else</span> <span class="n">max_duration</span>
 
         <span class="n">sonification_duration</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">fs</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_duration</span> <span class="o">+</span> <span class="n">click_fading_duration</span><span class="p">)))</span>
-
     <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sonification_duration</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">times_pitch</span> <span class="ow">in</span> <span class="n">times_pitches</span><span class="p">:</span>
         <span class="n">time_positions</span><span class="p">,</span> <span class="n">pitch</span> <span class="o">=</span> <span class="n">times_pitch</span>
-
         <span class="n">tse_sonification</span> <span class="o">+=</span> <span class="n">sonify_tse_clicks</span><span class="p">(</span><span class="n">time_positions</span><span class="o">=</span><span class="n">time_positions</span><span class="p">,</span>
                                               <span class="n">click_pitch</span><span class="o">=</span><span class="n">pitch</span><span class="p">,</span>
                                               <span class="n">click_fading_duration</span><span class="o">=</span><span class="n">click_fading_duration</span><span class="p">,</span>
@@ -270,6 +274,8 @@
                                               <span class="n">offset_relative</span><span class="o">=</span><span class="n">offset_relative</span><span class="p">,</span>
                                               <span class="n">sonification_duration</span><span class="o">=</span><span class="n">sonification_duration</span><span class="p">,</span>
                                               <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+
+    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">tse_sonification</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">)</span>
 
     <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">tse_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">tse_sonification</span>
 
@@ -279,8 +285,10 @@
 <div class="viewcode-block" id="sonify_tse_multiple_samples"><a class="viewcode-back" href="../../../core/tse.html#libsoni.core.tse.sonify_tse_multiple_samples">[docs]</a><span class="k">def</span> <span class="nf">sonify_tse_multiple_samples</span><span class="p">(</span><span class="n">times_samples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                 <span class="n">offset_relative</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
                                 <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
                                 <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                                 <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Given multiple arrays in form of a list, this function creates the sonification of different sources.</span>
 
 <span class="sd">    Parameters</span>
@@ -292,11 +300,14 @@
 <span class="sd">        0 indicates that the beginning of the sample is at the time position. 1 indicates the ending of the sample</span>
 <span class="sd">        corresponding to the time position.</span>
 <span class="sd">    sonification_duration: int, default = None</span>
-<span class="sd">        Duration of the output waveform, given in samples.</span>
+<span class="sd">        Determines duration of sonification, in samples.</span>
+<span class="sd">    fading_duration: float, default = 0.05</span>
+<span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
 <span class="sd">    normalize: bool, default = True</span>
-<span class="sd">        Decides, if output signal is normalized to [-1,1].</span>
+<span class="sd">        Determines if output signal is max-normalized to [-1,1].</span>
 <span class="sd">    fs: int, default = 22050</span>
-<span class="sd">        Sampling rate</span>
+<span class="sd">        Sampling rate, in samples per seconds.</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    tse_sonification: np.ndarray</span>
@@ -306,6 +317,7 @@
     <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">max_duration</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">max_sample_duration_samples</span> <span class="o">=</span> <span class="mi">0</span>
+
         <span class="k">for</span> <span class="n">time_sample</span> <span class="ow">in</span> <span class="n">times_samples</span><span class="p">:</span>
             <span class="n">time_positions</span><span class="p">,</span> <span class="n">sample</span> <span class="o">=</span> <span class="n">time_sample</span>
             <span class="n">sonification_duration</span> <span class="o">=</span> <span class="n">time_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -326,14 +338,65 @@
                                               <span class="n">sonification_duration</span><span class="o">=</span><span class="n">sonification_duration</span><span class="p">,</span>
                                               <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
 
+    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">tse_sonification</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">)</span>
     <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">tse_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">tse_sonification</span>
 
     <span class="k">return</span> <span class="n">tse_sonification</span></div>
 
 
-<div class="viewcode-block" id="sonify_tse_text"><a class="viewcode-back" href="../../../core/tse.html#libsoni.core.tse.sonify_tse_text">[docs]</a><span class="k">def</span> <span class="nf">sonify_tse_text</span><span class="p">():</span>
-    <span class="c1"># TODO: @yiitozer</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+<span class="k">def</span> <span class="nf">__sonify_tse_with_sound_event</span><span class="p">(</span><span class="n">sound_event</span><span class="p">,</span>
+                                  <span class="n">offset_relative</span><span class="p">,</span>
+                                  <span class="n">time_positions</span><span class="p">,</span>
+                                  <span class="n">num_samples</span><span class="p">,</span>
+                                  <span class="n">fs</span><span class="p">,</span>
+                                  <span class="n">fading_duration</span><span class="p">,</span>
+                                  <span class="n">normalize</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sound_event: np.ndarray</span>
+<span class="sd">        A click signal or sample loaded from the disk</span>
+<span class="sd">    offset_relative: float, default = 0.0</span>
+<span class="sd">        Relative offset for the beginning of a sound event.</span>
+<span class="sd">        0 indicates that the beginning of the sound event is at the time position,</span>
+<span class="sd">        1 indicates the ending of the sound event corresponds to the time position.:</span>
+<span class="sd">    time_positions: np.ndarray</span>
+<span class="sd">        Array with time positions of the annotations.</span>
+<span class="sd">    num_samples: int</span>
+<span class="sd">        Number of samples of the output signals</span>
+<span class="sd">    fs: int</span>
+<span class="sd">        Sampling rate</span>
+<span class="sd">    fading_duration: float</span>
+<span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
+<span class="sd">    normalize: bool, default = True</span>
+<span class="sd">        Determines if output signal is max-normalized to [-1,1].</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tse_sonification: np.ndarray</span>
+<span class="sd">        Sonified signal with multiple sound events, given the time positions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
+    <span class="n">num_click_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sound_event</span><span class="p">)</span>
+    <span class="n">offset_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">offset_relative</span> <span class="o">*</span> <span class="n">num_click_samples</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">time_position</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time_positions</span><span class="p">):</span>
+        <span class="n">start_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_position</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span> <span class="o">-</span> <span class="n">offset_samples</span>
+        <span class="n">end_samples</span> <span class="o">=</span> <span class="n">start_samples</span> <span class="o">+</span> <span class="n">num_click_samples</span>
+
+        <span class="k">if</span> <span class="n">start_samples</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">end_samples</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">tse_sonification</span><span class="p">[:</span><span class="n">end_samples</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sound_event</span><span class="p">[</span><span class="o">-</span><span class="n">end_samples</span><span class="p">:]</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tse_sonification</span><span class="p">[</span><span class="n">start_samples</span><span class="p">:</span><span class="n">end_samples</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sound_event</span>
+
+    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">tse_sonification</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">)</span>
+    <span class="n">tse_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">tse_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">tse_sonification</span>
+
+    <span class="k">return</span> <span class="n">tse_sonification</span>
 </pre></div>
 
            </div>
@@ -343,7 +406,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Leo Brütting, Yigitcan Özer, Meinard Müller.</p>
+    <p>&#169; Copyright 2024, Yigitcan Özer, Leo Brütting, Simon Schwär, Meinard Müller.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

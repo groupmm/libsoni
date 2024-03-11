@@ -1,46 +1,51 @@
 import numpy as np
 import pandas as pd
 import librosa
-from matplotlib import pyplot as plt
-import os
-import json
 import libfmp.b
 import libfmp.c6
-from typing import Dict
+import libfmp.b
+from matplotlib import pyplot as plt
+from matplotlib import patches
+from numba import jit
+from numba import jit
 
 SAMPLES = ['bass-drum', 'click', 'hi-hat']
-try:
-    PRESETS = json.load(open(os.path.join('libsoni', 'util', 'presets.json')))
-except:
-    # TODO: Clean up this mess, this is a workaround for the Sphinx documentation
-    PRESETS = json.load(open(os.path.join('..', '..', 'libsoni', 'libsoni', 'util', 'presets.json')))
 
 
 def fade_signal(signal: np.ndarray = None,
-                fs: int = 22050,
-                fading_sec: float = 0.01) -> np.ndarray:
+                fading_duration: float = 0,
+                fs: int = 22050) -> np.ndarray:
     """Fade in / out audio signal
+
     Parameters
     ----------
     signal: np.ndarray, default = None
         Signal to be faded
     fs: int, default = 22050
         sampling rate
-    fading_sec: float, default = 0
+    fading_duration: float, default = 0
+        duration of fade-in and fade-out, in seconds
+
     Returns
     -------
     normalized_signal: np.ndarray
         Normalized signal
     """
-    num_samples = int(fading_sec * fs)
-    assert len(signal) > 2*num_samples, 'The signal to be faded must be longer than two times the fading duration!'
+    num_samples = int(fading_duration * fs)
 
-    signal[:num_samples] *= np.sin(np.pi * np.arange(num_samples) / fading_sec / 2 / fs)
-    signal[-num_samples:] *= np.cos(np.pi * np.arange(num_samples) / fading_sec / 2 / fs)
+    # if the signal is shorter than twice of the length of the fading duration, multiply signal with sinus half-wave
+    if len(signal) < 2 * num_samples:
+        signal *= np.sin(np.pi * np.arange(len(signal)) / len(signal))
+    else:
+        signal[:num_samples] *= np.sin(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
+        signal[-num_samples:] *= np.cos(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
+
     return signal
 
+
 def normalize_signal(signal: np.ndarray) -> np.ndarray:
-    """Normalize audio signal
+    """Max-normalize audio signal
+
     Parameters
     ----------
     signal: np.ndarray
@@ -58,12 +63,14 @@ def warp_sample(sample: np.ndarray,
                 reference_pitch: int,
                 target_pitch: int,
                 target_duration_sec: float,
-                fs=22050,
-                fading_sec: float = 0.01):
+                gain: float = 1.0,
+                fs: int = 22050,
+                fading_duration: float = 0.01):
     """This function warps a sample. Given the reference pitch of the sample provided as np.ndarray,
     the warped version of the sample gets pitch-shifted using librosa.effects.pitch_shift().
     For the temporal alignment, if the desired duration is shorter than the original sample, the sample gets cropped,
     else if the desired duration is longer of the provided sample, the returned signal gets zero-padded at the end.
+
     Parameters
     ----------
     sample: np.ndarray
@@ -74,10 +81,13 @@ def warp_sample(sample: np.ndarray,
         Target pitch for the warped sample.
     target_duration_sec: float
         Duration, given in seconds, for the returned signal.
+    gain: float
+        Gain
     fs: int, default = 22050
         Sampling rate, in samples per seconds.
-    fading_sec: float, default = 0.01
+    fading_duration: float, default = 0.01
         Duration of fade in and fade out (to avoid clicks)
+
     Returns
     -------
     warped_sample: np.ndarray
@@ -92,36 +102,46 @@ def warp_sample(sample: np.ndarray,
                                                        n_steps=pitch_steps)
 
     # Case: target duration is shorter than sample -> cropping
-    if int(target_duration_sec*fs) <= len(sample):
+    if int(target_duration_sec * fs) <= len(sample):
 
-        warped_sample = pitch_shifted_sample[:int(target_duration_sec*fs)]
+        warped_sample = pitch_shifted_sample[:int(target_duration_sec * fs)]
 
     # Case: target duration is longer than sample -> zero-filling
     else:
 
-        warped_sample = np.zeros(int(target_duration_sec*fs))
+        warped_sample = np.zeros(int(target_duration_sec * fs))
         warped_sample[:len(sample)] = sample
 
-    if not fading_sec == 0:
-        warped_sample = fade_signal(signal=warped_sample, fs=fs, fading_sec=fading_sec)
+    warped_sample = fade_signal(signal=warped_sample, fs=fs, fading_duration=fading_duration)
+
+    warped_sample *= gain
 
     return warped_sample
 
 
-def get_preset(preset_name: str = None) -> Dict:
-    """Get preset parameters from presets.json
+def pitch_to_frequency(pitch: int,
+                       reference_pitch: int = 69,
+                       tuning_frequency: float = 440.0) -> float:
+    """Calculates frequency for pitch.
 
     Parameters
     ----------
-    preset_name: str, default: None
-        Name of preset, e.g., violin
+    pitch: int
+        Pitch to calculate frequency for.
+    reference_pitch: int, default = 69
+        Reference pitch for calculation.
+    tuning_frequency: float, default = 440.0
+        Tuning frequency for calculation, in Hertz.
+
     Returns
     -------
-    dictionary of partials, envelope, etc.
+    frequency: float
+        Calculated frequency for given pitch, in Hertz.
     """
-    if preset_name not in PRESETS:
-        raise ValueError(f'Preset {preset_name} not valid! Choose among {PRESETS.keys()}')
-    return PRESETS[preset_name]
+
+    frequency = tuning_frequency * 2 ** ((pitch - reference_pitch) / 12)
+
+    return frequency
 
 
 # Taken from FMP Notebooks, https://www.audiolabs-erlangen.de/resources/MIR/FMP/C6/C6S2_TempoBeat.html
@@ -157,7 +177,6 @@ def format_df(df: pd.DataFrame) -> pd.DataFrame:
             print('Input DataFrame must have start and duration/end columns.')
 
     return df
-
 
 
 def mix_sonification_and_original(sonification: np.ndarray,
@@ -226,65 +245,67 @@ def mix_sonification_and_original(sonification: np.ndarray,
 
     return stereo_audio
 
-def smooth_weights(weights: np.ndarray, fading_samples: int = 0):
 
-    weights_smoothed = np.copy(weights)
+@jit(nopython=True)
+def smooth_weights(weights, fading_samples=0):
+    weights_smoothed = weights.copy()
 
-    for i in range(1, len(weights)-1):
+    for i in range(1, len(weights) - 1):
         if weights[i] != weights[i - 1]:
-
             amplitude = (np.abs(weights[i - 1] - weights[i])) / 2
 
             x = np.linspace(-1 * (np.pi / 2), np.pi / 2, fading_samples) * -1 * np.sign(
                 weights[i - 1] - weights[i])
-
             y = amplitude * np.sin(x) + (weights[i - 1] + weights[i]) / 2
+            start_idx = i - int(fading_samples / 2)
+            end_idx = start_idx + len(y)
 
-            weights_smoothed[i - int(fading_samples / 2):i - int(fading_samples / 2) + len(y)] = y
+            if start_idx >= 0 and end_idx < len(weights_smoothed):
+                weights_smoothed[start_idx:end_idx] = y
+
     return weights_smoothed
 
-def envelope_signal(signal: np.ndarray, attack_time: float = 0, decay_time: float = 0, sustain_level: float = 0,
-                    release_time: float = 0, fs=44100):
-    """
-    Envelopes a given signal. If the length of the signal is too short regarding the specified ADSR parameters, the returned signal is zero.
-    Parameters
-    ----------
-    signal : array-like
-        signal to envelope
-    Returns
-    ----------
-    enveloped_signal: array-like
-        enveloped signal
-    """
-    if attack_time <= 0 or decay_time <= 0 or release_time <= 0:
-        return np.zeros(len(signal))
 
-    # compute lengths of attack, decay, sustain and release section
-    attack_samples = int(np.floor(attack_time * fs))
-    decay_samples = int(np.floor(decay_time * fs))
-    release_samples = int(np.floor(release_time * fs))
-    sustain_samples = int(len(signal) - (attack_samples + decay_samples + release_samples))
+def visualize_pianoroll(df: pd.DataFrame,
+                        xlabel: str = 'Time (seconds)',
+                        ylabel: str = 'Pitch',
+                        title: str = None,
+                        colors: str = 'FMP_1',
+                        velocity_alpha=False,
+                        figsize=(12, 4),
+                        ax=None,
+                        dpi=72):
+    df = format_df(df)
+    fig = None
+    if ax is None:
+        fig = plt.figure(figsize=figsize, dpi=dpi)
+        ax = plt.subplot(1, 1, 1)
 
-    # check if signal is at least as long as attack, decay and release section
-    if len(signal) < (attack_samples + decay_samples + release_samples):
-        return np.zeros(len(signal))
+    labels_set = sorted(df['label'].unique())
+    colors = libfmp.b.color_argument_to_dict(colors, labels_set)
 
-    # compute attack section of envelope
-    attack_func = np.exp(np.linspace(0, 1, int(np.floor(attack_time * fs)))) - 1
-    attack_func = attack_func / np.max(np.flip(attack_func))
+    pitch_min = df['pitch'].min()
+    pitch_max = df['pitch'].max()
+    time_min = df['start'].min()
+    time_max = df['end'].max()
 
-    # compute decay section of envelope
-    decay_func = np.exp(np.linspace(0, 1, decay_samples)) - 1
-    decay_func = np.flip(sustain_level + (1 - sustain_level) * (decay_func / np.max(decay_func)))
+    for i, r in df.iterrows():
+        velocity = None if not velocity_alpha else r['velocity']
+        rect = patches.Rectangle((r['start'], r['pitch'] - 0.5), r['duration'], 1, linewidth=1,
+                                 edgecolor='k', facecolor=colors[r['label']], alpha=velocity)
+        ax.add_patch(rect)
 
-    # compute sustain section of envelope
-    sustain_func = sustain_level * np.ones(sustain_samples)
+    ax.set_ylim([pitch_min - 1.5, pitch_max + 1.5])
+    ax.set_xlim([min(time_min, 0), time_max + 0.5])
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(label=title)
+    ax.grid()
+    ax.set_axisbelow(True)
+    ax.legend([patches.Patch(linewidth=1, edgecolor='k', facecolor=colors[key]) for key in labels_set],
+              labels_set, loc='upper right', framealpha=1)
 
-    # compute release section of envelope
-    release_func = np.exp(np.linspace(0, 1, release_samples)) - 1
-    release_func = np.flip(sustain_level * (release_func / np.max(release_func)))
+    if fig is not None:
+        plt.tight_layout()
 
-    # concatenate sections and envelope signal
-    enveloped_signal = signal * np.concatenate([attack_func, decay_func, sustain_func, release_func])
-
-    return enveloped_signal
+    return fig, ax
