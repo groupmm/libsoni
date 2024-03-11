@@ -207,7 +207,7 @@ installation with the standard Python package manager, pip[^3].
 [^3]: <https://pypi.org/project/libsoni>
 
 # Acknowledgements
-The libsoni package originated from collaboration with various individuals over the past years. We extend our gratitude 
+The libsoni package originated from collaboration with various individuals over the past years. We express our gratitude 
 to former and current students, collaborators, and colleagues, including Jonathan Driedger, Angel Villar-Corrales, and 
 Tim Zunner, for their support and influence in creating this Python package. This work was funded by the Deutsche 
 Forschungsgemeinschaft (DFG, German Research Foundation) under Grant No. 500643750 (DFG-MU 2686/15-1) and Grant No. 
