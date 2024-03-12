@@ -11,7 +11,7 @@
   </tr>
 </table>
 
-``libsoni`` an open-source Python toolbox tailored for the sonification of music annotations and feature representations. 
+``libsoni`` is an open-source Python toolbox tailored for the sonification of music annotations and feature representations. 
 By employing explicit and easy-to-understand sound synthesis techniques, the toolbox offers functionalities
 for generating and triggering sound events, enabling the sonification of spectral, harmonic, tonal, melodic,
 and rhythmic aspects. Unlike existing software libraries focused on creative applications of sound generation, 
