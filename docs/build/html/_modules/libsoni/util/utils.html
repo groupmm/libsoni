@@ -388,7 +388,7 @@
                         <span class="n">colors</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;FMP_1&#39;</span><span class="p">,</span>
                         <span class="n">velocity_alpha</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                         <span class="n">figsize</span> <span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-                        <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                         <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">72</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Visualization function for piano-roll representations, given in a pd.DataFrame format</span>
 
@@ -413,6 +413,7 @@
 <span class="sd">        Set True to weight the visualized rectangular regions for each pitch based on their velocity value.</span>
 
 <span class="sd">    figsize: Tuple[float, float], default: [12, 4])</span>
+<span class="sd">        Figure size</span>
 
 <span class="sd">    ax: matplotlib.axes.Axes</span>
 <span class="sd">         Axes object</span>

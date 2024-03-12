@@ -308,7 +308,7 @@ def visualize_pianoroll(pianoroll_df: pd.DataFrame,
                         colors: str = 'FMP_1',
                         velocity_alpha: bool = False,
                         figsize : Tuple[float, float] = (12, 4),
-                        ax: matplotlib.axes = None,
+                        ax: matplotlib.axes.Axes = None,
                         dpi: int = 72) -> Tuple[matplotlib.figure.Figure, matplotlib.axes.Axes]:
     """Visualization function for piano-roll representations, given in a pd.DataFrame format
 
@@ -333,6 +333,7 @@ def visualize_pianoroll(pianoroll_df: pd.DataFrame,
         Set True to weight the visualized rectangular regions for each pitch based on their velocity value.
 
     figsize: Tuple[float, float], default: [12, 4])
+        Figure size
 
     ax: matplotlib.axes.Axes
          Axes object
