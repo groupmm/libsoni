@@ -1,3 +1,8 @@
+[![Python Package using Conda](https://github.com/groupmm/libsoni/actions/workflows/test_conda.yml/badge.svg)](https://github.com/groupmm/libsoni/actions/workflows/test_conda.yml)
+[![Python package](https://github.com/groupmm/libsoni/workflows/test_pip.yml/badge.svg)](https://github.com/groupmm/libsoni/actions/workflows/test_pip.yml)
+
+
+
 <table border="0">
   <tr>
     <td><img src="docs/source/_static/libsoni_logo.png" alt="libsoni logo" width="1000"></td>
