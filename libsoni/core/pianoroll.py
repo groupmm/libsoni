@@ -306,7 +306,6 @@ def __init_pianoroll_sonification(pianoroll_df: pd.DataFrame,
     if sonification_duration is None:
         sonification_duration = pianoroll_df['end'].max()
     sonification_duration_samples = int(sonification_duration * fs)
-    print(sonification_duration)
 
     # if sonification_duration is less than num_samples, crop the arrays
     if sonification_duration_samples < num_samples:
@@ -316,7 +315,6 @@ def __init_pianoroll_sonification(pianoroll_df: pd.DataFrame,
     pianoroll_df['duration'] = pianoroll_df['end'] - pianoroll_df['start']
 
     num_samples = sonification_duration_samples
-
     pianoroll_sonification = np.zeros(num_samples)
-    print(pianoroll_df)
+
     return pianoroll_df, pianoroll_sonification
