@@ -112,7 +112,7 @@ illustrative code examples within concrete MIR scenarios.
 
 ![Illustration of some core functionalities provided by the Python toolbox libsoni. \textbf{(a)} Logo
 of libsoni. \textbf{(b)}  Sonification of F0 trajectories. \textbf{(c)}  Sonification of piano roll representations. 
-\textbf{(d)} Sonification of time–frequency representations.](teaser.pdf)\label{fig:libsoni}{#libsoni width="100%"}
+\textbf{(d)} Sonification of time–frequency representations.](teaser.pdf)\label{fig:libsoni}
 
 
 
