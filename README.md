@@ -1,5 +1,5 @@
-[![Python Package using Conda](https://github.com/groupmm/libsoni/actions/workflows/test_conda.yml/badge.svg)](https://github.com/groupmm/libsoni/actions/workflows/test_conda.yml)
-[![Python package](https://github.com/groupmm/libsoni/actions/workflows/test_pip.yml/badge.svg)](https://github.com/groupmm/libsoni/actions/workflows/test_pip.yml)
+[![Python package using Conda](https://github.com/groupmm/libsoni/actions/workflows/test_conda.yml/badge.svg)](https://github.com/groupmm/libsoni/actions/workflows/test_conda.yml)
+[![Python package using pip](https://github.com/groupmm/libsoni/actions/workflows/test_pip.yml/badge.svg)](https://github.com/groupmm/libsoni/actions/workflows/test_pip.yml)
 
 
 
