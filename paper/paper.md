@@ -111,8 +111,8 @@ functionalities are illustrated by educational Jupyter notebooks as an integral 
 illustrative code examples within concrete MIR scenarios.
 
 ![Illustration of some core functionalities provided by the Python toolbox libsoni. \textbf{(a)} Logo
-of libsoni. \textbf{(b)}  Sonification of F0 trajectories. \textbf{(c)}  Sonification of piano roll representations. \textbf{(d}  Soni-
-fication of time–frequency representations.](teaser.pdf){#libsoni width="100%"}
+of libsoni. \textbf{(b)}  Sonification of F0 trajectories. \textbf{(c)}  Sonification of piano roll representations. 
+\textbf{(d)} Sonification of time–frequency representations.](teaser.pdf){#libsoni width="100%"}\label{fig:libsoni}
 
 
 
@@ -136,7 +136,7 @@ recording (rather than a musical score), the melody corresponds to a sequence of
 (also called F0 values) representing the pitches of the tones. In real performances, these sequences often form 
 complex time--frequency patterns known as frequency trajectories, which may include continuous frequency glides 
 (glissando) or frequency modulations (vibrato). In libsoni, the F0 module allows for sonifying a sequence of frame-wise 
-frequency values that correspond to manually annotated or estimated F0 values (see also Figure b). This module offers a
+frequency values that correspond to manually annotated or estimated F0 values (see also Figure~\ref{fig:libsoni}). This module offers a
 variety of adjustable parameters, allowing for the inclusion of additional partials to tonally enrich the sonification, 
 thereby generating sounds of different timbre. Moreover, users have the option to adjust the amplitude of each predicted
 F0 value based on its confidence level, as provided by an F0 estimator. This allows for insights into the reliability 
