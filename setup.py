@@ -12,7 +12,7 @@ setup(
     author_email='yigitcan.oezer@audiolabs-erlangen.de',
     url='https://github.com/groupmm/libsoni',
     download_url='https://github.com/groupmm/libsoni',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests*']),
     long_description=long_description,
     long_description_content_type='text/markdown',
     classifiers=[

@@ -1,6 +1,10 @@
+[![Python package using Conda](https://github.com/groupmm/libsoni/actions/workflows/test_conda.yml/badge.svg)](https://github.com/groupmm/libsoni/actions/workflows/test_conda.yml)
+[![Python package using pip](https://github.com/groupmm/libsoni/actions/workflows/test_pip.yml/badge.svg)](https://github.com/groupmm/libsoni/actions/workflows/test_pip.yml)
+
+
 <table border="0">
   <tr>
-    <td><img src="docs/source/_static/libsoni_logo.png" alt="libsoni logo" width="1000"></td>
+    <td><img src=https://github.com/groupmm/libsoni/blob/unit_tests/docs/build/html/_static/libsoni_logo.png alt="libsoni logo" width="1000"></td>
     <td><h2>libsoni: A Python Toolbox for Sonifying Music Annotations and Feature Representations</h2>
 <br> <br>
 </td>
