@@ -102,14 +102,14 @@ but also for educators, students, composers, sound designers, and individuals ex
 
 # Core Functionalities
 In the following, we briefly describe some of the main modules included in the Python toolbox libsoni. 
-For an illustration of some core functionalities, we also refer to Figure \autoref{libsoni}. A comprehensive API
+For an illustration of some core functionalities, we also refer to Figure \autoref{fig:libsoni}. A comprehensive API
 documentation of libsoni is publicly accessible through GitHub[^1]. Furthermore, the applications of core
 functionalities are illustrated by educational Jupyter notebooks as an integral part of libsoni, providing 
 illustrative code examples within concrete MIR scenarios.
 
 ![Illustration of some core functionalities provided by the Python toolbox libsoni. \textbf{(a)} Logo
 of libsoni. \textbf{(b)}  Sonification of F0 trajectories. \textbf{(c)}  Sonification of piano roll representations. 
-\textbf{(d)} Sonification of time–frequency representations.](teaser.pdf){#libsoni width="100%"}
+\textbf{(d)} Sonification of time–frequency representations.\label{fig:libsoni}](teaser.pdf)
 
 
 ## Triggered Sound Events (\texttt{libsoni.tse})
@@ -132,7 +132,7 @@ as a linear succession of musical tones expressing a particular musical idea. In
 (also called F0 values) representing the pitches of the tones. In real performances, these sequences often form complex 
 time--frequency patterns known as frequency trajectories, which may include continuous frequency glides (glissando) or 
 frequency modulations (vibrato). In libsoni, the F0 module allows for sonifying a sequence of frame-wise frequency 
-values that correspond to manually annotated or estimated F0 values (see also Figure \autoref{libsoni}b). 
+values that correspond to manually annotated or estimated F0 values (see also Figure \autoref{fig:libsoni}b). 
 This module offers a variety of adjustable parameters, allowing for the inclusion of additional partials to tonally 
 enrich the sonification, thereby generating sounds of different timbre. Moreover, users have the option to adjust the 
 amplitude of each predicted F0 value based on its confidence level, as provided by an F0 estimator. This allows for 
@@ -141,7 +141,7 @@ insights into the reliability of the predictions.
 ## Piano-Roll Representations (\texttt{libsoni.pianoroll})
 A symbolic score-based representation describes each note by parameters such as start time, duration, pitch, and other 
 attributes. This representation is closely related to MIDI encodings and is often visualized in the form of 
-two-dimensional piano-roll representations (see also Figure \autoref{libsoni}c). In these representations, time is 
+two-dimensional piano-roll representations (see also Figure \autoref{fig:libsoni}c). In these representations, time is 
 encoded on the horizontal axis, pitch on the vertical axis, and each note is represented by an axis-parallel rectangle 
 indicating onset, pitch, and duration. This representation is widely used in several MIR tasks, including automatic
 music transcription [@BenetosDDE19_MusicTranscription_SPM] und music score--audio music synchronization 
