@@ -286,7 +286,9 @@ def generate_tone_fm_synthesis(pitch: int = 69,
     assert 0 <= pitch <= 127, f'Pitch is out of range [0,127].'
 
     pitch_frequency = pitch_to_frequency(pitch=pitch, tuning_frequency=tuning_frequency)
-    generated_tone = np.sin(2 * np.pi * pitch_frequency * (np.arange(int(duration * fs))) / fs + modulation_amplitude * np.sin(2 * np.pi * pitch_frequency * modulation_rate_relative * (np.arange(int(duration * fs)))))
+    generated_tone = np.sin(2 * np.pi * pitch_frequency * (np.arange(int(duration * fs))) / fs +
+                            modulation_amplitude * np.sin(2 * np.pi * pitch_frequency * modulation_rate_relative *
+                                                          (np.arange(int(duration * fs)))))
     generated_tone = gain * fade_signal(signal=generated_tone, fs=fs, fading_duration=fading_duration)
 
     return generated_tone
