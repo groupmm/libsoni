@@ -6,7 +6,7 @@ with open('README.md', 'r') as fdesc:
 
 setup(
     name='libsoni',
-    version='1.0.0',
+    version='1.0.1',
     description='A Python Toolbox for Sonifying Music Annotations and Feature Representations',
     author='Yigitcan Özer, Leo Brütting, Simon Schwär, Meinard Müller',
     author_email='yigitcan.oezer@audiolabs-erlangen.de',
