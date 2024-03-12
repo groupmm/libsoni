@@ -46,12 +46,11 @@ melodic, and rhythmic aspects. Unlike existing software libraries focused on  cr
 libsoni is designed to meet the specific needs of MIR researchers and educators. It aims to simplify the process of 
 music exploration, promoting a more intuitive and efficient approach to data analysis by enabling users to interact with 
 their data in acoustically meaningful ways. As a result, libsoni not only improves the analytical capabilities of music
-scientists but also opens up new avenues for innovative music analysis and discovery.
-
-Furthermore, libsoni provides well-documented and stand-alone functions covering all essential building blocks crucial 
-for both sound generation and sonification, enabling users to efficiently apply and easily extend the methods. 
-Additionally, the toolbox includes educational Jupyter notebooks with illustrative code examples demonstrating the 
-application of sonification and visualization methods to deepen understanding within specific MIR scenarios.
+scientists but also opens up new avenues for innovative music analysis and discovery. Furthermore, libsoni provides 
+well-documented and stand-alone functions covering all essential building blocks crucial for both sound generation and 
+sonification, enabling users to efficiently apply and easily extend the methods. Additionally, the toolbox includes 
+educational Jupyter notebooks with illustrative code examples demonstrating the  application of sonification and 
+visualization methods to deepen understanding within specific MIR scenarios.
 
 
 # Statement of Need
@@ -95,16 +94,14 @@ Testing these methods, our experiments have revealed that current implementation
 event-based looping, resulting in excessively long runtimes. For instance, generating a click soundtrack for beat 
 annotations of 10-minute recordings can require impractically long processing times.
 
-In our Python toolbox, libsoni, we offer implementations of various sonification methods, including those 
-mentioned above. These implementations feature a coherent API and are based on straightforward methods that are 
-transparent and easy to understand. By utilizing efficient matrix-based implementations, the need for looping is 
-avoided, making them more efficient. Additionally, libsoni includes all essential components for sound synthesis, 
-operating as a standalone tool that can be easily extended and customized. The methods in libsoni enable
-interactivity, allowing for data manipulation and sonification, as well as the ability to alter feature 
-extraction or sonification techniques. While real-time capabilities are not currently included in libsoni,
-this could be a potential future extension. Hence, libsoni may not only be beneficial for MIR researchers but also for
-educators, students, composers, sound designers, and individuals exploring new musical concepts.
-
+In our Python toolbox, libsoni, we offer implementations of various sonification methods, including those mentioned
+above. These implementations feature a coherent API and are based on straightforward methods that are transparent and 
+easy to understand (ensuring a trade-off between efficiency and code readability). Additionally, libsoni includes all
+essential components for sound synthesis, operating as a standalone tool that can be easily extended and customized. 
+The methods in libsoni enable interactivity, allowing for data manipulation and sonification, as well as the ability 
+to alter feature extraction or sonification techniques. While real-time capabilities are not currently included in 
+libsoni, this could be a potential future extension. Hence, libsoni may not only be beneficial for MIR researchers
+but also for educators, students, composers, sound designers, and individuals exploring new musical concepts.
 
 # Core Functionalities
 In the following, we briefly describe some of the main modules included in the Python toolbox libsoni. 
@@ -112,6 +109,12 @@ For an illustration of some core functionalities, we also refer to Figure. A com
 documentation of libsoni is publicly accessible through GitHub[^1]. Furthermore, the applications of core
 functionalities are illustrated by educational Jupyter notebooks as an integral part of libsoni, providing 
 illustrative code examples within concrete MIR scenarios.
+
+![Illustration of some core functionalities provided by the Python toolbox libsoni. \textbf{(a)} Logo
+of libsoni. \textbf{(b)}  Sonification of F0 trajectories. \textbf{(c)}  Sonification of piano roll representations. \textbf{(d}  Soni-
+fication of time–frequency representations.](teaser.pdf){#libsoni width="100%"}
+
+
 
 ## Triggered Sound Events (\texttt{libsoni.tse})
 The Triggered Sound Events (TSE) module of libsoni contains various functions for the sonification of temporal events.
