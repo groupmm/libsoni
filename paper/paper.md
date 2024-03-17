@@ -77,9 +77,7 @@ For instance, people can readily perceive irregularities and subtle changes in r
 track converted into a sequence of click sounds. This ability is particularly valuable for MIR tasks such as beat 
 tracking and rhythm analysis. Moreover, transforming frequency trajectories into sound using sinusoidal models can 
 offer insights for tasks like estimating melody or separating singing voices. Furthermore, an auditory representation 
-of a chromagram provides listeners with an understanding of the harmony-related tonal information contained in an  
-audio signal. Therefore, by converting data into sound, sonification can reveal subtle audible details in music 
-that may not be immediately apparent within visual representations.
+of a chromagram provides listeners with an understanding of the harmony-related tonal information contained in an audio signal. Therefore, by converting data into sound, sonification can reveal subtle audible details in music that may not be immediately apparent within visual representations.
 
 In the MIR context, sonification methods have been employed to provide deeper insights into various music annotations 
 and feature representations. For instance, the Python package librosa [@McFeeRLEMBN15_librosa_Python] offers a function 
