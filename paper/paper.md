@@ -102,7 +102,7 @@ but also for educators, students, composers, sound designers, and individuals ex
 
 # Core Functionalities
 In the following, we briefly describe some of the main modules included in the Python toolbox libsoni. 
-For an illustration of some core functionalities, we also refer to Figure \autoref{fig:libsoni}. A comprehensive API
+For an illustration of some core functionalities, we also refer to \autoref{fig:libsoni}. A comprehensive API
 documentation of libsoni is publicly accessible through GitHub[^1]. Furthermore, the applications of core
 functionalities are illustrated by educational Jupyter notebooks as an integral part of libsoni, providing 
 illustrative code examples within concrete MIR scenarios.
@@ -132,7 +132,7 @@ as a linear succession of musical tones expressing a particular musical idea. In
 (also called F0 values) representing the pitches of the tones. In real performances, these sequences often form complex 
 time--frequency patterns known as frequency trajectories, which may include continuous frequency glides (glissando) or 
 frequency modulations (vibrato). In libsoni, the F0 module allows for sonifying a sequence of frame-wise frequency 
-values that correspond to manually annotated or estimated F0 values (see also Figure \autoref{fig:libsoni}b). 
+values that correspond to manually annotated or estimated F0 values (see also \autoref{fig:libsoni}b). 
 This module offers a variety of adjustable parameters, allowing for the inclusion of additional partials to tonally 
 enrich the sonification, thereby generating sounds of different timbre. Moreover, users have the option to adjust the 
 amplitude of each predicted F0 value based on its confidence level, as provided by an F0 estimator. This allows for 
@@ -141,13 +141,13 @@ insights into the reliability of the predictions.
 ## Piano-Roll Representations (\texttt{libsoni.pianoroll})
 A symbolic score-based representation describes each note by parameters such as start time, duration, pitch, and other 
 attributes. This representation is closely related to MIDI encodings and is often visualized in the form of 
-two-dimensional piano-roll representations (see also Figure \autoref{fig:libsoni}c). In these representations, time is 
+two-dimensional piano-roll representations (see also \autoref{fig:libsoni}c). In these representations, time is 
 encoded on the horizontal axis, pitch on the vertical axis, and each note is represented by an axis-parallel rectangle 
 indicating onset, pitch, and duration. This representation is widely used in several MIR tasks, including automatic
-music transcription [@BenetosDDE19_MusicTranscription_SPM] und music score--audio music synchronization 
+music transcription [@BenetosDDE19_MusicTranscription_SPM] and music score--audio music synchronization 
 [@Mueller15_FMP_SPRINGER]. The simplest method in libsoni to sonify piano-roll representations is based on 
 straightforward sinusoidal models (potentially enriched by harmonics). When the score information is synchronized 
-with a music recording (e.g., using alignment methods provided by the Sync Toolbox [@MuellerOKPD21_SyncToolbox_JOSS],
+with a music recording (e.g., using alignment methods provided by the Sync Toolbox [@MuellerOKPD21_SyncToolbox_JOSS]),
 libsoni enables the creation of a stereo signal with the sonification in one channel and the original recording in the 
 other channel. This setup provides an intuitive way to understand the accuracy for a range of musical analysis and
 transcription tasks. Furthermore, these sonifications may be superimposed with further onset-based stimuli provided by
@@ -187,8 +187,8 @@ bin is computationally expensive. To enhance efficiency, we integrated additiona
 multiprocessing, alongside a simpler function that uses a for loop.
 
 # Design Choices
-WWhen designing the Python toolbox libsoni, we had several objectives in mind. Firstly, we aimed to maintain close 
-connections with existing sonification methods provided in [@McFeeRLEMBN15_librosa_Python] and libfmp
+When designing the Python toolbox libsoni, we had several objectives in mind. Firstly, we aimed to maintain close 
+connections with existing sonification methods provided in @McFeeRLEMBN15_librosa_Python and libfmp
 [@MuellerZ21_libfmp_JOSS]. Secondly, we re-implemented and included all necessary components (e.g., sound generators 
 based on sinusoidal models and click sounds), even though similar basic functionality is available in librosa and 
 libfmp. By doing so, libsoni offers a coherent API along with convenient but easily modifiable parameter presets.
