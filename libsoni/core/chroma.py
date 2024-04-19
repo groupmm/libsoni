@@ -24,7 +24,7 @@ def sonify_chroma_vector(chroma_vector: np.ndarray,
 
     Parameters
     ----------
-    chroma_vector: np.ndarray
+    chroma_vector: np.ndarray (np.float32 / np.float64) [shape=(N, 12)]
         Chroma vector to sonify.
 
     pitch_range: Tuple[int, int], default = [20,108]
@@ -56,7 +56,7 @@ def sonify_chroma_vector(chroma_vector: np.ndarray,
 
     Returns
     -------
-    chroma_sonification: np.ndarray
+    chroma_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified chroma vector.
     """
 
@@ -108,7 +108,7 @@ def sonify_chromagram(chromagram: np.ndarray,
 
     Parameters
     ----------
-    chromagram: np.ndarray
+    chromagram: np.ndarray (np.float32 / np.float64) [shape=(N, 12)]
         Chromagram to sonify.
 
     H: int, default = 0
@@ -144,7 +144,7 @@ def sonify_chromagram(chromagram: np.ndarray,
 
     Returns
     -------
-    chroma_sonification: np.ndarray
+    chroma_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified chromagram.
     """
 

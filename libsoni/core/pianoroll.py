@@ -27,18 +27,18 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
     pianoroll_df: pd.DataFrame
         Dataframe containing pitch-event information.
 
-    partials: np.ndarray, default = [1]
+    partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]
         Array containing the desired partials of the fundamental frequencies for sonification.
         An array [1] leads to sonification with only the fundamental frequency,
         while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.
 
-    partials_amplitudes: np.ndarray, default = None
+    partials_amplitudes: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing the amplitudes for partials.
         An array [1,0.5] causes the first partial to have amplitude 1,
         while the second partial has amplitude 0.5.
         When not defined, the amplitudes for all partials are set to 1.
 
-    partials_phase_offsets: np.ndarray, default = None
+    partials_phase_offsets: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing the phase offsets for partials.
         When not defined, the phase offsets for all partials are set to 0.
 
@@ -62,7 +62,7 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
 
     Returns
     -------
-    pianoroll_sonification: np.ndarray
+    pianoroll_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified piano-roll.
     """
 
@@ -126,7 +126,7 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
 
     Returns
     -------
-    pianoroll_sonification: np.ndarray
+    pianoroll_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified waveform in form of a 1D Numpy array.
     """
 
@@ -170,7 +170,7 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
     pianoroll_df: pd.DataFrame
         Dataframe containing pitch-event information.
 
-    sample: np.ndarray
+    sample: np.ndarray (np.float32 / np.float64) [shape=(K, )]
         Sample to use for sonification.
 
     reference_pitch: int, default = 69
@@ -193,7 +193,7 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
 
     Returns
     -------
-    pianoroll_sonification: np.ndarray
+    pianoroll_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified piano-roll.
     """
 
@@ -268,7 +268,7 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
 
     Returns
     -------
-    pianoroll_sonification: np.ndarray
+    pianoroll_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified piano-roll.
     """
     pianoroll_df, pianoroll_sonification = __init_pianoroll_sonification(pianoroll_df, fs, sonification_duration)

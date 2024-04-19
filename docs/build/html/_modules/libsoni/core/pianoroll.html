@@ -107,18 +107,18 @@
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
 <span class="sd">        Dataframe containing pitch-event information.</span>
 
-<span class="sd">    partials: np.ndarray, default = [1]</span>
+<span class="sd">    partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</span>
 <span class="sd">        Array containing the desired partials of the fundamental frequencies for sonification.</span>
 <span class="sd">        An array [1] leads to sonification with only the fundamental frequency,</span>
 <span class="sd">        while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</span>
 
-<span class="sd">    partials_amplitudes: np.ndarray, default = None</span>
+<span class="sd">    partials_amplitudes: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</span>
 <span class="sd">        Array containing the amplitudes for partials.</span>
 <span class="sd">        An array [1,0.5] causes the first partial to have amplitude 1,</span>
 <span class="sd">        while the second partial has amplitude 0.5.</span>
 <span class="sd">        When not defined, the amplitudes for all partials are set to 1.</span>
 
-<span class="sd">    partials_phase_offsets: np.ndarray, default = None</span>
+<span class="sd">    partials_phase_offsets: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</span>
 <span class="sd">        Array containing the phase offsets for partials.</span>
 <span class="sd">        When not defined, the phase offsets for all partials are set to 0.</span>
 
@@ -142,7 +142,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pianoroll_sonification: np.ndarray</span>
+<span class="sd">    pianoroll_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified piano-roll.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -206,7 +206,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pianoroll_sonification: np.ndarray</span>
+<span class="sd">    pianoroll_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified waveform in form of a 1D Numpy array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -250,7 +250,7 @@
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
 <span class="sd">        Dataframe containing pitch-event information.</span>
 
-<span class="sd">    sample: np.ndarray</span>
+<span class="sd">    sample: np.ndarray (np.float32 / np.float64) [shape=(K, )]</span>
 <span class="sd">        Sample to use for sonification.</span>
 
 <span class="sd">    reference_pitch: int, default = 69</span>
@@ -273,7 +273,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pianoroll_sonification: np.ndarray</span>
+<span class="sd">    pianoroll_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified piano-roll.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -348,7 +348,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    pianoroll_sonification: np.ndarray</span>
+<span class="sd">    pianoroll_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified piano-roll.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pianoroll_df</span><span class="p">,</span> <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">__init_pianoroll_sonification</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">sonification_duration</span><span class="p">)</span>

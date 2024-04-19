@@ -99,7 +99,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    time_positions: np.ndarray</span>
+<span class="sd">    time_positions: np.ndarray (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Array with time positions for clicks.</span>
 
 <span class="sd">    click_pitch: int, default = 69</span>
@@ -130,7 +130,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    tse_sonification: np.ndarray</span>
+<span class="sd">    tse_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified time positions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -174,10 +174,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    time_positions: np.ndarray</span>
+<span class="sd">    time_positions: np.ndarray (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Array with time positions for clicks.</span>
 
-<span class="sd">    sample: np.ndarray</span>
+<span class="sd">    sample: np.ndarray (np.float32 / np.float64) [shape=(K, )]</span>
 <span class="sd">        Sample to be used.</span>
 
 <span class="sd">    offset_relative: float, default = 0.0</span>
@@ -199,7 +199,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    tse_sonification: np.ndarray</span>
+<span class="sd">    tse_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified time positions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sample_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">)</span>
@@ -274,7 +274,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    tse_sonification: np.ndarray</span>
+<span class="sd">    tse_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified time positions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -336,7 +336,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    tse_sonification: np.ndarray</span>
+<span class="sd">    tse_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified waveform in form of a 1D Numpy array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -381,7 +381,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    sound_event: np.ndarray</span>
+<span class="sd">    sound_event: np.ndarray (np.float32 / np.float64) [shape=(K, )]</span>
 <span class="sd">        A click signal or sample loaded from the disk</span>
 
 <span class="sd">    offset_relative: float, default = 0.0</span>
@@ -389,7 +389,7 @@
 <span class="sd">        0 indicates that the beginning of the sound event is at the time position,</span>
 <span class="sd">        1 indicates the ending of the sound event corresponds to the time position.:</span>
 
-<span class="sd">    time_positions: np.ndarray</span>
+<span class="sd">    time_positions: np.ndarray  (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Array with time positions of the annotations.</span>
 
 <span class="sd">    num_samples: int</span>
@@ -406,7 +406,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    tse_sonification: np.ndarray</span>
+<span class="sd">    tse_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified signal with multiple sound events, given the time positions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

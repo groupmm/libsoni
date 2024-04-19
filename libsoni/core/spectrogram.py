@@ -39,7 +39,7 @@ def sonify_spectrogram(spectrogram: np.ndarray,
 
     Returns
     -------
-    spectrogram_sonification: np.ndarray
+    spectrogram_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified spectrogram.
     """
 
@@ -89,13 +89,13 @@ def sonify_spectrogram_multi(spectrogram: np.ndarray,
 
     Parameters
     ----------
-    spectrogram: np.ndarray
+    sample: np.ndarray (np.float32 / np.float64) [shape=(N, K)]
         Spectrogram to be sonified.
 
-    frequency_coefficients: np.ndarray, default = None
+    frequency_coefficients: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing frequency coefficients, in Hertz.
 
-    time_coefficients: np.ndarray, default = None
+    time_coefficients: np.ndarray (np.float32 / np.float64) [shape=(K, )], default = None
         Array containing time coefficients, in seconds.
 
     sonification_duration: int, default = None
@@ -111,7 +111,7 @@ def sonify_spectrogram_multi(spectrogram: np.ndarray,
         Number of processes
     Returns
     -------
-    spectrogram_sonification: np.ndarray
+    spectrogram_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified spectrogram.
     """
 

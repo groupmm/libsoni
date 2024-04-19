@@ -30,7 +30,7 @@ def generate_click(pitch: int = 69,
 
     Returns
     -------
-    click : np.ndarray
+    click : np.ndarray (np.float32) [shape=(M, )]
         Generated click signal.
     """
 
@@ -74,7 +74,7 @@ def generate_sinusoid(frequency: float = 440.0,
 
     Returns
     -------
-    sinusoid: np.ndarray
+    sinusoid: np.ndarray (np.float32) [shape=(M, )]
         Generated sinusoid.
     """
     sinusoid = amplitude * np.sin((2 * np.pi * frequency * (np.arange(int(duration * fs)) / fs)) + phase)
@@ -134,7 +134,7 @@ def generate_shepard_tone(pitch_class: int = 0,
 
     Returns
     -------
-    shepard_tone: np.ndarray
+    shepard_tone: np.ndarray (np.float32) [shape=(M, )]
         Generated shepard tone.
     """
 
@@ -184,18 +184,18 @@ def generate_tone_additive_synthesis(pitch: int = 69,
     pitch: int, default = 69
         Pitch of the generated tone.
 
-    partials: np.ndarray, default = [1]
+    partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]
         Array containing the desired partials of the fundamental frequencies for sonification.
         An array [1] leads to sonification with only the fundamental frequency,
         while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.
 
-    partials_amplitudes: np.ndarray, default = None
+    partials_amplitudes: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing the amplitudes for partials.
         An array [1,0.5] causes the first partial to have amplitude 1,
         while the second partial has amplitude 0.5.
         When not defined, the amplitudes for all partials are set to 1.
 
-    partials_phase_offsets: np.ndarray, default = None
+    partials_phase_offsets: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing the phase offsets for partials.
         When not defined, the phase offsets for all partials are set to 0.
 
@@ -216,10 +216,9 @@ def generate_tone_additive_synthesis(pitch: int = 69,
 
     Returns
     -------
-    generated_tone: np.ndarray
+    generated_tone: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Generated tone signal.
     """
-
     assert 0 <= pitch <= 127, f'Pitch is out of range [0,127].'
 
     partials_amplitudes = np.ones(len(partials)) if partials_amplitudes is None else partials_amplitudes
@@ -234,9 +233,9 @@ def generate_tone_additive_synthesis(pitch: int = 69,
     for partial, partial_amplitude, partials_phase_offset in zip(partials, partials_amplitudes, partials_phase_offsets):
         generated_tone += partial_amplitude * np.sin(2 * np.pi * pitch_frequency * partial * (np.arange(int(duration * fs)) / fs) + partials_phase_offset)
 
-    generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_duration=fading_duration)
+    generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_duration=fading_duration) * gain
 
-    return generated_tone * gain
+    return generated_tone
 
 
 def generate_tone_fm_synthesis(pitch: int = 69,
@@ -279,7 +278,7 @@ def generate_tone_fm_synthesis(pitch: int = 69,
 
     Returns
     -------
-    generated_tone: np.ndarray
+    generated_tone: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Generated tone signal.
     """
 
@@ -310,7 +309,7 @@ def generate_tone_wavetable(pitch: int = 69,
     pitch: int, default = 69
         Pitch of the synthesized tone.
 
-    wavetable: np.ndarray, default = None
+    wavetable: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Wavetable to be resampled.
 
     gain: float, default = 1.0
@@ -330,7 +329,7 @@ def generate_tone_wavetable(pitch: int = 69,
 
     Returns
     -------
-    generated_tone: np.ndarray
+    generated_tone: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Generated signal
     """
 
@@ -365,23 +364,23 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
 
     Parameters
     ----------
-    frequency_vector: np.ndarray
+    frequency_vector: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Array containing sample-wise instantaneous frequencies.
 
-    gain_vector: np.ndarray, default = None
+    gain_vector: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing sample-wise gains.
 
-    partials: np.ndarray, default = [1]
+    partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]
         An array containing the desired partials of the fundamental frequencies for sonification.
             An array [1] leads to sonification with only the fundamental frequency core,
             while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.
 
-    partials_amplitudes: np.ndarray, default = [1]
+    partials_amplitudes: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]
         Array containing the amplitudes for partials.
             An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
             while the sinusoid with frequency 2*core has amplitude 0.5.
 
-    partials_phase_offsets: np.ndarray, default = [0]
+    partials_phase_offsets: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [0]
         Array containing the phase offsets for partials.
 
     fading_duration: float, default: 0.01
@@ -392,7 +391,7 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
 
     Returns
     -------
-    generated_tone: np.ndarray
+    generated_tone: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Generated signal
     """
     partials_amplitudes = np.ones(len(partials)) if partials_amplitudes is None else partials_amplitudes

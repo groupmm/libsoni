@@ -100,7 +100,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    signal: np.ndarray</span>
+<span class="sd">    signal: np.ndarray (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Signal to be faded</span>
 
 <span class="sd">    fs: int, default = 22050</span>
@@ -111,7 +111,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    normalized_signal: np.ndarray</span>
+<span class="sd">    normalized_signal: np.ndarray (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Normalized signal</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fading_duration</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
@@ -131,12 +131,12 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    signal: np.ndarray</span>
+<span class="sd">    signal: np.ndarray (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Signal to be normalized</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    normalized_signal: np.ndarray</span>
+<span class="sd">    normalized_signal: np.ndarray (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Normalized signal</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">normalized_signal</span> <span class="o">=</span> <span class="n">signal</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">signal</span><span class="p">))</span>
@@ -157,7 +157,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    sample: np.ndarray</span>
+<span class="sd">    sample: np.ndarray (np.float32 / np.float64) [shape=(K, )]</span>
 <span class="sd">        Sample to be warped.</span>
 
 <span class="sd">    reference_pitch: int</span>
@@ -180,7 +180,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    warped_sample: np.ndarray</span>
+<span class="sd">    warped_sample: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Warped sample.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Compute pitch difference</span>
@@ -281,10 +281,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    sonification: np.ndarray</span>
+<span class="sd">    sonification: np.ndarray (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Sonification</span>
 
-<span class="sd">    original_audio: np.ndarray</span>
+<span class="sd">    original_audio: np.ndarray (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Original audio</span>
 
 <span class="sd">    gain_lin_sonification: float, default = 1.0</span>
@@ -304,7 +304,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    mixed_audio : np.ndarray</span>
+<span class="sd">    stereo_audio : np.ndarray (np.float32 / np.float64) [shape=(N, 2)]</span>
 <span class="sd">        Mix of the signals</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">panning</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Panning must a value between 0.0 and 1.0.&#39;</span>
@@ -351,7 +351,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    weights: np.ndarray</span>
+<span class="sd">    weights: (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Input weights</span>
 
 <span class="sd">    fading_samples: int</span>
@@ -359,7 +359,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    weights_smoothed: np.ndarray</span>
+<span class="sd">    weights_smoothed: np.ndarray (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Smoothed weights</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

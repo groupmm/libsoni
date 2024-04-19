@@ -110,7 +110,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    click : np.ndarray</span>
+<span class="sd">    click : np.ndarray (np.float32) [shape=(M, )]</span>
 <span class="sd">        Generated click signal.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -154,7 +154,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    sinusoid: np.ndarray</span>
+<span class="sd">    sinusoid: np.ndarray (np.float32) [shape=(M, )]</span>
 <span class="sd">        Generated sinusoid.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sinusoid</span> <span class="o">=</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">frequency</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">duration</span> <span class="o">*</span> <span class="n">fs</span><span class="p">))</span> <span class="o">/</span> <span class="n">fs</span><span class="p">))</span> <span class="o">+</span> <span class="n">phase</span><span class="p">)</span>
@@ -214,7 +214,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    shepard_tone: np.ndarray</span>
+<span class="sd">    shepard_tone: np.ndarray (np.float32) [shape=(M, )]</span>
 <span class="sd">        Generated shepard tone.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -264,18 +264,18 @@
 <span class="sd">    pitch: int, default = 69</span>
 <span class="sd">        Pitch of the generated tone.</span>
 
-<span class="sd">    partials: np.ndarray, default = [1]</span>
+<span class="sd">    partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</span>
 <span class="sd">        Array containing the desired partials of the fundamental frequencies for sonification.</span>
 <span class="sd">        An array [1] leads to sonification with only the fundamental frequency,</span>
 <span class="sd">        while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</span>
 
-<span class="sd">    partials_amplitudes: np.ndarray, default = None</span>
+<span class="sd">    partials_amplitudes: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</span>
 <span class="sd">        Array containing the amplitudes for partials.</span>
 <span class="sd">        An array [1,0.5] causes the first partial to have amplitude 1,</span>
 <span class="sd">        while the second partial has amplitude 0.5.</span>
 <span class="sd">        When not defined, the amplitudes for all partials are set to 1.</span>
 
-<span class="sd">    partials_phase_offsets: np.ndarray, default = None</span>
+<span class="sd">    partials_phase_offsets: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</span>
 <span class="sd">        Array containing the phase offsets for partials.</span>
 <span class="sd">        When not defined, the phase offsets for all partials are set to 0.</span>
 
@@ -296,10 +296,9 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    generated_tone: np.ndarray</span>
+<span class="sd">    generated_tone: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Generated tone signal.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">pitch</span> <span class="o">&lt;=</span> <span class="mi">127</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Pitch is out of range [0,127].&#39;</span>
 
     <span class="n">partials_amplitudes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">partials</span><span class="p">))</span> <span class="k">if</span> <span class="n">partials_amplitudes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">partials_amplitudes</span>
@@ -314,9 +313,9 @@
     <span class="k">for</span> <span class="n">partial</span><span class="p">,</span> <span class="n">partial_amplitude</span><span class="p">,</span> <span class="n">partials_phase_offset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">partials</span><span class="p">,</span> <span class="n">partials_amplitudes</span><span class="p">,</span> <span class="n">partials_phase_offsets</span><span class="p">):</span>
         <span class="n">generated_tone</span> <span class="o">+=</span> <span class="n">partial_amplitude</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">pitch_frequency</span> <span class="o">*</span> <span class="n">partial</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">duration</span> <span class="o">*</span> <span class="n">fs</span><span class="p">))</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span> <span class="o">+</span> <span class="n">partials_phase_offset</span><span class="p">)</span>
 
-    <span class="n">generated_tone</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">=</span><span class="n">generated_tone</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">)</span>
+    <span class="n">generated_tone</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">=</span><span class="n">generated_tone</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">)</span> <span class="o">*</span> <span class="n">gain</span>
 
-    <span class="k">return</span> <span class="n">generated_tone</span> <span class="o">*</span> <span class="n">gain</span></div>
+    <span class="k">return</span> <span class="n">generated_tone</span></div>
 
 
 <div class="viewcode-block" id="generate_tone_fm_synthesis"><a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_tone_fm_synthesis">[docs]</a><span class="k">def</span> <span class="nf">generate_tone_fm_synthesis</span><span class="p">(</span><span class="n">pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
@@ -359,7 +358,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    generated_tone: np.ndarray</span>
+<span class="sd">    generated_tone: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Generated tone signal.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -390,7 +389,7 @@
 <span class="sd">    pitch: int, default = 69</span>
 <span class="sd">        Pitch of the synthesized tone.</span>
 
-<span class="sd">    wavetable: np.ndarray, default = None</span>
+<span class="sd">    wavetable: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</span>
 <span class="sd">        Wavetable to be resampled.</span>
 
 <span class="sd">    gain: float, default = 1.0</span>
@@ -410,7 +409,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    generated_tone: np.ndarray</span>
+<span class="sd">    generated_tone: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Generated signal</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -445,23 +444,23 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    frequency_vector: np.ndarray</span>
+<span class="sd">    frequency_vector: np.ndarray (np.float32 / np.float64) [shape=(N, )]</span>
 <span class="sd">        Array containing sample-wise instantaneous frequencies.</span>
 
-<span class="sd">    gain_vector: np.ndarray, default = None</span>
+<span class="sd">    gain_vector: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</span>
 <span class="sd">        Array containing sample-wise gains.</span>
 
-<span class="sd">    partials: np.ndarray, default = [1]</span>
+<span class="sd">    partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</span>
 <span class="sd">        An array containing the desired partials of the fundamental frequencies for sonification.</span>
 <span class="sd">            An array [1] leads to sonification with only the fundamental frequency core,</span>
 <span class="sd">            while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.</span>
 
-<span class="sd">    partials_amplitudes: np.ndarray, default = [1]</span>
+<span class="sd">    partials_amplitudes: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</span>
 <span class="sd">        Array containing the amplitudes for partials.</span>
 <span class="sd">            An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,</span>
 <span class="sd">            while the sinusoid with frequency 2*core has amplitude 0.5.</span>
 
-<span class="sd">    partials_phase_offsets: np.ndarray, default = [0]</span>
+<span class="sd">    partials_phase_offsets: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [0]</span>
 <span class="sd">        Array containing the phase offsets for partials.</span>
 
 <span class="sd">    fading_duration: float, default: 0.01</span>
@@ -472,7 +471,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    generated_tone: np.ndarray</span>
+<span class="sd">    generated_tone: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Generated signal</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">partials_amplitudes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">partials</span><span class="p">))</span> <span class="k">if</span> <span class="n">partials_amplitudes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">partials_amplitudes</span>
