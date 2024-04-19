@@ -101,24 +101,24 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    time_f0: np.ndarray</span>
+<span class="sd">    time_f0: np.ndarray  (np.float32 / np.float64) [shape=(N, 2)]</span>
 <span class="sd">        2D array of time positions and f0s.</span>
 
-<span class="sd">    gains: np.ndarray, default = None</span>
+<span class="sd">    gains: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</span>
 <span class="sd">        Array containing gain values for f0 values.</span>
 
-<span class="sd">    partials: np.ndarray, default = [1]</span>
+<span class="sd">    partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</span>
 <span class="sd">        Array containing the desired partials of the fundamental frequencies for sonification.</span>
 <span class="sd">        An array [1] leads to sonification with only the fundamental frequency,</span>
 <span class="sd">        while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</span>
 
-<span class="sd">    partials_amplitudes: np.ndarray, default = None</span>
+<span class="sd">    partials_amplitudes: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</span>
 <span class="sd">        Array containing the amplitudes for partials.</span>
 <span class="sd">        An array [1,0.5] causes the first partial to have amplitude 1,</span>
 <span class="sd">        while the second partial has amplitude 0.5.</span>
 <span class="sd">        If None, the amplitudes for all partials are set to 1.</span>
 
-<span class="sd">    partials_phase_offsets: np.ndarray, default = None</span>
+<span class="sd">    partials_phase_offsets: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</span>
 <span class="sd">        Array containing the phase offsets for partials.</span>
 <span class="sd">        When not defined, the phase offsets for all partials are set to 0.</span>
 
@@ -136,7 +136,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    f0_sonification: np.ndarray</span>
+<span class="sd">    f0_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified f0-trajectory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">gains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>

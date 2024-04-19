@@ -98,13 +98,13 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>signal</strong> (<em>np.ndarray</em>) – Signal to be faded</p></li>
+<li><p><strong>signal</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )]</em>) – Signal to be faded</p></li>
 <li><p><strong>fs</strong> (<em>int, default = 22050</em>) – sampling rate</p></li>
 <li><p><strong>fading_duration</strong> (<em>float, default = 0</em>) – duration of fade-in and fade-out, in seconds</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>normalized_signal</strong> (<em>np.ndarray</em>) – Normalized signal</p>
+<dd class="field-even"><p><strong>normalized_signal</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )]</em>) – Normalized signal</p>
 </dd>
 </dl>
 </dd></dl>
@@ -116,8 +116,8 @@
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul>
-<li><p><strong>sonification</strong> (<em>np.ndarray</em>) – Sonification</p></li>
-<li><p><strong>original_audio</strong> (<em>np.ndarray</em>) – Original audio</p></li>
+<li><p><strong>sonification</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )]</em>) – Sonification</p></li>
+<li><p><strong>original_audio</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )]</em>) – Original audio</p></li>
 <li><p><strong>gain_lin_sonification</strong> (<em>float, default = 1.0</em>) – linear gain for sonification</p></li>
 <li><p><strong>gain_lin_original_audio</strong> (<em>float, default = 1.0</em>) – linear gain for original audio</p></li>
 <li><p><strong>panning</strong> (<em>float, default = 1.0</em>) –</p>
@@ -132,7 +132,7 @@ panning = 0.0 means sonification on left and original audio on right channel</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>mixed_audio</strong> (<em>np.ndarray</em>) – Mix of the signals</p>
+<dd class="field-even"><p><strong>stereo_audio</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, 2)]</em>) – Mix of the signals</p>
 </dd>
 </dl>
 </dd></dl>
@@ -143,10 +143,10 @@ panning = 0.0 means sonification on left and original audio on right channel</p>
 <dd><p>Max-normalize audio signal</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>signal</strong> (<em>np.ndarray</em>) – Signal to be normalized</p>
+<dd class="field-odd"><p><strong>signal</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )]</em>) – Signal to be normalized</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>normalized_signal</strong> (<em>np.ndarray</em>) – Normalized signal</p>
+<dd class="field-even"><p><strong>normalized_signal</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )]</em>) – Normalized signal</p>
 </dd>
 </dl>
 </dd></dl>
@@ -176,12 +176,12 @@ panning = 0.0 means sonification on left and original audio on right channel</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>weights</strong> (<em>np.ndarray</em>) – Input weights</p></li>
+<li><p><strong>weights</strong> (<em>(np.float32 / np.float64) [shape=(N, )]</em>) – Input weights</p></li>
 <li><p><strong>fading_samples</strong> (<em>int</em>) – Number of samples for fade-in/out.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>weights_smoothed</strong> (<em>np.ndarray</em>) – Smoothed weights</p>
+<dd class="field-even"><p><strong>weights_smoothed</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )]</em>) – Smoothed weights</p>
 </dd>
 </dl>
 </dd></dl>
@@ -223,7 +223,7 @@ the provided sample, the returned signal gets zero-padded at the end.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sample</strong> (<em>np.ndarray</em>) – Sample to be warped.</p></li>
+<li><p><strong>sample</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(K, )]</em>) – Sample to be warped.</p></li>
 <li><p><strong>reference_pitch</strong> (<em>int</em>) – Reference pitch for the given sample.</p></li>
 <li><p><strong>target_pitch</strong> (<em>int</em>) – Target pitch for the warped sample.</p></li>
 <li><p><strong>target_duration_sec</strong> (<em>float</em>) – Duration, given in seconds, for the returned signal.</p></li>
@@ -233,7 +233,7 @@ the provided sample, the returned signal gets zero-padded at the end.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>warped_sample</strong> (<em>np.ndarray</em>) – Warped sample.</p>
+<dd class="field-even"><p><strong>warped_sample</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Warped sample.</p>
 </dd>
 </dl>
 </dd></dl>

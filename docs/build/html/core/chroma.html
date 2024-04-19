@@ -106,7 +106,7 @@ at which octave the amplitude of the corresponding sinusoid is 0.5.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>chroma_vector</strong> (<em>np.ndarray</em>) – Chroma vector to sonify.</p></li>
+<li><p><strong>chroma_vector</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, 12)]</em>) – Chroma vector to sonify.</p></li>
 <li><p><strong>pitch_range</strong> (<em>Tuple[int, int], default = [20,108]</em>) – Determines the pitches to encounter for shepard tones.</p></li>
 <li><p><strong>filter</strong> (<em>bool, default: False</em>) – Enables filtering of shepard tones.</p></li>
 <li><p><strong>f_center</strong> (<em>float, default: 440.0</em>) – Determines filter center frequency, in Hertz.</p></li>
@@ -119,7 +119,7 @@ at which octave the amplitude of the corresponding sinusoid is 0.5.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>chroma_sonification</strong> (<em>np.ndarray</em>) – Sonified chroma vector.</p>
+<dd class="field-even"><p><strong>chroma_sonification</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Sonified chroma vector.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -135,7 +135,7 @@ while the octave cutoff determines at which octave the amplitude of the correspo
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>chromagram</strong> (<em>np.ndarray</em>) – Chromagram to sonify.</p></li>
+<li><p><strong>chromagram</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, 12)]</em>) – Chromagram to sonify.</p></li>
 <li><p><strong>H</strong> (<em>int, default = 0</em>) – Hop size of STFT used to calculate chromagram.</p></li>
 <li><p><strong>pitch_range</strong> (<em>Tuple[int, int], default = [20,108]</em>) – Determines the pitch range to encounter for shepard tones.</p></li>
 <li><p><strong>filter</strong> (<em>bool, default: False</em>) – Enables filtering of shepard tones.</p></li>
@@ -150,7 +150,7 @@ For octave_cutoff of 1, the magnitude of the filter reaches 0.5 at half the cent
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>chroma_sonification</strong> (<em>np.ndarray</em>) – Sonified chromagram.</p>
+<dd class="field-even"><p><strong>chroma_sonification</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Sonified chromagram.</p>
 </dd>
 </dl>
 </dd></dl>

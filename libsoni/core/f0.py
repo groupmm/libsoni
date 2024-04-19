@@ -21,24 +21,24 @@ def sonify_f0(time_f0: np.ndarray,
 
     Parameters
     ----------
-    time_f0: np.ndarray
+    time_f0: np.ndarray  (np.float32 / np.float64) [shape=(N, 2)]
         2D array of time positions and f0s.
 
-    gains: np.ndarray, default = None
+    gains: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing gain values for f0 values.
 
-    partials: np.ndarray, default = [1]
+    partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]
         Array containing the desired partials of the fundamental frequencies for sonification.
         An array [1] leads to sonification with only the fundamental frequency,
         while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.
 
-    partials_amplitudes: np.ndarray, default = None
+    partials_amplitudes: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing the amplitudes for partials.
         An array [1,0.5] causes the first partial to have amplitude 1,
         while the second partial has amplitude 0.5.
         If None, the amplitudes for all partials are set to 1.
 
-    partials_phase_offsets: np.ndarray, default = None
+    partials_phase_offsets: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing the phase offsets for partials.
         When not defined, the phase offsets for all partials are set to 0.
 
@@ -56,7 +56,7 @@ def sonify_f0(time_f0: np.ndarray,
 
     Returns
     -------
-    f0_sonification: np.ndarray
+    f0_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified f0-trajectory.
     """
     if gains is not None:

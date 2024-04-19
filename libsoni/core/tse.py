@@ -19,7 +19,7 @@ def sonify_tse_clicks(time_positions: np.ndarray = None,
 
     Parameters
     ----------
-    time_positions: np.ndarray
+    time_positions: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Array with time positions for clicks.
 
     click_pitch: int, default = 69
@@ -50,7 +50,7 @@ def sonify_tse_clicks(time_positions: np.ndarray = None,
 
     Returns
     -------
-    tse_sonification: np.ndarray
+    tse_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified time positions.
     """
 
@@ -94,10 +94,10 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
 
     Parameters
     ----------
-    time_positions: np.ndarray
+    time_positions: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Array with time positions for clicks.
 
-    sample: np.ndarray
+    sample: np.ndarray (np.float32 / np.float64) [shape=(K, )]
         Sample to be used.
 
     offset_relative: float, default = 0.0
@@ -119,7 +119,7 @@ def sonify_tse_sample(time_positions: np.ndarray = None,
 
     Returns
     -------
-    tse_sonification: np.ndarray
+    tse_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified time positions.
     """
     sample_len = len(sample)
@@ -194,7 +194,7 @@ def sonify_tse_multiple_clicks(times_pitches: List[Tuple[np.ndarray, int]] = Non
 
     Returns
     -------
-    tse_sonification: np.ndarray
+    tse_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified time positions.
     """
 
@@ -256,7 +256,7 @@ def sonify_tse_multiple_samples(times_samples: List[Tuple[np.ndarray, np.ndarray
 
     Returns
     -------
-    tse_sonification: np.ndarray
+    tse_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified waveform in form of a 1D Numpy array.
     """
 
@@ -301,7 +301,7 @@ def __sonify_tse_with_sound_event(sound_event: np.ndarray,
 
     Parameters
     ----------
-    sound_event: np.ndarray
+    sound_event: np.ndarray (np.float32 / np.float64) [shape=(K, )]
         A click signal or sample loaded from the disk
 
     offset_relative: float, default = 0.0
@@ -309,7 +309,7 @@ def __sonify_tse_with_sound_event(sound_event: np.ndarray,
         0 indicates that the beginning of the sound event is at the time position,
         1 indicates the ending of the sound event corresponds to the time position.:
 
-    time_positions: np.ndarray
+    time_positions: np.ndarray  (np.float32 / np.float64) [shape=(N, )]
         Array with time positions of the annotations.
 
     num_samples: int
@@ -326,7 +326,7 @@ def __sonify_tse_with_sound_event(sound_event: np.ndarray,
 
     Returns
     -------
-    tse_sonification: np.ndarray
+    tse_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified signal with multiple sound events, given the time positions
     """
 

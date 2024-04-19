@@ -1,0 +1,15 @@
+ipython<8.0.0,>=7.8.0
+librosa<1.0.0,>=0.8.0
+matplotlib<4.0.0,>=3.1.0
+numpy<2.0.0,>=1.17.0
+pandas<2.0.0,>=1.0.0
+pysoundfile<1.0.0,>=0.9.0
+scipy<2.0.0,>=1.7.0
+libfmp<2.0.0,>=1.2.0
+
+[docs]
+sphinx==6.2.*
+sphinx_rtd_theme==1.2.*
+
+[tests]
+pytest==6.2.*

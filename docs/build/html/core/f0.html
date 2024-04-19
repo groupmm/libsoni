@@ -104,16 +104,16 @@ The parameters partials, partials_amplitudes and partials_phase_offsets can be u
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_f0</strong> (<em>np.ndarray</em>) – 2D array of time positions and f0s.</p></li>
-<li><p><strong>gains</strong> (<em>np.ndarray, default = None</em>) – Array containing gain values for f0 values.</p></li>
-<li><p><strong>partials</strong> (<em>np.ndarray, default = [1]</em>) – Array containing the desired partials of the fundamental frequencies for sonification.
+<li><p><strong>time_f0</strong> (<em>np.ndarray  (np.float32 / np.float64) [shape=(N, 2)]</em>) – 2D array of time positions and f0s.</p></li>
+<li><p><strong>gains</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</em>) – Array containing gain values for f0 values.</p></li>
+<li><p><strong>partials</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</em>) – Array containing the desired partials of the fundamental frequencies for sonification.
 An array [1] leads to sonification with only the fundamental frequency,
 while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</p></li>
-<li><p><strong>partials_amplitudes</strong> (<em>np.ndarray, default = None</em>) – Array containing the amplitudes for partials.
+<li><p><strong>partials_amplitudes</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</em>) – Array containing the amplitudes for partials.
 An array [1,0.5] causes the first partial to have amplitude 1,
 while the second partial has amplitude 0.5.
 If None, the amplitudes for all partials are set to 1.</p></li>
-<li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray, default = None</em>) – Array containing the phase offsets for partials.
+<li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</em>) – Array containing the phase offsets for partials.
 When not defined, the phase offsets for all partials are set to 0.</p></li>
 <li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Determines duration of sonification, in samples.</p></li>
 <li><p><strong>fading_duration</strong> (<em>float, default = 0.05</em>) – Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</p></li>
@@ -122,7 +122,7 @@ When not defined, the phase offsets for all partials are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>f0_sonification</strong> (<em>np.ndarray</em>) – Sonified f0-trajectory.</p>
+<dd class="field-even"><p><strong>f0_sonification</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Sonified f0-trajectory.</p>
 </dd>
 </dl>
 </dd></dl>

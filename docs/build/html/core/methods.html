@@ -115,7 +115,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>click</strong> (<em>np.ndarray</em>) – Generated click signal.</p>
+<dd class="field-even"><p><strong>click</strong> (<em>np.ndarray (np.float32) [shape=(M, )]</em>) – Generated click signal.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -144,7 +144,7 @@ while the octave cutoff determines at which octave the amplitude of the correspo
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>shepard_tone</strong> (<em>np.ndarray</em>) – Generated shepard tone.</p>
+<dd class="field-even"><p><strong>shepard_tone</strong> (<em>np.ndarray (np.float32) [shape=(M, )]</em>) – Generated shepard tone.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -165,7 +165,7 @@ while the octave cutoff determines at which octave the amplitude of the correspo
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>sinusoid</strong> (<em>np.ndarray</em>) – Generated sinusoid.</p>
+<dd class="field-even"><p><strong>sinusoid</strong> (<em>np.ndarray (np.float32) [shape=(M, )]</em>) – Generated sinusoid.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -179,14 +179,14 @@ while the octave cutoff determines at which octave the amplitude of the correspo
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pitch</strong> (<em>int, default = 69</em>) – Pitch of the generated tone.</p></li>
-<li><p><strong>partials</strong> (<em>np.ndarray, default = [1]</em>) – Array containing the desired partials of the fundamental frequencies for sonification.
+<li><p><strong>partials</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</em>) – Array containing the desired partials of the fundamental frequencies for sonification.
 An array [1] leads to sonification with only the fundamental frequency,
 while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</p></li>
-<li><p><strong>partials_amplitudes</strong> (<em>np.ndarray, default = None</em>) – Array containing the amplitudes for partials.
+<li><p><strong>partials_amplitudes</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</em>) – Array containing the amplitudes for partials.
 An array [1,0.5] causes the first partial to have amplitude 1,
 while the second partial has amplitude 0.5.
 When not defined, the amplitudes for all partials are set to 1.</p></li>
-<li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray, default = None</em>) – Array containing the phase offsets for partials.
+<li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</em>) – Array containing the phase offsets for partials.
 When not defined, the phase offsets for all partials are set to 0.</p></li>
 <li><p><strong>gain</strong> (<em>float, default = 1.0</em>) – Gain of generated tone.</p></li>
 <li><p><strong>duration</strong> (<em>float, default: 1.0</em>) – Determines duration of shepard tone, given in seconds.</p></li>
@@ -196,7 +196,7 @@ When not defined, the phase offsets for all partials are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>generated_tone</strong> (<em>np.ndarray</em>) – Generated tone signal.</p>
+<dd class="field-even"><p><strong>generated_tone</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Generated tone signal.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -220,7 +220,7 @@ When not defined, the phase offsets for all partials are set to 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>generated_tone</strong> (<em>np.ndarray</em>) – Generated tone signal.</p>
+<dd class="field-even"><p><strong>generated_tone</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Generated tone signal.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,29 +233,29 @@ When not defined, the phase offsets for all partials are set to 0.</p></li>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul>
-<li><p><strong>frequency_vector</strong> (<em>np.ndarray</em>) – Array containing sample-wise instantaneous frequencies.</p></li>
-<li><p><strong>gain_vector</strong> (<em>np.ndarray, default = None</em>) – Array containing sample-wise gains.</p></li>
-<li><p><strong>partials</strong> (<em>np.ndarray, default = [1]</em>) –</p>
+<li><p><strong>frequency_vector</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )]</em>) – Array containing sample-wise instantaneous frequencies.</p></li>
+<li><p><strong>gain_vector</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</em>) – Array containing sample-wise gains.</p></li>
+<li><p><strong>partials</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</em>) –</p>
 <dl class="simple">
 <dt>An array containing the desired partials of the fundamental frequencies for sonification.</dt><dd><p>An array [1] leads to sonification with only the fundamental frequency core,
 while an array [1,2] causes sonification with the fundamental frequency and twice the fundamental frequency.</p>
 </dd>
 </dl>
 </li>
-<li><p><strong>partials_amplitudes</strong> (<em>np.ndarray, default = [1]</em>) –</p>
+<li><p><strong>partials_amplitudes</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</em>) –</p>
 <dl class="simple">
 <dt>Array containing the amplitudes for partials.</dt><dd><p>An array [1,0.5] causes the sinusoid with frequency core to have amplitude 1,
 while the sinusoid with frequency 2*core has amplitude 0.5.</p>
 </dd>
 </dl>
 </li>
-<li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray, default = [0]</em>) – Array containing the phase offsets for partials.</p></li>
+<li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [0]</em>) – Array containing the phase offsets for partials.</p></li>
 <li><p><strong>fading_duration</strong> (<em>float, default: 0.01</em>) – Determines duration of fade-in and fade-out, given in seconds.</p></li>
 <li><p><strong>fs</strong> (<em>int, default = 22050</em>) – Sampling rate, in samples per seconds.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>generated_tone</strong> (<em>np.ndarray</em>) – Generated signal</p>
+<dd class="field-even"><p><strong>generated_tone</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Generated signal</p>
 </dd>
 </dl>
 </dd></dl>
@@ -269,7 +269,7 @@ while the sinusoid with frequency 2*core has amplitude 0.5.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pitch</strong> (<em>int, default = 69</em>) – Pitch of the synthesized tone.</p></li>
-<li><p><strong>wavetable</strong> (<em>np.ndarray, default = None</em>) – Wavetable to be resampled.</p></li>
+<li><p><strong>wavetable</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</em>) – Wavetable to be resampled.</p></li>
 <li><p><strong>gain</strong> (<em>float, default = 1.0</em>) – Gain for generated signal</p></li>
 <li><p><strong>duration</strong> (<em>float, default: 1.0</em>) – Determines duration of tone, given in seconds.</p></li>
 <li><p><strong>tuning_frequency</strong> (<em>float, default: 440.0</em>) – Tuning frequency, in Hertz.</p></li>
@@ -278,7 +278,7 @@ while the sinusoid with frequency 2*core has amplitude 0.5.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>generated_tone</strong> (<em>np.ndarray</em>) – Generated signal</p>
+<dd class="field-even"><p><strong>generated_tone</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Generated signal</p>
 </dd>
 </dl>
 </dd></dl>
