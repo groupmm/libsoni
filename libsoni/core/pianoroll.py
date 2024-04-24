@@ -25,7 +25,7 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
     Parameters
     ----------
     pianoroll_df: pd.DataFrame
-        Dataframe containing pitch-event information.
+        Dataframe containing pitch-event information with columns ['start', 'duration', 'pitch', 'velocity', 'label'].
 
     partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]
         Array containing the desired partials of the fundamental frequencies for sonification.
@@ -107,7 +107,7 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
     Parameters
     ----------
     pianoroll_df: pd.DataFrame
-        Dataframe containing pitch-event information.
+        Dataframe containing pitch-event information with columns ['start', 'duration', 'pitch', 'velocity', 'label'].
 
     tuning_frequency: float, default = 440.0
         Tuning Frequency, in Hertz
@@ -168,7 +168,7 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
     Parameters
     ----------
     pianoroll_df: pd.DataFrame
-        Dataframe containing pitch-event information.
+        Dataframe containing pitch-event information with columns ['start', 'duration', 'pitch', 'velocity', 'label'].
 
     sample: np.ndarray (np.float32 / np.float64) [shape=(K, )]
         Sample to use for sonification.
@@ -240,7 +240,7 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
     Parameters
     ----------
     pianoroll_df: pd.DataFrame
-        Dataframe containing pitch-event information.
+        Dataframe containing pitch-event information with columns ['start', 'duration', 'pitch', 'velocity', 'label'].
 
     mod_rate_relative: float, default = 0.0
         Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.
