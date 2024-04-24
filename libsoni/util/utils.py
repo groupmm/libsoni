@@ -20,7 +20,7 @@ def fade_signal(signal: np.ndarray,
 
     Parameters
     ----------
-    signal: np.ndarray
+    signal: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Signal to be faded
 
     fs: int, default = 22050
@@ -31,7 +31,7 @@ def fade_signal(signal: np.ndarray,
 
     Returns
     -------
-    normalized_signal: np.ndarray
+    normalized_signal: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Normalized signal
     """
     num_samples = int(fading_duration * fs)
@@ -51,12 +51,12 @@ def normalize_signal(signal: np.ndarray) -> np.ndarray:
 
     Parameters
     ----------
-    signal: np.ndarray
+    signal: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Signal to be normalized
 
     Returns
     -------
-    normalized_signal: np.ndarray
+    normalized_signal: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Normalized signal
     """
     normalized_signal = signal / np.max(np.abs(signal))
@@ -77,7 +77,7 @@ def warp_sample(sample: np.ndarray,
 
     Parameters
     ----------
-    sample: np.ndarray
+    sample: np.ndarray (np.float32 / np.float64) [shape=(K, )]
         Sample to be warped.
 
     reference_pitch: int
@@ -100,7 +100,7 @@ def warp_sample(sample: np.ndarray,
 
     Returns
     -------
-    warped_sample: np.ndarray
+    warped_sample: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Warped sample.
     """
     # Compute pitch difference
@@ -176,7 +176,7 @@ def plot_sonify_novelty_beats(fn_wav, fn_ann, title=''):
 
 def format_df(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy().rename(columns=str.lower)
-
+    check_df_schema(df)
     if 'duration' not in df.columns:
         try:
             df['duration'] = df['end'] - df['start']
@@ -201,10 +201,10 @@ def mix_sonification_and_original(sonification: np.ndarray,
 
     Parameters
     ----------
-    sonification: np.ndarray
+    sonification: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Sonification
 
-    original_audio: np.ndarray
+    original_audio: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Original audio
 
     gain_lin_sonification: float, default = 1.0
@@ -224,7 +224,7 @@ def mix_sonification_and_original(sonification: np.ndarray,
 
     Returns
     -------
-    mixed_audio : np.ndarray
+    stereo_audio : np.ndarray (np.float32 / np.float64) [shape=(N, 2)]
         Mix of the signals
     """
     assert 0.0 <= panning <= 1.0, f'Panning must a value between 0.0 and 1.0.'
@@ -271,7 +271,7 @@ def smooth_weights(weights: np.ndarray,
 
     Parameters
     ----------
-    weights: np.ndarray
+    weights: (np.float32 / np.float64) [shape=(N, )]
         Input weights
 
     fading_samples: int
@@ -279,7 +279,7 @@ def smooth_weights(weights: np.ndarray,
 
     Returns
     -------
-    weights_smoothed: np.ndarray
+    weights_smoothed: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Smoothed weights
     """
 
@@ -385,3 +385,13 @@ def visualize_pianoroll(pianoroll_df: pd.DataFrame,
         plt.tight_layout()
 
     return fig, ax
+
+
+def check_df_schema(df: pd.DataFrame):
+    try:
+        columns_bool = (df.columns == ['start', 'duration', 'pitch', 'velocity', 'label']).all() and \
+                       len(df.columns) == 5
+        if not columns_bool:
+            raise ValueError("Columns of the dataframe must be ['start', 'duration', 'pitch', 'velocity', 'label'].")
+    except:
+        raise ValueError("Columns of the dataframe must be ['start', 'duration', 'pitch', 'velocity', 'label'].")

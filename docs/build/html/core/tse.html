@@ -104,7 +104,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_positions</strong> (<em>np.ndarray</em>) – Array with time positions for clicks.</p></li>
+<li><p><strong>time_positions</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )]</em>) – Array with time positions for clicks.</p></li>
 <li><p><strong>click_pitch</strong> (<em>int, default = 69</em>) – Pitch for click signal.</p></li>
 <li><p><strong>click_fading_duration</strong> (<em>float, default = 0.25</em>) – Fading duration for click signal, in seconds</p></li>
 <li><p><strong>click_amplitude</strong> (<em>float, default = 1.0</em>) – Amplitude for click signal.</p></li>
@@ -118,7 +118,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray</em>) – Sonified time positions.</p>
+<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Sonified time positions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -144,7 +144,7 @@ corresponding to the time position.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray</em>) – Sonified time positions.</p>
+<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Sonified time positions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -167,7 +167,7 @@ corresponding to the time position.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray</em>) – Sonified waveform in form of a 1D Numpy array.</p>
+<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Sonified waveform in form of a 1D Numpy array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -179,8 +179,8 @@ corresponding to the time position.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>time_positions</strong> (<em>np.ndarray</em>) – Array with time positions for clicks.</p></li>
-<li><p><strong>sample</strong> (<em>np.ndarray</em>) – Sample to be used.</p></li>
+<li><p><strong>time_positions</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )]</em>) – Array with time positions for clicks.</p></li>
+<li><p><strong>sample</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(K, )]</em>) – Sample to be used.</p></li>
 <li><p><strong>offset_relative</strong> (<em>float, default = 0.0</em>) – Relative offset coefficient for the beginning of a click.
 0 indicates that the beginning of the click event is at the time position. 1 indicates the ending of the click
 event corresponds to the time position.</p></li>
@@ -191,7 +191,7 @@ event corresponds to the time position.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray</em>) – Sonified time positions.</p>
+<dd class="field-even"><p><strong>tse_sonification</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(M, )]</em>) – Sonified time positions.</p>
 </dd>
 </dl>
 </dd></dl>

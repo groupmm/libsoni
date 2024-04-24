@@ -16,13 +16,13 @@ def sonify_spectrogram(spectrogram: np.ndarray,
 
     Parameters
     ----------
-    spectrogram: np.ndarray
+    spectrogram: np.ndarray (np.float32 / np.float64) [shape=(N, K)]
         Spectrogram to be sonified.
 
-    frequency_coefficients: np.ndarray, default = None
+    frequency_coefficients: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing frequency coefficients, in Hertz.
 
-    time_coefficients: np.ndarray, default = None
+    time_coefficients: np.ndarray (np.float32 / np.float64) [shape=(K, )], default = None
         Array containing time coefficients, in seconds.
 
     sonification_duration: int, default = None
@@ -39,16 +39,10 @@ def sonify_spectrogram(spectrogram: np.ndarray,
 
     Returns
     -------
-    spectrogram_sonification: np.ndarray
+    spectrogram_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified spectrogram.
     """
-
-    # Check if lengths of coefficient vectors match shape of spectrogram
-    assert spectrogram.shape[0] == len(frequency_coefficients),\
-        f'The length of frequency_coefficients must match spectrogram.shape[0]'
-
-    assert spectrogram.shape[1] == len(time_coefficients), \
-        f'The length of time_coefficients must match spectrogram.shape[1]'
+    __check_spect_shape(spectrogram, len(frequency_coefficients), len(time_coefficients))
 
     # Calculate Hop size from time_coefficients if not explicitly given
     H = int((time_coefficients[1] - time_coefficients[0]) * fs)
@@ -72,7 +66,6 @@ def sonify_spectrogram(spectrogram: np.ndarray,
         spectrogram_sonification += (sinusoid * weighting_vector)
 
     spectrogram_sonification = fade_signal(spectrogram_sonification, fs=fs, fading_duration=fading_duration)
-
     spectrogram_sonification = normalize_signal(spectrogram_sonification) if normalize else spectrogram_sonification
 
     return spectrogram_sonification
@@ -89,13 +82,13 @@ def sonify_spectrogram_multi(spectrogram: np.ndarray,
 
     Parameters
     ----------
-    spectrogram: np.ndarray
+    sample: np.ndarray (np.float32 / np.float64) [shape=(N, K)]
         Spectrogram to be sonified.
 
-    frequency_coefficients: np.ndarray, default = None
+    frequency_coefficients: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing frequency coefficients, in Hertz.
 
-    time_coefficients: np.ndarray, default = None
+    time_coefficients: np.ndarray (np.float32 / np.float64) [shape=(K, )], default = None
         Array containing time coefficients, in seconds.
 
     sonification_duration: int, default = None
@@ -111,14 +104,10 @@ def sonify_spectrogram_multi(spectrogram: np.ndarray,
         Number of processes
     Returns
     -------
-    spectrogram_sonification: np.ndarray
+    spectrogram_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified spectrogram.
     """
-
-    assert spectrogram.shape[0] == len(frequency_coefficients), \
-        f'The length of frequency_coefficients must match spectrogram.shape[0]'
-    assert spectrogram.shape[1] == len(time_coefficients), \
-        f'The length of time_coefficients must match spectrogram.shape[1]'
+    __check_spect_shape(spectrogram, len(frequency_coefficients), len(time_coefficients))
 
     if num_processes is None:
         num_processes = os.cpu_count() or 1
@@ -154,9 +143,9 @@ def sonify_spectrogram_multi(spectrogram: np.ndarray,
 
     return spectrogram_sonification
 
+
 def __sonify_chunk(args):
     start, end, spectrogram_chunk, frequency_coefficients_chunk, time_coefficients, num_samples, H, fs = args
-
     spectrogram_sonification_chunk = np.zeros(num_samples)
 
     for i in range(spectrogram_chunk.shape[0]):
@@ -172,4 +161,15 @@ def __sonify_chunk(args):
 
         spectrogram_sonification_chunk += (sinusoid * weighting_vector)
     return spectrogram_sonification_chunk
+
+
+def __check_spect_shape(spect: np.ndarray,
+                        num_freq_bins: int,
+                        num_time_frames: int):
+    # Check if lengths of coefficient vectors match shape of spectrogram
+    if not spect.shape[0] == num_freq_bins:
+        raise ValueError('The length of frequency_coefficients must match spectrogram.shape[0]')
+
+    if not spect.shape[1] == num_time_frames:
+        raise ValueError('The length of time_coefficients must match spectrogram.shape[1]')
 

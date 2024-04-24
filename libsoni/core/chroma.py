@@ -24,7 +24,7 @@ def sonify_chroma_vector(chroma_vector: np.ndarray,
 
     Parameters
     ----------
-    chroma_vector: np.ndarray
+    chroma_vector: np.ndarray (np.float32 / np.float64) [shape=(N, 12)]
         Chroma vector to sonify.
 
     pitch_range: Tuple[int, int], default = [20,108]
@@ -56,7 +56,7 @@ def sonify_chroma_vector(chroma_vector: np.ndarray,
 
     Returns
     -------
-    chroma_sonification: np.ndarray
+    chroma_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified chroma vector.
     """
 
@@ -108,7 +108,7 @@ def sonify_chromagram(chromagram: np.ndarray,
 
     Parameters
     ----------
-    chromagram: np.ndarray
+    chromagram: np.ndarray (np.float32 / np.float64) [shape=(N, 12)]
         Chromagram to sonify.
 
     H: int, default = 0
@@ -144,18 +144,17 @@ def sonify_chromagram(chromagram: np.ndarray,
 
     Returns
     -------
-    chroma_sonification: np.ndarray
+    chroma_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified chromagram.
     """
-
-    assert chromagram.shape[0] == 12, f'The chromagram must have shape 12xN.'
+    if chromagram.shape[0] != 12:
+        raise IndexError(f'The chromagram must have shape 12xN.')
 
     # Compute frame rate
     frame_rate = fs / H
 
     # Determine length of sonification
-    num_samples = sonification_duration if sonification_duration is not None else int(
-        chromagram.shape[1] * fs / frame_rate)
+    num_samples = int(chromagram.shape[1] * fs / frame_rate)
 
     # Initialize sonification
     chroma_sonification = np.zeros(num_samples)
@@ -178,5 +177,13 @@ def sonify_chromagram(chromagram: np.ndarray,
 
     chroma_sonification = fade_signal(chroma_sonification, fading_duration=fading_duration, fs=fs)
     chroma_sonification = normalize_signal(chroma_sonification) if normalize else chroma_sonification
+
+    if sonification_duration is not None:
+        if len(chroma_sonification) > sonification_duration:
+            chroma_sonification = chroma_sonification[:sonification_duration]
+        else:
+            tmp = np.zeros(sonification_duration)
+            tmp[:len(chroma_sonification)] = np.copy(chroma_sonification)
+            chroma_sonification = tmp
 
     return chroma_sonification

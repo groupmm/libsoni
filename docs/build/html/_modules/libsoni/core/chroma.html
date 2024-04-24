@@ -104,7 +104,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    chroma_vector: np.ndarray</span>
+<span class="sd">    chroma_vector: np.ndarray (np.float32 / np.float64) [shape=(N, 12)]</span>
 <span class="sd">        Chroma vector to sonify.</span>
 
 <span class="sd">    pitch_range: Tuple[int, int], default = [20,108]</span>
@@ -136,7 +136,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    chroma_sonification: np.ndarray</span>
+<span class="sd">    chroma_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified chroma vector.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -188,7 +188,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    chromagram: np.ndarray</span>
+<span class="sd">    chromagram: np.ndarray (np.float32 / np.float64) [shape=(N, 12)]</span>
 <span class="sd">        Chromagram to sonify.</span>
 
 <span class="sd">    H: int, default = 0</span>
@@ -224,18 +224,17 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    chroma_sonification: np.ndarray</span>
+<span class="sd">    chroma_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified chromagram.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">assert</span> <span class="n">chromagram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">12</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;The chromagram must have shape 12xN.&#39;</span>
+    <span class="k">if</span> <span class="n">chromagram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The chromagram must have shape 12xN.&#39;</span><span class="p">)</span>
 
     <span class="c1"># Compute frame rate</span>
     <span class="n">frame_rate</span> <span class="o">=</span> <span class="n">fs</span> <span class="o">/</span> <span class="n">H</span>
 
     <span class="c1"># Determine length of sonification</span>
-    <span class="n">num_samples</span> <span class="o">=</span> <span class="n">sonification_duration</span> <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span>
-        <span class="n">chromagram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span> <span class="o">/</span> <span class="n">frame_rate</span><span class="p">)</span>
+    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chromagram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span> <span class="o">/</span> <span class="n">frame_rate</span><span class="p">)</span>
 
     <span class="c1"># Initialize sonification</span>
     <span class="n">chroma_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
@@ -258,6 +257,14 @@
 
     <span class="n">chroma_sonification</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">chroma_sonification</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
     <span class="n">chroma_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">chroma_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">chroma_sonification</span>
+
+    <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chroma_sonification</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">sonification_duration</span><span class="p">:</span>
+            <span class="n">chroma_sonification</span> <span class="o">=</span> <span class="n">chroma_sonification</span><span class="p">[:</span><span class="n">sonification_duration</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sonification_duration</span><span class="p">)</span>
+            <span class="n">tmp</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">chroma_sonification</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">chroma_sonification</span><span class="p">)</span>
+            <span class="n">chroma_sonification</span> <span class="o">=</span> <span class="n">tmp</span>
 
     <span class="k">return</span> <span class="n">chroma_sonification</span></div>
 </pre></div>
