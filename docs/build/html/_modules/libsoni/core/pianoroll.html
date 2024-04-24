@@ -235,7 +235,7 @@
 <div class="viewcode-block" id="sonify_pianoroll_sample"><a class="viewcode-back" href="../../../core/pianoroll.html#libsoni.core.pianoroll.sonify_pianoroll_sample">[docs]</a><span class="k">def</span> <span class="nf">sonify_pianoroll_sample</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
                             <span class="n">sample</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                             <span class="n">reference_pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
-                            <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                             <span class="n">signal_fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
                             <span class="n">note_fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
                             <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -256,8 +256,8 @@
 <span class="sd">    reference_pitch: int, default = 69</span>
 <span class="sd">        Original pitch of the sample.</span>
 
-<span class="sd">    sonification_duration: float, default = None</span>
-<span class="sd">        Determines duration of sonification, in seconds.</span>
+<span class="sd">    sonification_duration: int, default = None</span>
+<span class="sd">        Determines duration of sonification, in samples.</span>
 
 <span class="sd">    signal_fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</span>
@@ -306,7 +306,7 @@
                                   <span class="n">mod_rate_relative</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
                                   <span class="n">mod_amp</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
                                   <span class="n">tuning_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">440.0</span><span class="p">,</span>
-                                  <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                   <span class="n">signal_fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
                                   <span class="n">note_fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
                                   <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -331,8 +331,8 @@
 <span class="sd">    tuning_frequency: float, default = 440.0</span>
 <span class="sd">        Tuning frequency in Hertz.</span>
 
-<span class="sd">    sonification_duration: float, default = None</span>
-<span class="sd">        Determines duration of sonification, in seconds.</span>
+<span class="sd">    sonification_duration: int, default = None</span>
+<span class="sd">        Determines duration of sonification, in samples.</span>
 
 <span class="sd">    signal_fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</span>
@@ -378,24 +378,24 @@
 
 <span class="k">def</span> <span class="nf">__init_pianoroll_sonification</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
                                   <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                                  <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+                                  <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 
     <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">format_df</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">)</span>
     <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">sonification_duration</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-    <span class="n">sonification_duration_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sonification_duration</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+        <span class="n">sonification_duration</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span> <span class="o">*</span> <span class="n">fs</span>
+
+    <span class="n">sonification_duration_secs</span> <span class="o">=</span> <span class="n">sonification_duration</span> <span class="o">/</span> <span class="n">fs</span>
 
     <span class="c1"># if sonification_duration is less than num_samples, crop the arrays</span>
-    <span class="k">if</span> <span class="n">sonification_duration_samples</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
-        <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">sonification_duration</span><span class="p">]</span>
-        <span class="n">pianoroll_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">sonification_duration</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sonification_duration</span>
+    <span class="k">if</span> <span class="n">sonification_duration</span> <span class="o">&lt;</span> <span class="n">num_samples</span><span class="p">:</span>
+        <span class="n">pianoroll_df</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">sonification_duration_secs</span><span class="p">]</span>
+        <span class="n">pianoroll_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">sonification_duration_secs</span><span class="p">,</span> <span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sonification_duration_secs</span>
 
     <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;end&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">pianoroll_df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span>
 
-    <span class="n">num_samples</span> <span class="o">=</span> <span class="n">sonification_duration_samples</span>
-    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
+    <span class="n">pianoroll_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sonification_duration</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">pianoroll_df</span><span class="p">,</span> <span class="n">pianoroll_sonification</span>
 </pre></div>

@@ -234,8 +234,7 @@
     <span class="n">frame_rate</span> <span class="o">=</span> <span class="n">fs</span> <span class="o">/</span> <span class="n">H</span>
 
     <span class="c1"># Determine length of sonification</span>
-    <span class="n">num_samples</span> <span class="o">=</span> <span class="n">sonification_duration</span> <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span>
-        <span class="n">chromagram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span> <span class="o">/</span> <span class="n">frame_rate</span><span class="p">)</span>
+    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chromagram</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span> <span class="o">/</span> <span class="n">frame_rate</span><span class="p">)</span>
 
     <span class="c1"># Initialize sonification</span>
     <span class="n">chroma_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
@@ -258,6 +257,14 @@
 
     <span class="n">chroma_sonification</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">chroma_sonification</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
     <span class="n">chroma_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">chroma_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">chroma_sonification</span>
+
+    <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chroma_sonification</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">sonification_duration</span><span class="p">:</span>
+            <span class="n">chroma_sonification</span> <span class="o">=</span> <span class="n">chroma_sonification</span><span class="p">[:</span><span class="n">sonification_duration</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">sonification_duration</span><span class="p">)</span>
+            <span class="n">tmp</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">chroma_sonification</span><span class="p">)]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">chroma_sonification</span><span class="p">)</span>
+            <span class="n">chroma_sonification</span> <span class="o">=</span> <span class="n">tmp</span>
 
     <span class="k">return</span> <span class="n">chroma_sonification</span></div>
 </pre></div>

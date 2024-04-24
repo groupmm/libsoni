@@ -154,8 +154,7 @@ def sonify_chromagram(chromagram: np.ndarray,
     frame_rate = fs / H
 
     # Determine length of sonification
-    num_samples = sonification_duration if sonification_duration is not None else int(
-        chromagram.shape[1] * fs / frame_rate)
+    num_samples = int(chromagram.shape[1] * fs / frame_rate)
 
     # Initialize sonification
     chroma_sonification = np.zeros(num_samples)
@@ -178,5 +177,13 @@ def sonify_chromagram(chromagram: np.ndarray,
 
     chroma_sonification = fade_signal(chroma_sonification, fading_duration=fading_duration, fs=fs)
     chroma_sonification = normalize_signal(chroma_sonification) if normalize else chroma_sonification
+
+    if sonification_duration is not None:
+        if len(chroma_sonification) > sonification_duration:
+            chroma_sonification = chroma_sonification[:sonification_duration]
+        else:
+            tmp = np.zeros(sonification_duration)
+            tmp[:len(chroma_sonification)] = np.copy(chroma_sonification)
+            chroma_sonification = tmp
 
     return chroma_sonification
