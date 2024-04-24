@@ -59,6 +59,12 @@ def sonify_f0(time_f0: np.ndarray,
     f0_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified f0-trajectory.
     """
+    if time_f0.ndim != 2:
+        raise IndexError('time_f0 must be a numpy array of size [N, 2]')
+    if time_f0.shape[1] != 2:
+        raise IndexError('time_f0 must be a numpy array of size [N, 2]')
+
+
     if gains is not None:
         assert len(gains) == time_f0.shape[0], 'Array for confidence must have same length as time_f0.'
     else:

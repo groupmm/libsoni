@@ -176,7 +176,7 @@ def plot_sonify_novelty_beats(fn_wav, fn_ann, title=''):
 
 def format_df(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy().rename(columns=str.lower)
-
+    check_df_schema(df)
     if 'duration' not in df.columns:
         try:
             df['duration'] = df['end'] - df['start']
@@ -385,3 +385,13 @@ def visualize_pianoroll(pianoroll_df: pd.DataFrame,
         plt.tight_layout()
 
     return fig, ax
+
+
+def check_df_schema(df: pd.DataFrame):
+    try:
+        columns_bool = (df.columns == ['start', 'duration', 'pitch', 'velocity', 'label']).all() and \
+                       len(df.columns) == 5
+        if not columns_bool:
+            raise ValueError("Columns of the dataframe must be ['start', 'duration', 'pitch', 'velocity', 'label'].")
+    except:
+        raise ValueError("Columns of the dataframe must be ['start', 'duration', 'pitch', 'velocity', 'label'].")

@@ -397,8 +397,8 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
     partials_amplitudes = np.ones(len(partials)) if partials_amplitudes is None else partials_amplitudes
     partials_phase_offsets = np.zeros(len(partials)) if partials_phase_offsets is None else partials_phase_offsets
 
-    assert len(partials) == len(partials_amplitudes) == len(partials_phase_offsets), \
-        'Partials, Partials_amplitudes and Partials_phase_offsets must be of equal length.'
+    if not (len(partials) == len(partials_amplitudes) == len(partials_phase_offsets)):
+        raise ValueError('Partials, Partials_amplitudes and Partials_phase_offsets must be of equal length.')
 
     generated_tone = np.zeros_like(frequency_vector)
 
