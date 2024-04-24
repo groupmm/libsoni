@@ -190,14 +190,14 @@ connections with existing sonification methods provided in @McFeeRLEMBN15_libros
 [@MuellerZ21_libfmp_JOSS]. Secondly, we re-implemented and included all necessary components (e.g., sound generators 
 based on sinusoidal models and click sounds), even though similar basic functionality is available in librosa and 
 libfmp. By doing so, libsoni offers a coherent API along with convenient but easily modifiable parameter presets.
-Additionally, the implementations are more efficient than previous software. Thirdly, we adopted many design principles 
-suggested by librosa [@McFeeRLEMBN15_librosa_Python] and detailed in [@McFeeKCSBB19_OpenSourcePractices_IEEE-SPM] to 
-lower the entry barrier for students and researchers who may not be coding experts. This includes maintaining an 
-explicit and straightforward programming style with a flat, functional hierarchy to facilitate ease of use and 
-comprehension. The source code for libsoni, along with comprehensive API documentation[^1], is publicly accessible 
-through a dedicated GitHub repository[^2]. We showcase all components, including introductions to MIR scenarios, 
-illustrations, and sound examples via Jupyter notebooks. Finally, we have included the toolbox in the Python Package 
-Index (PyPI), enabling installation with the standard Python package manager, pip[^3].
+Thirdly, we adopted many design principles suggested by librosa [@McFeeRLEMBN15_librosa_Python] and detailed 
+in [@McFeeKCSBB19_OpenSourcePractices_IEEE-SPM] to lower the entry barrier for students and researchers who may not be
+coding experts. This includes maintaining an explicit and straightforward programming style with a flat, functional 
+hierarchy to facilitate ease of use and comprehension. The source code for libsoni, along with comprehensive API 
+documentation[^1], is publicly accessible through a dedicated GitHub repository[^2]. We showcase all components,
+including introductions to MIR scenarios, illustrations, and sound examples via Jupyter notebooks. Finally, we have
+included the toolbox in the Python Package Index (PyPI), enabling installation with the standard Python package manager,
+pip[^3].
 
 [^1]: <https://groupmm.github.io/libsoni>
 [^2]: <https://github.com/groupmm/libsoni>
