@@ -139,6 +139,12 @@
 <span class="sd">    f0_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]</span>
 <span class="sd">        Sonified f0-trajectory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">time_f0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;time_f0 must be a numpy array of size [N, 2]&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">time_f0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;time_f0 must be a numpy array of size [N, 2]&#39;</span><span class="p">)</span>
+
+
     <span class="k">if</span> <span class="n">gains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">gains</span><span class="p">)</span> <span class="o">==</span> <span class="n">time_f0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;Array for confidence must have same length as time_f0.&#39;</span>
     <span class="k">else</span><span class="p">:</span>

@@ -108,7 +108,7 @@ partials_phase_offsets can be used to shape the sound.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information.</p></li>
+<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information with columns [‘start’, ‘duration’, ‘pitch’, ‘velocity’, ‘label’].</p></li>
 <li><p><strong>partials</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</em>) – Array containing the desired partials of the fundamental frequencies for sonification.
 An array [1] leads to sonification with only the fundamental frequency,
 while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.</p></li>
@@ -142,7 +142,7 @@ For sonification, coloured clicks are used.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information.</p></li>
+<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information with columns [‘start’, ‘duration’, ‘pitch’, ‘velocity’, ‘label’].</p></li>
 <li><p><strong>tuning_frequency</strong> (<em>float, default = 440.0</em>) – Tuning Frequency, in Hertz</p></li>
 <li><p><strong>sonification_duration</strong> (<em>float, default = None</em>) – Determines duration of sonification, in seconds.</p></li>
 <li><p><strong>signal_fading_duration</strong> (<em>float, default = 0.05</em>) – Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</p></li>
@@ -166,7 +166,7 @@ mod_amp can be used to shape the sound.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information.</p></li>
+<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information with columns [‘start’, ‘duration’, ‘pitch’, ‘velocity’, ‘label’].</p></li>
 <li><p><strong>mod_rate_relative</strong> (<em>float, default = 0.0</em>) – Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.</p></li>
 <li><p><strong>mod_amp</strong> (<em>float, default = 0.0</em>) – Determines the amount of modulation in the generated signal.</p></li>
 <li><p><strong>tuning_frequency</strong> (<em>float, default = 440.0</em>) – Tuning frequency in Hertz.</p></li>
@@ -192,7 +192,7 @@ and the corresponding pitch. For sonification, warped versions of the given samp
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information.</p></li>
+<li><p><strong>pianoroll_df</strong> (<em>pd.DataFrame</em>) – Dataframe containing pitch-event information with columns [‘start’, ‘duration’, ‘pitch’, ‘velocity’, ‘label’].</p></li>
 <li><p><strong>sample</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(K, )]</em>) – Sample to use for sonification.</p></li>
 <li><p><strong>reference_pitch</strong> (<em>int, default = 69</em>) – Original pitch of the sample.</p></li>
 <li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Determines duration of sonification, in samples.</p></li>

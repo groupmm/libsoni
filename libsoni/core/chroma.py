@@ -147,8 +147,8 @@ def sonify_chromagram(chromagram: np.ndarray,
     chroma_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified chromagram.
     """
-
-    assert chromagram.shape[0] == 12, f'The chromagram must have shape 12xN.'
+    if chromagram.shape[0] != 12:
+        raise IndexError(f'The chromagram must have shape 12xN.')
 
     # Compute frame rate
     frame_rate = fs / H

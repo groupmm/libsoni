@@ -102,9 +102,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>spectrogram</strong> (<em>np.ndarray</em>) – Spectrogram to be sonified.</p></li>
-<li><p><strong>frequency_coefficients</strong> (<em>np.ndarray, default = None</em>) – Array containing frequency coefficients, in Hertz.</p></li>
-<li><p><strong>time_coefficients</strong> (<em>np.ndarray, default = None</em>) – Array containing time coefficients, in seconds.</p></li>
+<li><p><strong>spectrogram</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, K)]</em>) – Spectrogram to be sonified.</p></li>
+<li><p><strong>frequency_coefficients</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</em>) – Array containing frequency coefficients, in Hertz.</p></li>
+<li><p><strong>time_coefficients</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(K, )], default = None</em>) – Array containing time coefficients, in seconds.</p></li>
 <li><p><strong>sonification_duration</strong> (<em>int, default = None</em>) – Determines duration of sonification, in samples.</p></li>
 <li><p><strong>fading_duration</strong> (<em>float, default = 0.05</em>) – Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</p></li>
 <li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Determines if output signal is normalized to [-1,1].</p></li>

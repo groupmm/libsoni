@@ -105,7 +105,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
-<span class="sd">        Dataframe containing pitch-event information.</span>
+<span class="sd">        Dataframe containing pitch-event information with columns [&#39;start&#39;, &#39;duration&#39;, &#39;pitch&#39;, &#39;velocity&#39;, &#39;label&#39;].</span>
 
 <span class="sd">    partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]</span>
 <span class="sd">        Array containing the desired partials of the fundamental frequencies for sonification.</span>
@@ -187,7 +187,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
-<span class="sd">        Dataframe containing pitch-event information.</span>
+<span class="sd">        Dataframe containing pitch-event information with columns [&#39;start&#39;, &#39;duration&#39;, &#39;pitch&#39;, &#39;velocity&#39;, &#39;label&#39;].</span>
 
 <span class="sd">    tuning_frequency: float, default = 440.0</span>
 <span class="sd">        Tuning Frequency, in Hertz</span>
@@ -248,7 +248,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
-<span class="sd">        Dataframe containing pitch-event information.</span>
+<span class="sd">        Dataframe containing pitch-event information with columns [&#39;start&#39;, &#39;duration&#39;, &#39;pitch&#39;, &#39;velocity&#39;, &#39;label&#39;].</span>
 
 <span class="sd">    sample: np.ndarray (np.float32 / np.float64) [shape=(K, )]</span>
 <span class="sd">        Sample to use for sonification.</span>
@@ -320,7 +320,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pianoroll_df: pd.DataFrame</span>
-<span class="sd">        Dataframe containing pitch-event information.</span>
+<span class="sd">        Dataframe containing pitch-event information with columns [&#39;start&#39;, &#39;duration&#39;, &#39;pitch&#39;, &#39;velocity&#39;, &#39;label&#39;].</span>
 
 <span class="sd">    mod_rate_relative: float, default = 0.0</span>
 <span class="sd">        Determines the modulation frequency as multiple or fraction of the frequency for the given pitch.</span>
