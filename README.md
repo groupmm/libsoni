@@ -17,7 +17,9 @@ for generating and triggering sound events, enabling the sonification of spectra
 and rhythmic aspects. Unlike existing software libraries focused on creative applications of sound generation, 
 the toolbox is designed to meet the specific needs of MIR researchers and educators. It aims to simplify the process
 of music exploration, promoting a more intuitive and efficient approach to data analysis by enabling users to interact 
-with their data in acoustically meaningful ways.
+with their data in acoustically meaningful ways. 
+
+See the [API documentation](https://groupmm.github.io/libsoni/build/html/index.html) for a detailed view of the provided functions in ``libsoni``.
 
 ## Installation Guide
 We outline two primary methods for setting up ``libsoni`` using pip and setting up a dedicated environment.
