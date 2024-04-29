@@ -17,7 +17,9 @@ for generating and triggering sound events, enabling the sonification of spectra
 and rhythmic aspects. Unlike existing software libraries focused on creative applications of sound generation, 
 the toolbox is designed to meet the specific needs of MIR researchers and educators. It aims to simplify the process
 of music exploration, promoting a more intuitive and efficient approach to data analysis by enabling users to interact 
-with their data in acoustically meaningful ways.
+with their data in acoustically meaningful ways. 
+
+See the [API documentation](https://groupmm.github.io/libsoni/build/html/index.html) for a detailed view of the provided functions in ``libsoni``.
 
 ## Installation Guide
 We outline two primary methods for setting up ``libsoni`` using pip and setting up a dedicated environment.
@@ -71,8 +73,8 @@ directly contacting us via email (meinard.mueller@audiolabs-erlangen.de) or for 
 an issue in our GitHub repository. Please do not submit a pull request without prior consultation
 with us.
 
-## Licence
-The code for this toolbox is published under an [MIT licence](LICENCE).
+## License
+The code for this toolbox is published under an [MIT license](LICENSE).
 This does not apply to the data files:
 * Schubert songs are taken from the [Schubert Winterreise Dataset](https://zenodo.org/record/4122060). 
 * Recording of the cantata *Ach Gott und Herr* by Bach is taken fom [Bach10 Dataset](https://labsites.rochester.edu/air/datasets/Bach10%20Dataset_v1.0.pdf).
