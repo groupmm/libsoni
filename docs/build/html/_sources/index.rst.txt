@@ -18,6 +18,9 @@ by enabling users to interact with their data in acoustically meaningful ways.
 As a result, ``libsoni`` not only improves the analytical capabilities of music scientists
 but also opens up new avenues for innovative music analysis and discovery.
 
+For installation instructions and educational Jupyter notebooks, see the `GitHub repository
+<https://github.com/groupmm/libsoni>`_.
+
 
 .. toctree::
    :maxdepth: 2
