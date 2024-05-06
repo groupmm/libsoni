@@ -145,7 +145,7 @@ indicating onset, pitch, and duration. This representation is widely used in sev
 music transcription [@BenetosDDE19_MusicTranscription_SPM] and music score--audio music synchronization 
 [@Mueller15_FMP_SPRINGER]. The simplest method in libsoni to sonify piano-roll representations is based on 
 straightforward sinusoidal models (potentially enriched by harmonics). When the score information is synchronized 
-with a music recording (e.g., using alignment methods provided by the Sync Toolbox [@MuellerOKPD21_SyncToolbox_JOSS]),
+with a music recording (e.g., using alignment methods provided by the Sync Toolbox, @MuellerOKPD21_SyncToolbox_JOSS),
 libsoni enables the creation of a stereo signal with the sonification in one channel and the original recording in the 
 other channel. This setup provides an intuitive way to understand the accuracy for a range of musical analysis and
 transcription tasks. Furthermore, these sonifications may be superimposed with further onset-based stimuli provided by
