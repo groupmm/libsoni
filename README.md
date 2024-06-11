@@ -82,6 +82,12 @@ This does not apply to the data files:
 * Custom piano audio samples are taken from the [Single Note Database (SNDB)](https://github.com/audiolabs/SNDB).
 * Other audio files are taken from the [FMP notebooks](https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html).
 
+## References
+
+Yigitcan Özer, Leo Brütting, Simon Schwär, and Meinard Müller. [libsoni: A Python Toolbox for Sonifying Music Annotations and Feature Representations](https://joss.theoj.org/papers/10.21105/joss.06524) Journal of Open Source Software (JOSS), 9(96): 1–6, 2024.
+
+Meinard Müller and Frank Zalkow. [libfmp: A Python Package for Fundamentals of Music Processing.](https://joss.theoj.org/papers/10.21105/joss.03326) Journal of Open Source Software (JOSS), 6(63), 2021.
+
 ## Acknowledgements
 
 The libsoni package originated from collaboration with various individuals over the past
