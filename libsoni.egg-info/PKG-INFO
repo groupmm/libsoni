@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: libsoni
-Version: 1.0.1
+Version: 1.0.2
 Summary: A Python Toolbox for Sonifying Music Annotations and Feature Representations
 Home-page: https://github.com/groupmm/libsoni
 Download-URL: https://github.com/groupmm/libsoni
@@ -14,9 +14,20 @@ Classifier: Topic :: Multimedia :: Sound/Audio :: Analysis
 Classifier: Programming Language :: Python :: 3
 Requires-Python: >=3.7, <4.0
 Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: ipython<8.0.0,>=7.8.0
+Requires-Dist: librosa<1.0.0,>=0.8.0
+Requires-Dist: matplotlib<4.0.0,>=3.1.0
+Requires-Dist: numpy<2.0.0,>=1.17.0
+Requires-Dist: pandas<2.0.0,>=1.0.0
+Requires-Dist: pysoundfile<1.0.0,>=0.9.0
+Requires-Dist: scipy<2.0.0,>=1.7.0
+Requires-Dist: libfmp<2.0.0,>=1.2.0
 Provides-Extra: tests
+Requires-Dist: pytest==6.2.*; extra == "tests"
 Provides-Extra: docs
-License-File: LICENCE
+Requires-Dist: sphinx==6.2.*; extra == "docs"
+Requires-Dist: sphinx_rtd_theme==1.2.*; extra == "docs"
 
 [![Python package using Conda](https://github.com/groupmm/libsoni/actions/workflows/test_conda.yml/badge.svg)](https://github.com/groupmm/libsoni/actions/workflows/test_conda.yml)
 [![Python package using pip](https://github.com/groupmm/libsoni/actions/workflows/test_pip.yml/badge.svg)](https://github.com/groupmm/libsoni/actions/workflows/test_pip.yml)
@@ -24,20 +35,22 @@ License-File: LICENCE
 
 <table border="0">
   <tr>
-    <td><img src=https://github.com/groupmm/libsoni/blob/unit_tests/docs/build/html/_static/libsoni_logo.png alt="libsoni logo" width="1000"></td>
+    <td><img src=https://github.com/groupmm/libsoni/blob/main/docs/build/html/_static/libsoni_logo.png alt="libsoni logo" width="1000"></td>
     <td><h2>libsoni: A Python Toolbox for Sonifying Music Annotations and Feature Representations</h2>
 <br> <br>
 </td>
   </tr>
 </table>
 
-``libsoni`` an open-source Python toolbox tailored for the sonification of music annotations and feature representations. 
+``libsoni`` is an open-source Python toolbox tailored for the sonification of music annotations and feature representations. 
 By employing explicit and easy-to-understand sound synthesis techniques, the toolbox offers functionalities
 for generating and triggering sound events, enabling the sonification of spectral, harmonic, tonal, melodic,
 and rhythmic aspects. Unlike existing software libraries focused on creative applications of sound generation, 
 the toolbox is designed to meet the specific needs of MIR researchers and educators. It aims to simplify the process
 of music exploration, promoting a more intuitive and efficient approach to data analysis by enabling users to interact 
-with their data in acoustically meaningful ways.
+with their data in acoustically meaningful ways. 
+
+See the [API documentation](https://groupmm.github.io/libsoni/build/html/index.html) for a detailed view of the provided functions in ``libsoni``.
 
 ## Installation Guide
 We outline two primary methods for setting up ``libsoni`` using pip and setting up a dedicated environment.
@@ -91,14 +104,20 @@ directly contacting us via email (meinard.mueller@audiolabs-erlangen.de) or for 
 an issue in our GitHub repository. Please do not submit a pull request without prior consultation
 with us.
 
-## Licence
-The code for this toolbox is published under an [MIT licence](LICENCE).
+## License
+The code for this toolbox is published under an [MIT license](LICENSE).
 This does not apply to the data files:
 * Schubert songs are taken from the [Schubert Winterreise Dataset](https://zenodo.org/record/4122060). 
 * Recording of the cantata *Ach Gott und Herr* by Bach is taken fom [Bach10 Dataset](https://labsites.rochester.edu/air/datasets/Bach10%20Dataset_v1.0.pdf).
 * Recording of *Locus Iste* by Anton Bruckner is taken from the [Dagstuhl Choir Set](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiJ1JnT9uuEAxXclP0HHUOXC4EQFnoECBMQAQ&url=https%3A%2F%2Fwww.audiolabs-erlangen.de%2Fresources%2FMIR%2F2020-DagstuhlChoirSet&usg=AOvVaw1sPox9R_Sh1eh5hqV2kgNs&opi=89978449).
-* Custom piano audio sample is taken from the [Single Note Database (SNDB)](https://github.com/audiolabs/SNDB)
+* Custom piano audio samples are taken from the [Single Note Database (SNDB)](https://github.com/audiolabs/SNDB).
 * Other audio files are taken from the [FMP notebooks](https://www.audiolabs-erlangen.de/resources/MIR/FMP/C0/C0.html).
+
+## References
+
+Yigitcan Özer, Leo Brütting, Simon Schwär, and Meinard Müller. [libsoni: A Python Toolbox for Sonifying Music Annotations and Feature Representations](https://joss.theoj.org/papers/10.21105/joss.06524). Journal of Open Source Software (JOSS), 9(96): 1–6, 2024.
+
+Meinard Müller and Frank Zalkow. [libfmp: A Python Package for Fundamentals of Music Processing](https://joss.theoj.org/papers/10.21105/joss.03326). Journal of Open Source Software (JOSS), 6(63), 2021.
 
 ## Acknowledgements
 

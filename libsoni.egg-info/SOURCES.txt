@@ -1,4 +1,4 @@
-LICENCE
+LICENSE
 README.md
 setup.py
 libsoni/__init__.py
@@ -19,3 +19,4 @@ libsoni/util/utils.py
 tests/test_f0.py
 tests/test_methods.py
 tests/test_pianoroll.py
+tests/test_spectrogram.py
