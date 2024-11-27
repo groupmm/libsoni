@@ -11,8 +11,10 @@ def sonify_f0(time_f0: np.ndarray,
               partials_phase_offsets: np.ndarray = None,
               sonification_duration: int = None,
               fading_duration: float = 0.05,
+              crossfade_duration = 0.05,
               normalize: bool = True,
-              fs: int = 22050) -> np.ndarray:
+              fs: int = 22050,
+              ignore_zero_freq_samples: int = 1000) -> np.ndarray:
     """Sonifies a F0 trajectory given as 2D Numpy array.
 
     The 2D array must contain time positions and the associated instantaneous frequencies.
@@ -48,6 +50,12 @@ def sonify_f0(time_f0: np.ndarray,
     fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
 
+    crossfade_duration: float, default = 0.05
+        Determines duration of crossfade between two destinct frequency-samples (±50 cents), in seconds.
+
+    ignore_zero_freq_samples: int, default = 0
+        Determines number of samples with frequency 0 will be ignored in sonification (e.g. not ideal f0-estimation). Must be greater than 2, otherwise ignored
+
     normalize: bool, default = True
         Determines if output signal is normalized to [-1,1].
 
@@ -64,6 +72,7 @@ def sonify_f0(time_f0: np.ndarray,
     if time_f0.shape[1] != 2:
         raise IndexError('time_f0 must be a numpy array of size [N, 2]')
 
+        
 
     if gains is not None:
         assert len(gains) == time_f0.shape[0], 'Array for confidence must have same length as time_f0.'
@@ -71,7 +80,10 @@ def sonify_f0(time_f0: np.ndarray,
         gains = np.ones(time_f0.shape[0])
     time_positions = time_f0[:, 0]
     f0s = time_f0[:, 1]
-    num_samples = int(time_positions[-1] * fs)
+    
+    num_samples = int((time_positions[-1]) * fs)
+    sample_positions = time_positions * fs
+    sample_positions = sample_positions.astype(int)
 
     shorter_duration = False
     if sonification_duration is not None:
@@ -91,32 +103,98 @@ def sonify_f0(time_f0: np.ndarray,
         else:
             time_positions = np.append(time_positions, duration_in_sec)
             f0s = np.append(f0s, 0.0)
-
         num_samples = int(time_positions[-1] * fs)
-
+   
+    # Stretch f0s_stretched to match the given time positions.
     f0s_stretched = np.zeros(num_samples)
     gains_stretched = np.zeros(num_samples)
-
-    # Stretch f0s_stretched to match the given time positions.
     for i, (time, f0, gain) in enumerate(zip(time_positions, f0s, gains)):
         if i == time_positions.shape[0] - 1:
             if not shorter_duration:
                 f0s_stretched[int(time_positions[i] * fs):] = 0.0
                 gains_stretched[int(time_positions[i] * fs):] = 0.0
         else:
+            if(f0 < 0):
+                f0 = 0
             next_time = time_positions[i + 1]
             f0s_stretched[int(time * fs):int(next_time * fs)] = f0
             gains_stretched[int(time * fs):int(next_time * fs)] = gain
 
-    f0_sonification = generate_tone_instantaneous_phase(frequency_vector=f0s_stretched,
-                                                        gain_vector=gains_stretched,
+
+    # Replace number of zero-frequencies with previous non-zerofreqency
+    if(ignore_zero_freq_samples > 2 and num_samples > ignore_zero_freq_samples + 2 ):
+        replaced_zeros = 0
+        for i in range(num_samples- ignore_zero_freq_samples - 2) :
+            if(f0s_stretched[i] == 0 and f0s_stretched[i-1] != 0):
+                for j in range(ignore_zero_freq_samples):         
+                    if (f0s_stretched[i+j] != 0):
+                        break
+                if(j == ignore_zero_freq_samples -1 and f0s_stretched[i+j] == 0):
+                    continue
+                else:
+                    f0s_stretched[i:i+j] = f0s_stretched[i-1]
+                    replaced_zeros += j        
+    
+   
+
+
+    # split f0 trajecotries into destinct notes (ratio between f0s > ±50 cent)
+        splits = np.array([1])
+
+    for i in range(num_samples-1):
+        if(f0s_stretched[i+1] != 0):
+            if(f0s_stretched[i]/f0s_stretched[i+1] > 2**(1/24) or f0s_stretched[i]/f0s_stretched[i+1] < 2**(-1/24) ):
+                splits = np.append(splits, [int(i+1)])
+    splits = np.delete(splits, 0)
+    f0_sonification = np.zeros(len(f0s_stretched))
+  
+
+    
+    
+    # Sonification of individual Frequencieswith crossfades
+    notes = np.split(f0s_stretched, splits)
+    amps = np.split(gains_stretched, splits)
+    cross_samples = int(crossfade_duration* fs)
+    sample_start = 0
+    sample_end = None
+    
+    for j in range(len(splits)+1):
+        notes_current = notes[j]
+        amps_current = amps[j] 
+
+        sample_end = sample_start + int(len(notes[j]))
+        if(j != 0):
+            sample_end += cross_samples
+            notes_current = np.insert(notes_current,0,np.full(cross_samples, notes_current[0]))
+            amps_current = np.insert(amps_current,0,np.full(cross_samples, amps_current[0]))
+        
+      
+
+        if(np.mean(notes_current)!=0):
+            signal =  generate_tone_instantaneous_phase(frequency_vector=notes_current,
+                                                        gain_vector=amps_current,
                                                         partials=partials,
                                                         partials_amplitudes=partials_amplitudes,
                                                         partials_phase_offsets=partials_phase_offsets,
-                                                        fading_duration=fading_duration,
+                                                        fading_duration=crossfade_duration,
                                                         fs=fs)
+        
+        else:
+            signal = np.zeros(len(notes_current))
+            signal = fade_signal(signal, fs=fs, fading_duration=crossfade_duration)
+
+        
+        f0_sonification[sample_start:sample_end]+=signal
+        sample_start = sample_end - cross_samples
+            
+
+    
+
+
 
     f0_sonification = fade_signal(f0_sonification, fs=fs, fading_duration=fading_duration)
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 
     return f0_sonification
+
+
