@@ -6,11 +6,7 @@ import os
 import re
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
-LIBSONI_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-assert os.path.exists(os.path.join(LIBSONI_DIR, 'libsoni'))
-sys.path.insert(0, LIBSONI_DIR)
-sys.path.insert(0, os.path.join(LIBSONI_DIR, 'util'))
+from libsoni import __version__ as libsoni_version
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -18,7 +14,7 @@ sys.path.insert(0, os.path.join(LIBSONI_DIR, 'util'))
 project = 'libsoni'
 copyright = '2024, Yigitcan Özer, Leo Brütting, Simon Schwär, Meinard Müller'
 author = 'Yigitcan Özer, Leo Brütting, Simon Schwär, Meinard Müller'
-release = '0.0.0'
+release = libsoni_version
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
