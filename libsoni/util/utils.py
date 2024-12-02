@@ -34,8 +34,11 @@ def fade_signal(signal: np.ndarray,
     normalized_signal: np.ndarray (np.float32 / np.float64) [shape=(N, )]
         Normalized signal
     """
-    num_samples = int(fading_duration * fs)
 
+    if fading_duration == 0:
+        return signal
+    num_samples = int(fading_duration * fs)
+    
     # if the signal is shorter than twice of the length of the fading duration, multiply signal with sinus half-wave
     if len(signal) < 2 * num_samples:
         signal *= np.sin(np.pi * np.arange(len(signal)) / len(signal))
