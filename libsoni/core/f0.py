@@ -133,20 +133,24 @@ def sonify_f0(time_f0: np.ndarray,
                     continue
                 else:
                     f0s_stretched[i:i+j] = f0s_stretched[i-1]
-                    replaced_zeros += j        
+                    replaced_zeros += j
+        
     
    
 
 
     # split f0 trajecotries into destinct notes (ratio between f0s > ±50 cent)
-        splits = np.array([1])
+    splits = np.array([1])
 
     for i in range(num_samples-1):
         if(f0s_stretched[i+1] != 0):
             if(f0s_stretched[i]/f0s_stretched[i+1] > 2**(1/24) or f0s_stretched[i]/f0s_stretched[i+1] < 2**(-1/24) ):
                 splits = np.append(splits, [int(i+1)])
+        elif(f0s_stretched[i]!= 0):
+            splits = np.append(splits, [int(i+1)])
     splits = np.delete(splits, 0)
     f0_sonification = np.zeros(len(f0s_stretched))
+    
   
 
     
@@ -158,19 +162,23 @@ def sonify_f0(time_f0: np.ndarray,
     sample_start = 0
     sample_end = None
     
-    for j in range(len(splits)+1):
+    for j in range(len(notes)):
         notes_current = notes[j]
         amps_current = amps[j] 
 
-        sample_end = sample_start + int(len(notes[j]))
+        sample_end = sample_start + int(len(notes_current))
+        if(len(notes_current)< cross_samples):
+            cross = int(len(notes_current)/2)
+        else:
+            cross = cross_samples
+            
         if(j != 0):
-            sample_end += cross_samples
-            notes_current = np.insert(notes_current,0,np.full(cross_samples, notes_current[0]))
-            amps_current = np.insert(amps_current,0,np.full(cross_samples, amps_current[0]))
+            sample_end += cross
+            notes_current = np.insert(notes_current,0,np.full(cross, notes_current[0]))
+            amps_current = np.insert(amps_current,0,np.full(cross, amps_current[0]))
         
       
-
-        if(np.mean(notes_current)!=0):
+        if(np.mean(notes_current)> 0 ):
             signal =  generate_tone_instantaneous_phase(frequency_vector=notes_current,
                                                         gain_vector=amps_current,
                                                         partials=partials,
@@ -179,18 +187,14 @@ def sonify_f0(time_f0: np.ndarray,
                                                         fading_duration=crossfade_duration,
                                                         fs=fs)
         
+        
         else:
             signal = np.zeros(len(notes_current))
-            signal = fade_signal(signal, fs=fs, fading_duration=crossfade_duration)
 
         
-        f0_sonification[sample_start:sample_end]+=signal
-        sample_start = sample_end - cross_samples
+        f0_sonification[sample_start:sample_end] += signal
+        sample_start = sample_end - cross
             
-
-    
-
-
 
     f0_sonification = fade_signal(f0_sonification, fs=fs, fading_duration=fading_duration)
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
