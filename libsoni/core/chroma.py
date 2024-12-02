@@ -1,8 +1,8 @@
 import numpy as np
 from typing import Tuple
 
-from libsoni.util.utils import normalize_signal, fade_signal, smooth_weights
-from libsoni.core.methods import generate_shepard_tone
+from ..utils import normalize_signal, fade_signal, smooth_weights
+from .methods import generate_shepard_tone
 
 
 def sonify_chroma_vector(chroma_vector: np.ndarray,

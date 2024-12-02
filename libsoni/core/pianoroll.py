@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
 
-from libsoni.util.utils import format_df, warp_sample, normalize_signal, fade_signal
-from libsoni.core.methods import generate_click, generate_tone_additive_synthesis, generate_tone_fm_synthesis
+from ..utils import format_df, warp_sample, normalize_signal, fade_signal
+from .methods import generate_click, generate_tone_additive_synthesis, generate_tone_fm_synthesis
 
 
 def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,

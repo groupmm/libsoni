@@ -1,0 +1,47 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[project]
+name =  "libsoni"
+authors = [
+    {name = "Yigitcan Özer", email = "yigitcan.oezer@audiolabs-erlangen.de"},
+    {name = "Leo Brütting"},
+    {name = "Simon Schwär", email = "simon.schwaer@audiolabs-erlangen.de"},
+    {name = "Meinard Müller", email = "meinard.mueller@audiolabs-erlangen.de"},
+]
+description = "A Python toolbox for sonifying music annotations and feature representations"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Multimedia :: Sound/Audio :: Analysis",
+]
+requires-python = ">=3.7"
+dynamic = ["version"]
+dependencies = [
+    "librosa >= 0.8.0",
+    "matplotlib >= 3.1.0",
+    "numpy >= 1.17.0",
+    "pandas >= 1.0.0",
+    "scipy >= 1.7.0",
+    "libfmp >= 1.2.0",
+]
+license = {file = "LICENSE"}
+
+[project.optional-dependencies]
+develop = [ # required for executing demo notebooks
+    "flit >= 3.10.0",
+    "ipython >= 7.8.0",
+    "jupyter",
+    "nbstripout"
+]
+test = ["pytest", "pytest-runner"]
+doc = ["sphinx", "sphinx_rtd_theme"]
+
+[project.urls]
+Homepage = "https://github.com/groupmm/libsoni"
+Documentation = "https://groupmm.github.io/libsoni/build/html/index.html"
+Repository = "https://github.com/groupmm/libsoni"

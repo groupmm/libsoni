@@ -1,7 +1,7 @@
 import numpy as np
 
-from libsoni.core.methods import generate_tone_instantaneous_phase
-from libsoni.util.utils import normalize_signal, fade_signal
+from ..utils import normalize_signal, fade_signal
+from .methods import generate_tone_instantaneous_phase
 
 
 def sonify_f0(time_f0: np.ndarray,

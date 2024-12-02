@@ -1,7 +1,7 @@
 import numpy as np
 from typing import Tuple
 
-from libsoni.util.utils import fade_signal, smooth_weights, normalize_signal, pitch_to_frequency
+from ..utils import fade_signal, smooth_weights, normalize_signal, pitch_to_frequency
 
 
 def generate_click(pitch: int = 69,
