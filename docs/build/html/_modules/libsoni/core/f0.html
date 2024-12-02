@@ -1,22 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>libsoni.core.f0 &mdash; libsoni 0.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=525cde36"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -80,19 +78,24 @@
   <h1>Source code for libsoni.core.f0</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">libsoni.core.methods</span> <span class="kn">import</span> <span class="n">generate_tone_instantaneous_phase</span>
-<span class="kn">from</span> <span class="nn">libsoni.util.utils</span> <span class="kn">import</span> <span class="n">normalize_signal</span><span class="p">,</span> <span class="n">fade_signal</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">normalize_signal</span><span class="p">,</span> <span class="n">fade_signal</span>
+<span class="kn">from</span> <span class="nn">.methods</span> <span class="kn">import</span> <span class="n">generate_tone_instantaneous_phase</span>
 
+<span class="c1"># Test</span>
 
-<div class="viewcode-block" id="sonify_f0"><a class="viewcode-back" href="../../../core/f0.html#libsoni.core.f0.sonify_f0">[docs]</a><span class="k">def</span> <span class="nf">sonify_f0</span><span class="p">(</span><span class="n">time_f0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<div class="viewcode-block" id="sonify_f0">
+<a class="viewcode-back" href="../../../core/f0.html#libsoni.core.f0.sonify_f0">[docs]</a>
+<span class="k">def</span> <span class="nf">sonify_f0</span><span class="p">(</span><span class="n">time_f0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
               <span class="n">gains</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">partials</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
               <span class="n">partials_amplitudes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
               <span class="n">partials_phase_offsets</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">sonification_duration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
               <span class="n">fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
+              <span class="n">crossfade_duration</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span>
               <span class="n">normalize</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-              <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+              <span class="n">fs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">22050</span><span class="p">,</span>
+              <span class="n">ignore_zero_freq_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sonifies a F0 trajectory given as 2D Numpy array.</span>
 
 <span class="sd">    The 2D array must contain time positions and the associated instantaneous frequencies.</span>
@@ -128,6 +131,12 @@
 <span class="sd">    fading_duration: float, default = 0.05</span>
 <span class="sd">        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.</span>
 
+<span class="sd">    crossfade_duration: float, default = 0.05</span>
+<span class="sd">        Determines duration of crossfade between two destinct frequency-samples (±50 cents), in seconds.</span>
+
+<span class="sd">    ignore_zero_freq_samples: int, default = 0</span>
+<span class="sd">        Determines number of samples with frequency 0 will be ignored in sonification (e.g. not ideal f0-estimation). Must be greater than 2, otherwise ignored</span>
+
 <span class="sd">    normalize: bool, default = True</span>
 <span class="sd">        Determines if output signal is normalized to [-1,1].</span>
 
@@ -144,6 +153,7 @@
     <span class="k">if</span> <span class="n">time_f0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s1">&#39;time_f0 must be a numpy array of size [N, 2]&#39;</span><span class="p">)</span>
 
+        
 
     <span class="k">if</span> <span class="n">gains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">gains</span><span class="p">)</span> <span class="o">==</span> <span class="n">time_f0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;Array for confidence must have same length as time_f0.&#39;</span>
@@ -151,7 +161,10 @@
         <span class="n">gains</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">time_f0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">time_positions</span> <span class="o">=</span> <span class="n">time_f0</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">f0s</span> <span class="o">=</span> <span class="n">time_f0</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+    
+    <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">time_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+    <span class="n">sample_positions</span> <span class="o">=</span> <span class="n">time_positions</span> <span class="o">*</span> <span class="n">fs</span>
+    <span class="n">sample_positions</span> <span class="o">=</span> <span class="n">sample_positions</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 
     <span class="n">shorter_duration</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">sonification_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -171,35 +184,106 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">time_positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time_positions</span><span class="p">,</span> <span class="n">duration_in_sec</span><span class="p">)</span>
             <span class="n">f0s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f0s</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-
         <span class="n">num_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time_positions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
-
+   
+    <span class="c1"># Stretch f0s_stretched to match the given time positions.</span>
     <span class="n">f0s_stretched</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
     <span class="n">gains_stretched</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_samples</span><span class="p">)</span>
-
-    <span class="c1"># Stretch f0s_stretched to match the given time positions.</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">f0</span><span class="p">,</span> <span class="n">gain</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">time_positions</span><span class="p">,</span> <span class="n">f0s</span><span class="p">,</span> <span class="n">gains</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">time_positions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">shorter_duration</span><span class="p">:</span>
                 <span class="n">f0s_stretched</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">time_positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">):]</span> <span class="o">=</span> <span class="mf">0.0</span>
                 <span class="n">gains_stretched</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">time_positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">fs</span><span class="p">):]</span> <span class="o">=</span> <span class="mf">0.0</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">f0</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">f0</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">next_time</span> <span class="o">=</span> <span class="n">time_positions</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
             <span class="n">f0s_stretched</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">next_time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)]</span> <span class="o">=</span> <span class="n">f0</span>
             <span class="n">gains_stretched</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="n">next_time</span> <span class="o">*</span> <span class="n">fs</span><span class="p">)]</span> <span class="o">=</span> <span class="n">gain</span>
 
-    <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">generate_tone_instantaneous_phase</span><span class="p">(</span><span class="n">frequency_vector</span><span class="o">=</span><span class="n">f0s_stretched</span><span class="p">,</span>
-                                                        <span class="n">gain_vector</span><span class="o">=</span><span class="n">gains_stretched</span><span class="p">,</span>
+
+    <span class="c1"># Replace number of zero-frequencies with previous non-zerofreqency</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">ignore_zero_freq_samples</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">num_samples</span> <span class="o">&gt;</span> <span class="n">ignore_zero_freq_samples</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">):</span>
+        <span class="n">replaced_zeros</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_samples</span><span class="o">-</span> <span class="n">ignore_zero_freq_samples</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ignore_zero_freq_samples</span><span class="p">):</span>         
+                    <span class="k">if</span> <span class="p">(</span><span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                        <span class="k">break</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="n">ignore_zero_freq_samples</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">replaced_zeros</span> <span class="o">+=</span> <span class="n">j</span>
+        
+    
+   
+
+
+    <span class="c1"># split f0 trajecotries into destinct notes (ratio between f0s &gt; ±50 cent)</span>
+    <span class="n">splits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_samples</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">)</span> <span class="ow">or</span> <span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">/</span><span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">24</span><span class="p">)</span> <span class="p">):</span>
+                <span class="n">splits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">splits</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span>
+        <span class="k">elif</span><span class="p">(</span><span class="n">f0s_stretched</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">splits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">splits</span><span class="p">,</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)])</span>
+    <span class="n">splits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">splits</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">f0s_stretched</span><span class="p">))</span>
+    
+  
+
+    
+    
+    <span class="c1"># Sonification of individual Frequencieswith crossfades</span>
+    <span class="n">notes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">f0s_stretched</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+    <span class="n">amps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">gains_stretched</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+    <span class="n">cross_samples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">crossfade_duration</span><span class="o">*</span> <span class="n">fs</span><span class="p">)</span>
+    <span class="n">sample_start</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sample_end</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">notes</span><span class="p">)):</span>
+        <span class="n">notes_current</span> <span class="o">=</span> <span class="n">notes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">amps_current</span> <span class="o">=</span> <span class="n">amps</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> 
+
+        <span class="n">sample_end</span> <span class="o">=</span> <span class="n">sample_start</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">notes_current</span><span class="p">))</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">notes_current</span><span class="p">)</span><span class="o">&lt;</span> <span class="n">cross_samples</span><span class="p">):</span>
+            <span class="n">cross</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">notes_current</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cross</span> <span class="o">=</span> <span class="n">cross_samples</span>
+            
+        <span class="k">if</span><span class="p">(</span><span class="n">j</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">sample_end</span> <span class="o">+=</span> <span class="n">cross</span>
+            <span class="n">notes_current</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">notes_current</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">cross</span><span class="p">,</span> <span class="n">notes_current</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">amps_current</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">amps_current</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">cross</span><span class="p">,</span> <span class="n">amps_current</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        
+      
+        <span class="k">if</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">notes_current</span><span class="p">)</span><span class="o">&gt;</span> <span class="mi">0</span> <span class="p">):</span>
+            <span class="n">signal</span> <span class="o">=</span>  <span class="n">generate_tone_instantaneous_phase</span><span class="p">(</span><span class="n">frequency_vector</span><span class="o">=</span><span class="n">notes_current</span><span class="p">,</span>
+                                                        <span class="n">gain_vector</span><span class="o">=</span><span class="n">amps_current</span><span class="p">,</span>
                                                         <span class="n">partials</span><span class="o">=</span><span class="n">partials</span><span class="p">,</span>
                                                         <span class="n">partials_amplitudes</span><span class="o">=</span><span class="n">partials_amplitudes</span><span class="p">,</span>
                                                         <span class="n">partials_phase_offsets</span><span class="o">=</span><span class="n">partials_phase_offsets</span><span class="p">,</span>
-                                                        <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">,</span>
+                                                        <span class="n">fading_duration</span><span class="o">=</span><span class="n">crossfade_duration</span><span class="p">,</span>
                                                         <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+        
+        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">signal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">notes_current</span><span class="p">))</span>
+
+        
+        <span class="n">f0_sonification</span><span class="p">[</span><span class="n">sample_start</span><span class="p">:</span><span class="n">sample_end</span><span class="p">]</span> <span class="o">+=</span> <span class="n">signal</span>
+        <span class="n">sample_start</span> <span class="o">=</span> <span class="n">sample_end</span> <span class="o">-</span> <span class="n">cross</span>
+            
 
     <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">f0_sonification</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">)</span>
     <span class="n">f0_sonification</span> <span class="o">=</span> <span class="n">normalize_signal</span><span class="p">(</span><span class="n">f0_sonification</span><span class="p">)</span> <span class="k">if</span> <span class="n">normalize</span> <span class="k">else</span> <span class="n">f0_sonification</span>
 
     <span class="k">return</span> <span class="n">f0_sonification</span></div>
+
+
+
 </pre></div>
 
            </div>

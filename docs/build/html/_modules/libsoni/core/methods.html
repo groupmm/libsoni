@@ -1,22 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>libsoni.core.methods &mdash; libsoni 0.0.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b76e3c8a" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=525cde36"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -81,10 +79,12 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">libsoni.util.utils</span> <span class="kn">import</span> <span class="n">fade_signal</span><span class="p">,</span> <span class="n">smooth_weights</span><span class="p">,</span> <span class="n">normalize_signal</span><span class="p">,</span> <span class="n">pitch_to_frequency</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">fade_signal</span><span class="p">,</span> <span class="n">smooth_weights</span><span class="p">,</span> <span class="n">normalize_signal</span><span class="p">,</span> <span class="n">pitch_to_frequency</span>
 
 
-<div class="viewcode-block" id="generate_click"><a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_click">[docs]</a><span class="k">def</span> <span class="nf">generate_click</span><span class="p">(</span><span class="n">pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
+<div class="viewcode-block" id="generate_click">
+<a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_click">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_click</span><span class="p">(</span><span class="n">pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
                    <span class="n">amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
                    <span class="n">tuning_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">440.0</span><span class="p">,</span>
                    <span class="n">click_fading_duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span>
@@ -124,7 +124,10 @@
     <span class="k">return</span> <span class="n">click</span></div>
 
 
-<div class="viewcode-block" id="generate_sinusoid"><a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_sinusoid">[docs]</a><span class="k">def</span> <span class="nf">generate_sinusoid</span><span class="p">(</span><span class="n">frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">440.0</span><span class="p">,</span>
+
+<div class="viewcode-block" id="generate_sinusoid">
+<a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_sinusoid">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_sinusoid</span><span class="p">(</span><span class="n">frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">440.0</span><span class="p">,</span>
                       <span class="n">phase</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
                       <span class="n">amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
                       <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
@@ -163,7 +166,10 @@
     <span class="k">return</span> <span class="n">sinusoid</span></div>
 
 
-<div class="viewcode-block" id="generate_shepard_tone"><a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_shepard_tone">[docs]</a><span class="k">def</span> <span class="nf">generate_shepard_tone</span><span class="p">(</span><span class="n">pitch_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+
+<div class="viewcode-block" id="generate_shepard_tone">
+<a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_shepard_tone">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_shepard_tone</span><span class="p">(</span><span class="n">pitch_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                           <span class="n">pitch_range</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">108</span><span class="p">),</span>
                           <span class="nb">filter</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
                           <span class="n">f_center</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">440.0</span><span class="p">,</span>
@@ -246,7 +252,10 @@
     <span class="k">return</span> <span class="n">shepard_tone</span></div>
 
 
-<div class="viewcode-block" id="generate_tone_additive_synthesis"><a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_tone_additive_synthesis">[docs]</a><span class="k">def</span> <span class="nf">generate_tone_additive_synthesis</span><span class="p">(</span><span class="n">pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
+
+<div class="viewcode-block" id="generate_tone_additive_synthesis">
+<a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_tone_additive_synthesis">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_tone_additive_synthesis</span><span class="p">(</span><span class="n">pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
                                      <span class="n">partials</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
                                      <span class="n">partials_amplitudes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                      <span class="n">partials_phase_offsets</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -318,7 +327,10 @@
     <span class="k">return</span> <span class="n">generated_tone</span></div>
 
 
-<div class="viewcode-block" id="generate_tone_fm_synthesis"><a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_tone_fm_synthesis">[docs]</a><span class="k">def</span> <span class="nf">generate_tone_fm_synthesis</span><span class="p">(</span><span class="n">pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
+
+<div class="viewcode-block" id="generate_tone_fm_synthesis">
+<a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_tone_fm_synthesis">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_tone_fm_synthesis</span><span class="p">(</span><span class="n">pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
                                <span class="n">modulation_rate_relative</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
                                <span class="n">modulation_amplitude</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
                                <span class="n">gain</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
@@ -373,7 +385,10 @@
     <span class="k">return</span> <span class="n">generated_tone</span></div>
 
 
-<div class="viewcode-block" id="generate_tone_wavetable"><a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_tone_wavetable">[docs]</a><span class="k">def</span> <span class="nf">generate_tone_wavetable</span><span class="p">(</span><span class="n">pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
+
+<div class="viewcode-block" id="generate_tone_wavetable">
+<a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_tone_wavetable">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_tone_wavetable</span><span class="p">(</span><span class="n">pitch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">69</span><span class="p">,</span>
                             <span class="n">wavetable</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                             <span class="n">gain</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
                             <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
@@ -431,7 +446,10 @@
     <span class="k">return</span> <span class="n">generated_tone</span></div>
 
 
-<div class="viewcode-block" id="generate_tone_instantaneous_phase"><a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_tone_instantaneous_phase">[docs]</a><span class="k">def</span> <span class="nf">generate_tone_instantaneous_phase</span><span class="p">(</span><span class="n">frequency_vector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+
+<div class="viewcode-block" id="generate_tone_instantaneous_phase">
+<a class="viewcode-back" href="../../../core/methods.html#libsoni.core.methods.generate_tone_instantaneous_phase">[docs]</a>
+<span class="k">def</span> <span class="nf">generate_tone_instantaneous_phase</span><span class="p">(</span><span class="n">frequency_vector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
                                       <span class="n">gain_vector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                       <span class="n">partials</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]),</span>
                                       <span class="n">partials_amplitudes</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -505,6 +523,7 @@
     <span class="n">generated_tone</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">=</span><span class="n">generated_tone</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">generated_tone</span></div>
+
 </pre></div>
 
            </div>

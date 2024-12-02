@@ -1,7 +1,7 @@
-Utils (libsoni.util.utils)
+Utils (libsoni.utils)
 ==========================
 
-.. automodule:: libsoni.util.utils
+.. automodule:: libsoni.utils
     :members:
 
 
