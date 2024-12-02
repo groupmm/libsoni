@@ -1,8 +1,10 @@
-import numpy as np
-from libsoni.util.utils import normalize_signal, fade_signal, smooth_weights
-from libsoni.core.methods import generate_sinusoid
 from concurrent.futures import ProcessPoolExecutor
 import os
+
+import numpy as np
+
+from ..utils import normalize_signal, fade_signal, smooth_weights
+from .methods import generate_sinusoid
 
 
 def sonify_spectrogram(spectrogram: np.ndarray,

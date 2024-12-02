@@ -22,10 +22,10 @@ with their data in acoustically meaningful ways.
 See the [API documentation](https://groupmm.github.io/libsoni/build/html/index.html) for a detailed view of the provided functions in ``libsoni``.
 
 ## Installation Guide
-We outline two primary methods for setting up ``libsoni`` using pip and setting up a dedicated environment.
+We outline two primary methods for setting up `libsoni` using pip and setting up a dedicated environment.
 
 ### Method I: Installing with pip
-Utilize Python's package manager, pip, for a straightforward installation of ``libsoni``:
+Utilize Python's package manager, pip, for a straightforward installation of `libsoni`:
 
 ```
 pip install libsoni
@@ -34,13 +34,12 @@ Note: We advise performing this installation within a Python environment (such a
 to prevent any conflicts with other packages. Ensure your environment runs Python 3.7 or higher.
 
 ### Method II: Setting Up a Conda Environment
-Alternatively, you can establish a conda environment specifically for ``libsoni`` by employing the 
-``environment_libsoni.yml`` file. This approach not only installs ``libsoni`` but also includes necessary packages like
-libsoni and jupyter to facilitate running demo files. Run the following command:
-
+Alternatively, you can create a conda environment specifically for `libsoni` by downloading this repository and installing the library in development mode. This approach not only installs `libsoni` but also includes necessary packages for running the demo notebooks with `jupyter`. One way to achieve this would be using the following commands:
 
 ```
-conda env create -f environment_libsoni.yml
+conda create -n libsoni python=3.11 flit
+conda activate libsoni
+flit install --symlink --deps all
 ```
 
 
