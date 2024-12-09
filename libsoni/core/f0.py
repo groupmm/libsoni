@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..utils import normalize_signal, fade_signal
+from ..utils import normalize_signal, fade_signal, split_freq_trajectory, replace_zero_rows
 from .methods import generate_tone_instantaneous_phase
 
 
@@ -53,7 +53,7 @@ def sonify_f0(time_f0: np.ndarray,
     crossfade_duration: float, default = 0.05
         Determines duration of crossfade between two destinct frequency-samples (±50 cents), in seconds.
 
-    ignore_zero_freq_samples: int, default = 0
+    ignore_zero_freq_samples: int, default = 1000
         Determines number of samples with frequency 0 will be ignored in sonification (e.g. not ideal f0-estimation). Must be greater than 2, otherwise ignored
 
     normalize: bool, default = True
@@ -122,45 +122,22 @@ def sonify_f0(time_f0: np.ndarray,
 
 
     # Replace number of zero-frequencies with previous non-zerofreqency
-    if(ignore_zero_freq_samples > 2 and num_samples > ignore_zero_freq_samples + 2 ):
-        replaced_zeros = 0
-        for i in range(num_samples- ignore_zero_freq_samples - 2) :
-            if(f0s_stretched[i] == 0 and f0s_stretched[i-1] != 0):
-                for j in range(ignore_zero_freq_samples):         
-                    if (f0s_stretched[i+j] != 0):
-                        break
-                if(j == ignore_zero_freq_samples -1 and f0s_stretched[i+j] == 0):
-                    continue
-                else:
-                    f0s_stretched[i:i+j] = f0s_stretched[i-1]
-                    replaced_zeros += j
+    f0s_stretched = replace_zero_rows(f0s_stretched, ignore_zero_freq_samples) 
         
     
    
 
 
     # split f0 trajecotries into destinct notes (ratio between f0s > ±50 cent)
-    splits = np.array([1])
-
-    for i in range(num_samples-1):
-        if(f0s_stretched[i+1] != 0):
-            if(f0s_stretched[i]/f0s_stretched[i+1] > 2**(1/24) or f0s_stretched[i]/f0s_stretched[i+1] < 2**(-1/24) ):
-                splits = np.append(splits, [int(i+1)])
-        elif(f0s_stretched[i]!= 0):
-            splits = np.append(splits, [int(i+1)])
-    splits = np.delete(splits, 0)
-    f0_sonification = np.zeros(len(f0s_stretched))
     
+    notes, amps, splits = split_freq_trajectory(f0s_stretched, gains_stretched, 50)
   
-
-    
-    
     # Sonification of individual Frequencieswith crossfades
-    notes = np.split(f0s_stretched, splits)
-    amps = np.split(gains_stretched, splits)
+    
     cross_samples = int(crossfade_duration* fs)
     sample_start = 0
     sample_end = None
+    f0_sonification = np.zeros(num_samples)
     
     for j in range(len(notes)):
         notes_current = notes[j]
