@@ -231,6 +231,9 @@ def generate_tone_additive_synthesis(pitch: int = 69,
     pitch_frequency = pitch_to_frequency(pitch=pitch, tuning_frequency=tuning_frequency)
 
     for partial, partial_amplitude, partials_phase_offset in zip(partials, partials_amplitudes, partials_phase_offsets):
+        if (partial * pitch_frequency) >= (fs / 2):
+            # skip partials that would create aliasing
+            continue
         generated_tone += partial_amplitude * np.sin(2 * np.pi * pitch_frequency * partial * (np.arange(int(duration * fs)) / fs) + partials_phase_offset)
 
     generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_duration=fading_duration) * gain
@@ -408,18 +411,14 @@ def generate_tone_instantaneous_phase(frequency_vector: np.ndarray,
     else:
         gain_vector = smooth_weights(weights=gain_vector, fading_samples=60)
 
-    phase = 0
-    phase_result = []
-
-    for frequency, gain in zip(frequency_vector, gain_vector):
-        phase_step = 2 * np.pi * frequency / fs
-        phase += phase_step
-        phase_result.append(phase)
-
-    phase_result = np.asarray(phase_result)
+    phase = np.cumsum(2 * np.pi * frequency_vector / fs)
 
     for partial, partial_amplitude, partials_phase_offset in zip(partials, partials_amplitudes, partials_phase_offsets):
-        generated_tone += np.sin((phase_result + partials_phase_offset) * partial) * partial_amplitude
+        # mute partials that would create aliasing
+        # (due to the time-varying nature of the frequency, this is done sample-wise)
+        instant_ampl = np.ones_like(phase) * partial_amplitude
+        instant_ampl[np.where((partial * frequency_vector) >= (fs / 2))] = 0
+        generated_tone += np.sin((phase + partials_phase_offset) * partial) * instant_ampl
 
     generated_tone = generated_tone * gain_vector
     generated_tone = fade_signal(signal=generated_tone, fs=fs, fading_duration=fading_duration)
