@@ -46,7 +46,7 @@ def sonify_pianoroll_additive_synthesis(pianoroll_df: pd.DataFrame,
         Tuning frequency, in Hertz.
 
     sonification_duration: float, default = None
-        Determines duration of sonification, in seconds.
+        Determines duration of sonification, in seconds. If sonification_duration is none, soni
 
     signal_fading_duration: float, default = 0.05
         Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.
@@ -130,7 +130,7 @@ def sonify_pianoroll_clicks(pianoroll_df: pd.DataFrame,
         Sonified waveform in form of a 1D Numpy array.
     """
 
-    pianoroll_df, pianoroll_sonification = __init_pianoroll_sonification(pianoroll_df, fs, sonification_duration)
+    pianoroll_df, pianoroll_sonification = __init_pianoroll_sonification(pianoroll_df, fs, int(sonification_duration*fs))
 
     if 'velocity' in list(pianoroll_df.columns) and pianoroll_df['velocity'].max() > 1:
         pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
@@ -197,7 +197,7 @@ def sonify_pianoroll_sample(pianoroll_df: pd.DataFrame,
         Sonified piano-roll.
     """
 
-    pianoroll_df, pianoroll_sonification = __init_pianoroll_sonification(pianoroll_df, fs, sonification_duration)
+    pianoroll_df, pianoroll_sonification = __init_pianoroll_sonification(pianoroll_df, fs, int(sonification_duration*fs))
 
     if 'velocity' in list(pianoroll_df.columns) and pianoroll_df['velocity'].max() > 1:
         pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
@@ -271,7 +271,7 @@ def sonify_pianoroll_fm_synthesis(pianoroll_df: pd.DataFrame,
     pianoroll_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
         Sonified piano-roll.
     """
-    pianoroll_df, pianoroll_sonification = __init_pianoroll_sonification(pianoroll_df, fs, sonification_duration)
+    pianoroll_df, pianoroll_sonification = __init_pianoroll_sonification(pianoroll_df, fs, int(sonification_duration*fs))
 
     if 'velocity' in list(pianoroll_df.columns) and pianoroll_df['velocity'].max() > 1:
         pianoroll_df['velocity'] /= pianoroll_df['velocity'].max()
@@ -304,7 +304,7 @@ def __init_pianoroll_sonification(pianoroll_df: pd.DataFrame,
     num_samples = int(pianoroll_df['end'].max() * fs)
 
     if sonification_duration is None:
-        sonification_duration = int(pianoroll_df['end'].max()) * fs
+        sonification_duration = int(pianoroll_df['end'].max() * fs)
 
     sonification_duration_secs = sonification_duration / fs
 
