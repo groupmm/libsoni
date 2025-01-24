@@ -2,9 +2,7 @@ import numpy as np
 import soundfile as sf
 from unittest import TestCase
 
-from libsoni.core.methods import generate_click, generate_shepard_tone, generate_sinusoid,\
-    generate_tone_instantaneous_phase
-from libsoni.util.utils import pitch_to_frequency
+import libsoni
 
 
 class TestMethods(TestCase):
@@ -26,10 +24,10 @@ class TestMethods(TestCase):
 
     def test_invalid_partial_sizes(self) -> None:
         with self.assertRaises(ValueError) as context:
-            _ = generate_tone_instantaneous_phase(self.frequency_vector,
-                                                  partials=self.partials[0],
-                                                  partials_amplitudes=self.partials_amplitudes[1],
-                                                  fs=self.fs)
+            _ = libsoni.generate_tone_instantaneous_phase(self.frequency_vector,
+                                                          partials=self.partials[0],
+                                                          partials_amplitudes=self.partials_amplitudes[1],
+                                                          fs=self.fs)
 
         self.assertEqual(str(context.exception), 'Partials, Partials_amplitudes and Partials_phase_offsets must be '
                                                  'of equal length.')
@@ -38,10 +36,10 @@ class TestMethods(TestCase):
         for duration in self.durations:
             for pitch in self.pitches:
                 for fade_val in self.fade_vals:
-                    freq = pitch_to_frequency(pitch=pitch)
-                    y = generate_sinusoid(frequency=freq,
-                                          duration=duration/self.fs,
-                                          fading_duration=fade_val)
+                    freq = libsoni.utils.pitch_to_frequency(pitch=pitch)
+                    y = libsoni.generate_sinusoid(frequency=freq,
+                                                  duration=duration/self.fs,
+                                                  fading_duration=fade_val)
                     fade_samples = int(self.fs * fade_val)
                     ref, _ = sf.read(f'tests/data/sin_{pitch}_{duration}_{fade_samples}.wav')
                     self.assertEqual(len(y), len(ref), msg='Length of the generated sonification '
@@ -53,9 +51,9 @@ class TestMethods(TestCase):
             for pitch in self.pitches:
                 for fade_val in self.fade_vals:
                     pitch_class = pitch % 12
-                    y = generate_shepard_tone(pitch_class=pitch_class,
-                                              duration=duration/self.fs,
-                                              fading_duration=fade_val)
+                    y = libsoni.generate_shepard_tone(pitch_class=pitch_class,
+                                                      duration=duration/self.fs,
+                                                      fading_duration=fade_val)
                     fade_samples = int(self.fs * fade_val)
                     ref, _ = sf.read(f'tests/data/shepard_{pitch_class}_{duration}_{fade_samples}.wav')
                     self.assertEqual(len(y), len(ref), msg='Length of the generated sonification '

@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from unittest import TestCase
 
-from libsoni.core.spectrogram import sonify_spectrogram
+import libsoni
 
 
 class TestSpectrogram(TestCase):
@@ -18,16 +18,16 @@ class TestSpectrogram(TestCase):
 
     def test_spect_shapes(self) -> None:
         with self.assertRaises(ValueError) as context:
-            _ = sonify_spectrogram(spectrogram=self.spect,
-                                   frequency_coefficients=self.freq_coeff[:-1],
-                                   time_coefficients=self.time_coeff)
+            _ = libsoni.sonify_spectrogram(spectrogram=self.spect,
+                                           frequency_coefficients=self.freq_coeff[:-1],
+                                           time_coefficients=self.time_coeff)
 
         self.assertEqual(str(context.exception), 'The length of frequency_coefficients must match spectrogram.shape[0]')
 
         with self.assertRaises(ValueError) as context:
-            _ = sonify_spectrogram(spectrogram=self.spect,
-                                   frequency_coefficients=self.freq_coeff,
-                                   time_coefficients=self.time_coeff[:-1])
+            _ = libsoni.sonify_spectrogram(spectrogram=self.spect,
+                                           frequency_coefficients=self.freq_coeff,
+                                           time_coefficients=self.time_coeff[:-1])
 
         self.assertEqual(str(context.exception), 'The length of time_coefficients must match spectrogram.shape[1]')
 
