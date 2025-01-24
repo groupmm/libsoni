@@ -2,8 +2,7 @@ import numpy as np
 import soundfile as sf
 from unittest import TestCase
 
-
-from libsoni.core import f0
+import libsoni
 
 
 class TestF0(TestCase):
@@ -25,20 +24,20 @@ class TestF0(TestCase):
 
     def test_input_shape(self) -> None:
         with self.assertRaises(IndexError) as context:
-            _ = f0.sonify_f0(time_f0=np.zeros(1))
+            _ = libsoni.sonify_f0(time_f0=np.zeros(1))
         self.assertEqual(str(context.exception), 'time_f0 must be a numpy array of size [N, 2]')
 
         with self.assertRaises(IndexError) as context:
-            _ = f0.sonify_f0(time_f0=np.zeros((3, 3)))
+            _ = libsoni.sonify_f0(time_f0=np.zeros((3, 3)))
         self.assertEqual(str(context.exception), 'time_f0 must be a numpy array of size [N, 2]')
 
     def test_invalid_partial_sizes(self):
         with self.assertRaises(ValueError) as context:
-            _ = f0.sonify_f0(time_f0=self.time_f0,
-                             partials=self.partials[0],
-                             partials_amplitudes=self.partials_amplitudes[1],
-                             sonification_duration=self.durations[0],
-                             fs=self.fs)
+            _ = libsoni.sonify_f0(time_f0=self.time_f0,
+                                  partials=self.partials[0],
+                                  partials_amplitudes=self.partials_amplitudes[1],
+                                  sonification_duration=self.durations[0],
+                                  fs=self.fs)
 
         self.assertEqual(str(context.exception), 'Partials, Partials_amplitudes and Partials_phase_offsets must be '
                                                  'of equal length.')
@@ -46,11 +45,11 @@ class TestF0(TestCase):
     def test_sonification(self) -> None:
         for duration in self.durations:
             for par_idx, partials in enumerate(self.partials):
-                y = f0.sonify_f0(time_f0=self.time_f0,
-                                 partials=self.partials[par_idx],
-                                 partials_amplitudes=self.partials_amplitudes[par_idx],
-                                 sonification_duration=duration,
-                                 fs=self.fs)
+                y = libsoni.sonify_f0(time_f0=self.time_f0,
+                                      partials=self.partials[par_idx],
+                                      partials_amplitudes=self.partials_amplitudes[par_idx],
+                                      sonification_duration=duration,
+                                      fs=self.fs)
 
                 ref, _ = sf.read(f'tests/data/f0_{duration}_{par_idx}.wav')
                 self.assertEqual(len(y), len(ref), msg='Length of the generated sonification '
