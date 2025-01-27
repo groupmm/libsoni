@@ -36,18 +36,10 @@ class TestPianoRoll(TestCase):
             y = libsoni.sonify_pianoroll_additive_synthesis(pianoroll_df=self.df_pianoroll,
                                                             partials=partials,
                                                             partials_amplitudes=self.partials_amplitudes[partial_idx],
-                                                            sonification_duration=int(5*self.fs))
+                                                            sonification_duration=int(5.0*self.fs))
 
             ref, _ = sf.read(f'tests/data/pianoroll_add_{partial_idx}.wav')
             assert np.allclose(y, ref, atol=1e-4, rtol=1e-5)
-
-    def test_pianoroll_sample(self) -> None:
-        y = libsoni.sonify_pianoroll_sample(pianoroll_df=self.df_pianoroll,
-                                            sample=self.sample,
-                                            reference_pitch=60,
-                                            sonification_duration=int(3.0*self.fs))
-        ref, _ = sf.read(f'tests/data/pianoroll_sample.wav')
-        assert np.allclose(y, ref, atol=1e-4, rtol=1e-5)
 
     def test_pianoroll_sample(self) -> None:
         y = libsoni.sonify_pianoroll_sample(pianoroll_df=self.df_pianoroll,
