@@ -34,7 +34,7 @@ license = {file = "LICENSE"}
 [project.optional-dependencies]
 develop = [ # required for executing demo notebooks
     "flit >= 3.10.0",
-    "ipython >= 7.8.0",
+    "ipython >= 8.10.0",
     "jupyter",
     "nbstripout"
 ]
