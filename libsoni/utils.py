@@ -399,60 +399,39 @@ def check_df_schema(df: pd.DataFrame):
     except:
         raise ValueError("Columns of the dataframe must be ['start', 'duration', 'pitch', 'velocity', 'label'].")
 
-def split_freq_trajectory(frequencies: np.ndarray,amplitudes: np.ndarray ,max_relative_detune: int = 50 ):
+
+def split_freq_trajectory(frequencies: np.ndarray, max_change_cents: float = 50.):
     """
-    Splits a frequency array into zones of small pitch changes (x[i]/x[i+1] < detune (cents)). The Range of allowed detunes in these zones can be defined by max_relative detune. 
-    Shortest zone can be of size (1)
+    Splits a frequency array into regions where the change in frequency from frame to frame stays within a threshold,
+    e.g., to isolate note events in an F0 trajectory.
 
     Parameters
     ----------
     frequencies: np.ndarray
-        array of frequencies (Hz) to be spilt into zone of small pitch changes
+        1D array of frequencies (Hz) to be spilt into regions of small pitch changes
 
-    amplitudes: np.ndarray
-        corressponting array of frequencies (Hz) to be spilt into zone of small pitch changes. Must be same size as frequencies
-
-    max_relative_detune: int = 50 
-        maximum detune between to samples (cents) in zones of small pitch changes
+    max_change_cents: float
+        maximum change between sucessive frames in cents before the trajectory is split
 
     Returns
     -------
-    notes: np.ndarray
-        array size (N,:) where N is number of Zones with subarrays of splited frequency-trajectory
-
-    amps: np.ndarray
-        array size (N,:) where N is number of Zones with subarrays of splited amplitude-trajectory
-
     splits: np.ndarray
-        array size (N-1) with indicies where arrays where split into zones, where N is Number of Zones
-
-
+        1D array with indicies where arrays should be split, so that within each region, the change in frequency from
+        frame to frame is smaller than the given threshold. Can be used with `np.split()`.
     """
+    is_jump = (np.abs(1200 * np.log2((frequencies[:-1] + 1e-8) / (frequencies[1:] + 1e-8))) > max_change_cents)
+    was_zero = (frequencies[:-1] == 0) & (frequencies[1:] > 0)
+    will_be_zero = (frequencies[:-1] > 0) & (frequencies[1:] == 0)
 
-    if not (len(frequencies) == len(amplitudes)):
-        raise ValueError('frequency and amplitude array must be same length')
-    splits = np.array([1])
+    splits = np.argwhere(
+        is_jump | was_zero | will_be_zero
+    ).flatten() + 1
 
-    for i in range(len(frequencies)-1):
-        if(frequencies[i+1] != 0):
-            if(frequencies[i] != 0):
-                if(abs(1200*np.log2(frequencies[i]/frequencies[i+1]))> max_relative_detune):
-                    splits = np.append(splits, [int(i+1)])   
-            else:
-                splits = np.append(splits, [int(i+1)])
-
-        elif(frequencies[i]!= 0): 
-            splits = np.append(splits, [int(i+1)])
-            
-
-    splits = np.delete(splits, 0)
-    notes = np.split(frequencies, splits)
-    amps = np.split(amplitudes, splits)
-    return notes, amps, splits
+    return splits
 
 
 
-def replace_zero_rows(x: np.ndarray, zero_count: int = 100, replace_with_previous = True, value = 0):
+def replace_zeros(x: np.ndarray, zero_count: int = 100, replace_with_previous = True, value = 0):
     """
     replaces rows of zeros up to length zero_count with previous value or given value in given array.  If row of zeros is longer then length, no zero will be replaced. 
 
@@ -476,27 +455,26 @@ def replace_zero_rows(x: np.ndarray, zero_count: int = 100, replace_with_previou
         array of size (N) with zero rows replaces
 
     """
-    length = len(x)
-    if not (zero_count > 2):
-        if(length >= 4):
-            zero_count = 3
-        else:
-            return x
+    y = x.copy()
 
-    elif not (length  > zero_count +12 ):
-        zero_count = length - 1
-    
-    for i in range(length - 1) :
-            if(x[i] == 0 and x[i-1] != 0):
-                for j in range(min(zero_count, length - 1 - i)):  
-                    if (x[i+j] != 0):
-                        break
-                if(j == zero_count -1 and x[i+j] == 0):
-                    continue
-                else:
-                    if(replace_with_previous):
-                        x[i:i+j] = x[i-1]
-                    else:
-                        x[i:i+j] = value
-    return x         
+    # find all indices where y is zero and return if this does not happen
+    zero_idx = np.where(y == 0)[0]
+    if len(zero_idx) == 0:
+        return y
+
+    # form regions from consecutive zero indices
+    diff = np.diff(zero_idx)
+    split_indices = np.where(diff > 1)[0] + 1
+    zero_groups = np.split(zero_idx, split_indices)
+
+    for group in zero_groups:
+        if len(group) < zero_count: # only replace regions shorter than given threshold
+            if replace_with_previous:
+                i_prev = group[0] - 1 # last non-zero index
+                if i_prev >= 0:  # do not replace value if zeros are in the beginning
+                    y[group] = y[i_prev]
+            else:
+                y[group] = value
+
+    return y
 
