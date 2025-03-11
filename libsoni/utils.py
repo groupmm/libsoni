@@ -26,8 +26,11 @@ def fade_signal(signal: np.ndarray,
     fs: int, default = 22050
         sampling rate
 
-    fading_duration: float, default = 0
+    fading_duration: float or tuple of 2 floats, default = 0
         duration of fade-in and fade-out, in seconds
+        if one float is given, fade-in and fade-out have the same length
+
+        If the total fading duration is longer than the total signal length, the fades will be scaled proportionally.
 
     Returns
     -------
@@ -35,16 +38,28 @@ def fade_signal(signal: np.ndarray,
         Normalized signal
     """
 
-    if fading_duration == 0:
-        return signal
-    num_samples = int(fading_duration * fs)
-    
-    # if the signal is shorter than twice of the length of the fading duration, multiply signal with sinus half-wave
-    if len(signal) < 2 * num_samples:
-        signal *= np.sin(np.pi * np.arange(len(signal)) / len(signal))
+    if isinstance(fading_duration, tuple):
+        fade_in, fade_out = fading_duration
     else:
-        signal[:num_samples] *= np.sin(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
-        signal[-num_samples:] *= np.cos(np.pi * np.arange(num_samples) / fading_duration / 2 / fs)
+        fade_in = fading_duration
+        fade_out = fading_duration
+
+    if fade_in == 0 and fade_out == 0:
+        return signal
+
+    N_fade_in = int(fade_in * fs)
+    N_fade_out = int(fade_out * fs)
+
+    signal = signal.copy()
+
+    # if the total length of both crossfades is longer than the signal itself, proportionally shorten both fades
+    tot_len = N_fade_in + N_fade_out
+    if len(signal) < tot_len:
+        N_fade_in = int(len(signal) * N_fade_in / tot_len)
+        N_fade_out = int(len(signal) * N_fade_out / tot_len)
+
+    signal[:N_fade_in] *= np.sin(np.pi * np.arange(N_fade_in) / N_fade_in / 2)
+    signal[-N_fade_out:] *= np.cos(np.pi * np.arange(N_fade_out) / N_fade_out / 2)
 
     return signal
 

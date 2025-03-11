@@ -132,46 +132,54 @@ def sonify_f0(time_f0: np.ndarray,
     amps = np.split(gains_inst, splits)
   
     # sonification of individual regions with crossfades
-    cross_samples = int(crossfade_duration * fs)
+    N_fade = int(crossfade_duration * fs)
+    N_fade_in = N_fade
     sample_start = 0
     sample_end = None
     f0_sonification = np.zeros(num_samples)
+
     
     for j in range(len(notes)):
         notes_current = notes[j]
         amps_current = amps[j] 
 
         sample_end = sample_start + len(notes_current)
-        if len(notes_current) < cross_samples:
-            cross = int(len(notes_current) / 2)
+        if len(notes_current) < N_fade:
+            N_fade_out = int(len(notes_current))
         else:
-            cross = cross_samples
-            
-        if(j != 0):
-            sample_end += cross
-            notes_current = np.insert(notes_current, 0, np.full(cross, notes_current[0]))
-            amps_current = np.insert(amps_current, 0, np.full(cross, amps_current[0]))
+            N_fade_out = N_fade
+
+        if j == 0 and len(notes_current) < N_fade_in:
+            N_fade_in = int(len(notes_current))
+
+        # extend note in the beginning for a smooth crossfade
+        if j != 0:
+            sample_end += N_fade_in
+            notes_current = np.pad(notes_current, (N_fade_in, 0), mode="edge")
+            amps_current = np.pad(amps_current, (N_fade_in, 0), mode="edge")
         
-      
-        if(np.mean(notes_current) > 0):
+
+        if np.any(notes_current > 0):
             signal =  generate_tone_instantaneous_phase(frequency_vector=notes_current,
                                                         gain_vector=amps_current,
                                                         partials=partials,
                                                         partials_amplitudes=partials_amplitudes,
                                                         partials_phase_offsets=partials_phase_offsets,
-                                                        fading_duration=crossfade_duration,
+                                                        fading_duration=(N_fade_in/fs, N_fade_out/fs),
                                                         fs=fs)
         
         
         else:
+            # if all frequencies are zero, do not call generate function to avoid DC offset
             signal = np.zeros(len(notes_current))
 
-        
+        print(sample_start / fs, sample_end / fs, notes_current[-1])
+        print(N_fade_in / fs, N_fade_out / fs)
         f0_sonification[sample_start:sample_end] += signal
-        sample_start = sample_end - cross
+        N_fade_in = N_fade_out
+        sample_start = sample_end - N_fade_in
             
 
-    # f0_sonification = fade_signal(f0_sonification, fs=fs, fading_duration=fading_duration)
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 
     return f0_sonification
