@@ -16,62 +16,63 @@ def sonify_f0(time_f0: np.ndarray,
               fs: int = 22050,
               ignore_zero_freq_samples: int = 1000,
               freq_change_threshold_cents: float = 50) -> np.ndarray:
-    """Sonifies a F0 trajectory given as 2D Numpy array.
+    """
+    Sonifies an F0 trajectory given as a 2D NumPy array.
 
-    The 2D array must contain time positions and the associated instantaneous frequencies.
-    The sonification is based on the phase information by summation of the instantaneous frequencies.
-    The parameters partials, partials_amplitudes and partials_phase_offsets can be used to shape the sound.
+    The 2D array must contain time positions and their associated instantaneous frequencies.
+    The sonification is based on phase accumulation by summing the instantaneous frequencies.
+    The parameters `partials`, `partials_amplitudes`, and `partials_phase_offsets` can be used to shape the sound.
 
     Parameters
     ----------
-    time_f0: np.ndarray  (np.float32 / np.float64) [shape=(N, 2)]
-        2D array of time positions and f0s.
+    time_f0: np.ndarray (np.float32 / np.float64) [shape=(N, 2)]
+        2D array containing time positions and corresponding F0 values.
 
     gains: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
-        Array containing gain values for f0 values.
+        Array containing gain values for F0 values.
 
     partials: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = [1]
-        Array containing the desired partials of the fundamental frequencies for sonification.
-        An array [1] leads to sonification with only the fundamental frequency,
-        while an array [1,2] leads to sonification with the fundamental frequency and twice the fundamental frequency.
+        Array specifying the desired partials of the fundamental frequency for sonification.
+        An array `[1]` results in sonification using only the fundamental frequency,
+        while `[1, 2]` includes both the fundamental frequency and its second harmonic (twice the fundamental frequency).
 
     partials_amplitudes: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
-        Array containing the amplitudes for partials.
-        An array [1,0.5] causes the first partial to have amplitude 1,
-        while the second partial has amplitude 0.5.
-        If None, the amplitudes for all partials are set to 1.
+        Array specifying the amplitudes of the partials.
+        For example, `[1, 0.5]` sets the first partial's amplitude to 1 and the second partial's amplitude to 0.5.
+        If `None`, all partial amplitudes default to 1.
 
     partials_phase_offsets: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
-        Array containing the phase offsets for partials.
-        When not defined, the phase offsets for all partials are set to 0.
+        Array specifying phase offsets for partials.
+        If `None`, all partials have a phase offset of 0.
 
     sonification_duration: int, default = None
-        Determines duration of sonification, in samples.
+     Duration of the sonification in samples.
 
     fading_duration: float, default = 0.05
-        Determines duration of fade-in and fade-out at beginning and end of the sonification, in seconds.
+     Duration of fade-in and fade-out at the beginning and end of the sonification, in seconds.
 
     crossfade_duration: float, default = 0.05
-        Determines duration of crossfade between two destinct frequency-samples (±50 cents), in seconds.
+        Duration of crossfade between two distinct frequency samples, in seconds.
 
     normalize: bool, default = True
-        Determines if output signal is normalized to [-1,1].
+        Whether to normalize the output signal to the range [-1, 1].
 
     fs: int, default = 22050
-        Sampling rate, in samples per seconds.
+        Sampling rate in samples per second.
 
     ignore_zero_freq_samples: int, default = 1000
-        Determines number of samples with frequency 0 will be ignored in sonification (e.g. not ideal f0-estimation).
-        Must be greater than 2, otherwise ignored.
+        Number of consecutive samples with frequency 0 that will be ignored in the sonification 
+        (e.g., to compensate for poor F0 estimation). 
+        Must be greater than 2; otherwise, this parameter is ignored.
 
     freq_change_threshold_cents: float, default = 50
-        If the change in frequency between successive frames is larger than this threshold in cents, the sonification
-        will be crossfaded instead of a linear interpolation of the instantaneous frequency
+        If the frequency change between successive frames exceeds this threshold (in cents), 
+        the sonification will apply crossfading instead of linear interpolation of the instantaneous frequency.
 
     Returns
     -------
     f0_sonification: np.ndarray (np.float32 / np.float64) [shape=(M, )]
-        Sonified f0-trajectory.
+        The sonified F0 trajectory.
     """
     if time_f0.ndim != 2 or time_f0.shape[1] != 2:
         raise IndexError('time_f0 must be a numpy array of size [N, 2]')
@@ -142,7 +143,7 @@ def sonify_f0(time_f0: np.ndarray,
     for j in range(len(notes)):
         notes_current = notes[j]
         amps_current = amps[j] 
-
+        # Catch Edgecases where prefered fading duration is longer than sample
         sample_end = sample_start + len(notes_current)
         if len(notes_current) < N_fade:
             N_fade_out = int(len(notes_current))

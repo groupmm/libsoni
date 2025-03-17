@@ -417,22 +417,23 @@ def check_df_schema(df: pd.DataFrame):
 
 def split_freq_trajectory(frequencies: np.ndarray, max_change_cents: float = 50.):
     """
-    Splits a frequency array into regions where the change in frequency from frame to frame stays within a threshold,
+    Splits a frequency array into regions where the change in frequency from frame to frame remains within a specified threshold,  
     e.g., to isolate note events in an F0 trajectory.
 
     Parameters
     ----------
     frequencies: np.ndarray
-        1D array of frequencies (Hz) to be spilt into regions of small pitch changes
+        1D array of frequencies (Hz) to be split into regions with minimal pitch changes.
 
     max_change_cents: float
-        maximum change between sucessive frames in cents before the trajectory is split
+        Maximum allowed change (in cents) between successive frames before splitting the trajectory.
 
     Returns
     -------
     splits: np.ndarray
-        1D array with indicies where arrays should be split, so that within each region, the change in frequency from
-        frame to frame is smaller than the given threshold. Can be used with `np.split()`.
+        1D array containing indices where the input array should be split.  
+        Within each resulting region, the change in frequency from frame to frame remains below the specified threshold.  
+        Can be used with `np.split()`.
     """
     is_jump = (np.abs(1200 * np.log2((frequencies[:-1] + 1e-8) / (frequencies[1:] + 1e-8))) > max_change_cents)
     was_zero = (frequencies[:-1] == 0) & (frequencies[1:] > 0)
@@ -446,29 +447,31 @@ def split_freq_trajectory(frequencies: np.ndarray, max_change_cents: float = 50.
 
 
 
-def replace_zeros(x: np.ndarray, zero_count: int = 100, replace_with_previous = True, value = 0):
+def replace_zeros(x: np.ndarray, zero_count: int = 1000, replace_with_previous = True, value = 0):
     """
-    replaces rows of zeros up to length zero_count with previous value or given value in given array.  If row of zeros is longer then length, no zero will be replaced. 
+    Replaces consecutive rows of zeros (up to a specified length) with the previous value or a given value in the array.  
+    If a row of zeros is longer than `zero_counts`, no zeros will be replaced.
 
-     Parameters
+    Parameters
     ----------
     x: np.ndarray
-        array of size (N)
+        1D array of size (N).
 
-    zero_counts: int = 100
-        Number of zeros in a row that will be replaced. Must be greater than 2
+    zero_counts: int, default = 1000
+        Maximum number of consecutive zeros that will be replaced.  
+        Must be greater than 2.
 
-    replace_with_previous: boolean = True
-        If true, all zeros will be replaced by the last non-zero value in array, else by given value
+    replace_with_previous: bool, default = True
+        If `True`, zeros will be replaced with the last non-zero value in the array.  
+        If `False`, zeros will be replaced with the specified `value`.
 
-    value: (int / float)
-        value to replace all zeros when replace_with_previous = False
+    value: int | float, optional
+        The value used to replace zeros when `replace_with_previous = False`.
 
     Returns
     -------
     y: np.ndarray
-        array of size (N) with zero rows replaces
-
+        1D array of size (N) with specified zero rows replaced.
     """
     y = x.copy()
 
