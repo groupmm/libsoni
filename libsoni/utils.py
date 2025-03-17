@@ -58,8 +58,8 @@ def fade_signal(signal: np.ndarray,
         N_fade_in = int(len(signal) * N_fade_in / tot_len)
         N_fade_out = int(len(signal) * N_fade_out / tot_len)
 
-    signal[:N_fade_in] *= np.sin(np.pi * np.arange(N_fade_in) / N_fade_in / 2)
-    signal[-N_fade_out:] *= np.cos(np.pi * np.arange(N_fade_out) / N_fade_out / 2)
+    signal[:N_fade_in] *= np.sin(np.pi * np.arange(N_fade_in) / N_fade_in / 2)**2
+    signal[-N_fade_out:] *= np.cos(np.pi * np.arange(N_fade_out) / N_fade_out / 2)**2
 
     return signal
 
