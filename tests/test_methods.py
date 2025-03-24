@@ -32,7 +32,7 @@ class TestMethods(TestCase):
         self.assertEqual(str(context.exception), 'Partials, Partials_amplitudes and Partials_phase_offsets must be '
                                                  'of equal length.')
 
-    def test_click(self) -> None:
+    def test_sineosoid(self) -> None:
         for duration in self.durations:
             for pitch in self.pitches:
                 for fade_val in self.fade_vals:
