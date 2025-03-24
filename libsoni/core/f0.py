@@ -139,11 +139,11 @@ def sonify_f0(time_f0: np.ndarray,
     sample_end = None
     f0_sonification = np.zeros(num_samples)
 
-    
     for j in range(len(notes)):
         notes_current = notes[j]
-        amps_current = amps[j] 
-        # Catch Edgecases where prefered fading duration is longer than sample
+        amps_current = amps[j]
+
+        # catch edge cases where preferred fading duration is longer than the note
         sample_end = sample_start + len(notes_current)
         if len(notes_current) < N_fade:
             N_fade_out = int(len(notes_current))
@@ -161,26 +161,23 @@ def sonify_f0(time_f0: np.ndarray,
         
 
         if np.any(notes_current > 0):
-            signal =  generate_tone_instantaneous_phase(frequency_vector=notes_current,
-                                                        gain_vector=amps_current,
-                                                        partials=partials,
-                                                        partials_amplitudes=partials_amplitudes,
-                                                        partials_phase_offsets=partials_phase_offsets,
-                                                        fading_duration=(N_fade_in/fs, N_fade_out/fs),
-                                                        fs=fs)
+            signal = generate_tone_instantaneous_phase(frequency_vector=notes_current,
+                                                       gain_vector=amps_current,
+                                                       partials=partials,
+                                                       partials_amplitudes=partials_amplitudes,
+                                                       partials_phase_offsets=partials_phase_offsets,
+                                                       fading_duration=(N_fade_in/fs, N_fade_out/fs),
+                                                       fs=fs)
         
         
         else:
             # if all frequencies are zero, do not call generate function to avoid DC offset
             signal = np.zeros(len(notes_current))
 
-        print(sample_start / fs, sample_end / fs, notes_current[-1])
-        print(N_fade_in / fs, N_fade_out / fs)
         f0_sonification[sample_start:sample_end] += signal
         N_fade_in = N_fade_out
         sample_start = sample_end - N_fade_in
             
-
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 
     return f0_sonification
