@@ -60,7 +60,7 @@
 <li class="toctree-l2"><a class="reference internal" href="methods.html">Methods (libsoni.core.methods)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils (libsoni.util.utils)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils.html">Utils (libsoni.utils)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -117,7 +117,7 @@ When not defined, the amplitudes for all partials are set to 1.</p></li>
 <li><p><strong>partials_phase_offsets</strong> (<em>np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None</em>) – Array containing the phase offsets for partials.
 When not defined, the phase offsets for all partials are set to 0.</p></li>
 <li><p><strong>tuning_frequency</strong> (<em>float, default = 440.0</em>) – Tuning frequency, in Hertz.</p></li>
-<li><p><strong>sonification_duration</strong> (<em>float, default = None</em>) – Determines duration of sonification, in seconds.</p></li>
+<li><p><strong>sonification_duration</strong> (<em>float, default = None</em>) – Determines duration of sonification, in samples</p></li>
 <li><p><strong>signal_fading_duration</strong> (<em>float, default = 0.05</em>) – Determines duration of fade-in and fade-out at beginning and end of the final sonification, in seconds.</p></li>
 <li><p><strong>note_fading_duration</strong> (<em>float, default = 0.01</em>) – Determines duration of fade-in and fade-out at beginning and end of each note event, in seconds.</p></li>
 <li><p><strong>normalize</strong> (<em>bool, default = True</em>) – Determines if output signal is normalized to [-1,1].</p></li>
