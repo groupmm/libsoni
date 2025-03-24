@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>libsoni.core.methods &mdash; libsoni 0.0.0 documentation</title>
+  <title>libsoni.core.methods &mdash; libsoni 1.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=7026087e"></script>
+      <script src="../../../_static/documentation_options.js?v=fc837d61"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -43,7 +43,7 @@
               <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/index.html">Core Features (libsoni.core)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utils (libsoni.util.utils)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Utils (libsoni.utils)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -320,6 +320,9 @@
     <span class="n">pitch_frequency</span> <span class="o">=</span> <span class="n">pitch_to_frequency</span><span class="p">(</span><span class="n">pitch</span><span class="o">=</span><span class="n">pitch</span><span class="p">,</span> <span class="n">tuning_frequency</span><span class="o">=</span><span class="n">tuning_frequency</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">partial</span><span class="p">,</span> <span class="n">partial_amplitude</span><span class="p">,</span> <span class="n">partials_phase_offset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">partials</span><span class="p">,</span> <span class="n">partials_amplitudes</span><span class="p">,</span> <span class="n">partials_phase_offsets</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">partial</span> <span class="o">*</span> <span class="n">pitch_frequency</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">fs</span> <span class="o">/</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="c1"># skip partials that would create aliasing</span>
+            <span class="k">continue</span>
         <span class="n">generated_tone</span> <span class="o">+=</span> <span class="n">partial_amplitude</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">pitch_frequency</span> <span class="o">*</span> <span class="n">partial</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">duration</span> <span class="o">*</span> <span class="n">fs</span><span class="p">))</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span> <span class="o">+</span> <span class="n">partials_phase_offset</span><span class="p">)</span>
 
     <span class="n">generated_tone</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">=</span><span class="n">generated_tone</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">)</span> <span class="o">*</span> <span class="n">gain</span>
@@ -506,18 +509,14 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">gain_vector</span> <span class="o">=</span> <span class="n">smooth_weights</span><span class="p">(</span><span class="n">weights</span><span class="o">=</span><span class="n">gain_vector</span><span class="p">,</span> <span class="n">fading_samples</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
 
-    <span class="n">phase</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">phase_result</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="k">for</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">gain</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">frequency_vector</span><span class="p">,</span> <span class="n">gain_vector</span><span class="p">):</span>
-        <span class="n">phase_step</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">frequency</span> <span class="o">/</span> <span class="n">fs</span>
-        <span class="n">phase</span> <span class="o">+=</span> <span class="n">phase_step</span>
-        <span class="n">phase_result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>
-
-    <span class="n">phase_result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">phase_result</span><span class="p">)</span>
+    <span class="n">phase</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">frequency_vector</span> <span class="o">/</span> <span class="n">fs</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">partial</span><span class="p">,</span> <span class="n">partial_amplitude</span><span class="p">,</span> <span class="n">partials_phase_offset</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">partials</span><span class="p">,</span> <span class="n">partials_amplitudes</span><span class="p">,</span> <span class="n">partials_phase_offsets</span><span class="p">):</span>
-        <span class="n">generated_tone</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="n">phase_result</span> <span class="o">+</span> <span class="n">partials_phase_offset</span><span class="p">)</span> <span class="o">*</span> <span class="n">partial</span><span class="p">)</span> <span class="o">*</span> <span class="n">partial_amplitude</span>
+        <span class="c1"># mute partials that would create aliasing</span>
+        <span class="c1"># (due to the time-varying nature of the frequency, this is done sample-wise)</span>
+        <span class="n">instant_ampl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span> <span class="o">*</span> <span class="n">partial_amplitude</span>
+        <span class="n">instant_ampl</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">partial</span> <span class="o">*</span> <span class="n">frequency_vector</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">fs</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">generated_tone</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">((</span><span class="n">phase</span> <span class="o">+</span> <span class="n">partials_phase_offset</span><span class="p">)</span> <span class="o">*</span> <span class="n">partial</span><span class="p">)</span> <span class="o">*</span> <span class="n">instant_ampl</span>
 
     <span class="n">generated_tone</span> <span class="o">=</span> <span class="n">generated_tone</span> <span class="o">*</span> <span class="n">gain_vector</span>
     <span class="n">generated_tone</span> <span class="o">=</span> <span class="n">fade_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">=</span><span class="n">generated_tone</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span> <span class="n">fading_duration</span><span class="o">=</span><span class="n">fading_duration</span><span class="p">)</span>
