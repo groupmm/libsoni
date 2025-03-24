@@ -15,7 +15,9 @@ SAMPLES = ['bass-drum', 'click', 'hi-hat']
 
 def fade_signal(signal: np.ndarray,
                 fading_duration: float = 0,
-                fs: int = 22050) -> np.ndarray:
+                fs: int = 22050,
+                fade_type: str = "squared_sine"
+                ) -> np.ndarray:
     """Fade in / out audio signal
 
     Parameters
@@ -31,6 +33,9 @@ def fade_signal(signal: np.ndarray,
         if one float is given, fade-in and fade-out have the same length
 
         If the total fading duration is longer than the total signal length, the fades will be scaled proportionally.
+
+    fade_type: str
+        Define the fading function. Options: "squared_sine" (default), "sine", "linear"
 
     Returns
     -------
@@ -58,8 +63,25 @@ def fade_signal(signal: np.ndarray,
         N_fade_in = int(len(signal) * N_fade_in / tot_len)
         N_fade_out = int(len(signal) * N_fade_out / tot_len)
 
-    signal[:N_fade_in] *= np.sin(np.pi * np.arange(N_fade_in) / N_fade_in / 2)**2
-    signal[-N_fade_out:] *= np.cos(np.pi * np.arange(N_fade_out) / N_fade_out / 2)**2
+    if fade_type == "squared_sine":
+        fade_in_func = np.sin(np.pi * np.arange(N_fade_in) / N_fade_in / 2)**2
+        fade_out_func = np.cos(np.pi * np.arange(N_fade_out) / N_fade_out / 2)**2
+    elif fade_type == "sine":
+        fade_in_func = np.sin(np.pi * np.arange(N_fade_in) / N_fade_in / 2)
+        fade_out_func = np.cos(np.pi * np.arange(N_fade_out) / N_fade_out / 2)
+    elif fade_type == 'linear':
+        fade_in_func = np.arange(N_fade_in) / N_fade_in 
+        fade_out_func = 1 - np.arange(N_fade_out) / N_fade_out 
+    else:
+        ValueError('Unknown fade_type')
+
+    # Apply fading function if dade_duration is not 0
+
+    if N_fade_in > 0:
+        signal[:N_fade_in] *= fade_in_func
+
+    if N_fade_out > 0:
+        signal[-1*N_fade_out:] *= fade_out_func
 
     return signal
 
