@@ -10,7 +10,7 @@ def sonify_f0(time_f0: np.ndarray,
               partials_amplitudes: np.ndarray = np.array([1]),
               partials_phase_offsets: np.ndarray = None,
               sonification_duration: int = None,
-              crossfade_duration = 0.02,
+              crossfade_duration = 0.01,
               normalize: bool = True,
               fs: int = 22050,
               ignore_zero_freq_samples: int = 1000,
@@ -18,14 +18,14 @@ def sonify_f0(time_f0: np.ndarray,
     """
     Sonifies an F0 trajectory given as a 2D NumPy array.
 
-    The 2D array must contain time positions and their associated instantaneous frequencies.
+    The 2D array must contain time positions and associated F0 values.
     The sonification is based on phase accumulation by summing the instantaneous frequencies.
-    The parameters `partials`, `partials_amplitudes`, and `partials_phase_offsets` can be used to shape the sound.
+    The parameters `partials`, `partials_amplitudes`, and `partials_phase_offsets` can be used to modify the timbre.
 
     Parameters
     ----------
     time_f0: np.ndarray (np.float32 / np.float64) [shape=(N, 2)]
-        2D array containing time positions and corresponding F0 values.
+        2D array containing time positions and associated F0 values.
 
     gains: np.ndarray (np.float32 / np.float64) [shape=(N, )], default = None
         Array containing gain values for F0 values.
@@ -45,10 +45,11 @@ def sonify_f0(time_f0: np.ndarray,
         If `None`, all partials have a phase offset of 0.
 
     sonification_duration: int, default = None
-     Duration of the sonification in samples.
+        Duration of the sonification in samples.
 
-    crossfade_duration: float, default = 0.05
-        Duration of crossfade between two distinct frequency samples, in seconds.
+    crossfade_duration: float, default = 0.01
+        Duration of fade in/out at the beginning/end of the signal, as well as between discrete notes
+        (see `freq_change_threshold_cents`), in seconds.
 
     normalize: bool, default = True
         Whether to normalize the output signal to the range [-1, 1].
@@ -155,7 +156,6 @@ def sonify_f0(time_f0: np.ndarray,
             notes_current = np.pad(notes_current, (N_fade_in, 0), mode="edge")
             amps_current = np.pad(amps_current, (N_fade_in, 0), mode="edge")
         
-
         if np.any(notes_current > 0):
             signal = generate_tone_instantaneous_phase(frequency_vector=notes_current,
                                                        gain_vector=amps_current,
@@ -164,8 +164,6 @@ def sonify_f0(time_f0: np.ndarray,
                                                        partials_phase_offsets=partials_phase_offsets,
                                                        fading_duration=(N_fade_in/fs, N_fade_out/fs),
                                                        fs=fs)
-        
-        
         else:
             # if all frequencies are zero, do not call generate function to avoid DC offset
             signal = np.zeros(len(notes_current))
