@@ -10,8 +10,7 @@ def sonify_f0(time_f0: np.ndarray,
               partials_amplitudes: np.ndarray = np.array([1]),
               partials_phase_offsets: np.ndarray = None,
               sonification_duration: int = None,
-              fading_duration: float = 0.05,
-              crossfade_duration = 0.05,
+              crossfade_duration = 0.02,
               normalize: bool = True,
               fs: int = 22050,
               ignore_zero_freq_samples: int = 1000,
@@ -47,9 +46,6 @@ def sonify_f0(time_f0: np.ndarray,
 
     sonification_duration: int, default = None
      Duration of the sonification in samples.
-
-    fading_duration: float, default = 0.05
-     Duration of fade-in and fade-out at the beginning and end of the sonification, in seconds.
 
     crossfade_duration: float, default = 0.05
         Duration of crossfade between two distinct frequency samples, in seconds.
@@ -177,7 +173,8 @@ def sonify_f0(time_f0: np.ndarray,
         f0_sonification[sample_start:sample_end] += signal
         N_fade_in = N_fade_out
         sample_start = sample_end - N_fade_in
-            
+
+    
     f0_sonification = normalize_signal(f0_sonification) if normalize else f0_sonification
 
     return f0_sonification
